@@ -26,7 +26,9 @@ resource "azurerm_linux_web_app" "web_app" {
 
   site_config {
     application_stack {
-      java_version = var.web_app_java_version
+      java_version = "21"
+      java_server = "JAVA"
+      java_server_version = "java21"
     }
   }
 }

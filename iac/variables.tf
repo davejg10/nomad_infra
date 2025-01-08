@@ -34,10 +34,6 @@ variable "asp_sku_name" {
   type = string
 }
 
-variable "web_app_java_version" {
-  type = string
-}
-
 // Key Vault
 variable "key_vault_sku_name" {
   type = string

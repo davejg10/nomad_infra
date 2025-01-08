@@ -14,7 +14,7 @@ resource "azurerm_subnet" "app_service_plan" {
   name                 = "snt-app-service-plan"
   resource_group_name  = data.azurerm_resource_group.rg.name
   virtual_network_name = azurerm_virtual_network.vnet.name
-  address_prefixes     = [ar.asp_subnet_address_prefixes]
+  address_prefixes     = [var.asp_subnet_address_prefixes]
 
   delegation {
     name = "appservice-delegation"
@@ -47,7 +47,7 @@ resource "azurerm_subnet" "private_endpoints" {
 }
 
 locals {
-  private_endpoints_subnet_nsg_rules = [
+  private_endpoints_subnet_nsg_rules = {
     {
       name                       = "AllowWebApp"
       priority                   = "100"
@@ -72,7 +72,7 @@ locals {
       source_port_range          = "443"
       description                = "Allow HTTPs traffic from internet"
     },
-  ]
+  }
 }
 
 resource "azurerm_network_security_group" "private_endpoints_subnet" {
@@ -80,7 +80,9 @@ resource "azurerm_network_security_group" "private_endpoints_subnet" {
   resource_group_name = data.azurerm_resource_group.rg.name
   location            = var.environment_settings.region
 
-  security_rule = local.private_endpoints_subnet_nsg_rules
+  security_rule = [
+    for key, value in local.private_endpoints_subnet_nsg_rules : value
+  ]
 }
 resource "azurerm_subnet_network_security_group_association" "private_endpoints_subnet" {
   subnet_id                 = azurerm_subnet.private_endpoints.id

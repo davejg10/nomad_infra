@@ -15,7 +15,7 @@ resource "azurerm_linux_web_app" "web_app" {
   service_plan_id     = azurerm_service_plan.asp.id
 
   key_vault_reference_identity_id = azurerm_user_assigned_identity.asp.id
-  identity = {
+  identity {
     type         = "UserAssigned"
     identity_ids = [azurerm_user_assigned_identity.asp.id]
   }
@@ -24,8 +24,8 @@ resource "azurerm_linux_web_app" "web_app" {
     "APPINSIGHTS_INSTRUMENTATIONKEY" = azurerm_application_insights.web_insights.instrumentation_key
   }
 
-  site_config = {
-    application_stack = {
+  site_config {
+    application_stack {
       java_version = var.web_app_java_version
     }
   }

@@ -38,7 +38,7 @@ jobs:
 
       - name: Terraform destroy
         run: |
-          terraform destroy -input=false \
+          terraform destroy -auto-approve \
             -var "resource_group_name=${{ vars.AZURE_RESOURCE_GROUP_NAME }}" \
             -var "environment_settings={environment=${{ env.environment }}}" \
             -var-file="tfvars/${{ env.environment }}/main.tfvars"

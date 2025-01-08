@@ -68,7 +68,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: tfplan-${{ github.event.inputs.environment }}
-          path: ./InfrastructureAsCode/${{ github.run_number }}.tfplan
+          path: ${{ env.work_dir }}/${{ github.run_number }}.tfplan
       
   terraform_apply:
     runs-on: ubuntu-latest
@@ -83,7 +83,7 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: tfplan-${{ github.event.inputs.environment }}
-          path: ./InfrastructureAsCode
+          path: ${{ env.work_dir }}
 
       - uses: hashicorp/setup-terraform@v3
 

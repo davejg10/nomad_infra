@@ -10,7 +10,7 @@ env:
  ARM_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
  ARM_USE_AZUREAD: true
  work_dir: ./iac
- environmentv2: dev
+ environment: dev
  app_name: nomad-backend
 
 permissions:
@@ -20,7 +20,7 @@ permissions:
 jobs:
   terraform_destroy:
     runs-on: ubuntu-latest
-    environment: ${{ env.environmentv2 }}
+    environment: dev
     defaults:
       run:
         working-directory: ${{ env.work_dir }}
@@ -40,6 +40,6 @@ jobs:
         run: |
           terraform destroy -input=false \
             -var "resource_group_name=${{ vars.AZURE_RESOURCE_GROUP_NAME }}" \
-            -var "environment_settings={environment=${{ env.environmentv2 }}}" \
-            -var-file="tfvars/${{ env.environmentv2 }}/main.tfvars"
+            -var "environment_settings={environment=${{ env.environment }}}" \
+            -var-file="tfvars/${{ env.environment }}/main.tfvars"
       

@@ -45,7 +45,7 @@ resource "azurerm_network_security_group" "private_endpoints_subnet" {
   resource_group_name = data.azurerm_resource_group.rg.name
   location            = var.environment_settings.region
 
-  security_rule = {
+  security_rule {
     name                       = "AllowInternetHTTPs"
     priority                   = "110"
     direction                  = "Inbound"

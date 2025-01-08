@@ -31,6 +31,11 @@ resource "azurerm_linux_web_app" "web_app" {
   }
 }
 
+resource "azurerm_app_service_virtual_network_swift_connection" "vnet_integration" {
+  app_service_id = azurerm_linux_web_app.web_app.id
+  subnet_id      = azurerm_subnet.app_service_plan.id
+}
+
 resource "azurerm_application_insights" "web_insights" {
   name = "appi-${var.environment_settings.environment}-${var.environment_settings.region_code}-${var.environment_settings.app_name}-${var.environment_settings.identifier}"
 

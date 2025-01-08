@@ -18,6 +18,7 @@ resource "azurerm_subnet" "app_service_plan" {
       name = "Microsoft.Web/serverFarms"
       actions = [
         "Microsoft.Network/virtualNetworks/subnets/join/action",
+        "Microsoft.Network/virtualNetworks/subnets/action"
       ]
     }
   }

@@ -1,0 +1,14 @@
+// Networking
+vnet_address_space = "10.0.0.0/25"
+asp_subnet_address_prefixes = "10.0.0.0/27"
+pe_subnet_address_prefixes = "10.0.0.32/28"
+
+// App service
+asp_sku_name = "B2"
+web_app_java_version = "21"
+
+// Key Vault
+key_vault_sku_name = "standard"
+kv_purge_protection_enabled = "false"
+kv_soft_delete_retention_days = 7
+kv_public_network_access_enabled = true

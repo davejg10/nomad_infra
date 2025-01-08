@@ -48,7 +48,7 @@ resource "azurerm_subnet" "private_endpoints" {
 
 locals {
   private_endpoints_subnet_nsg_rules = {
-    {
+    "AllowWebApp" = {
       name                       = "AllowWebApp"
       priority                   = "100"
       direction                  = "Inbound"
@@ -60,7 +60,7 @@ locals {
       source_port_range          = "443"
       description                = "Allow HTTPs traffic from web app"
     },
-    {
+    "AllowInternetHTTPs" = {
       name                       = "AllowInternetHTTPs"
       priority                   = "110"
       direction                  = "Inbound"

@@ -1,3 +1,11 @@
+environment_settings = {
+  region         = "uksouth"
+  region_code    = "uks"
+  environment    = "dev"
+  app_name       = "nomad"
+  identifier     = "01"
+}
+
 // Networking
 vnet_address_space = "10.0.0.0/25"
 asp_subnet_address_prefixes = "10.0.0.0/27"

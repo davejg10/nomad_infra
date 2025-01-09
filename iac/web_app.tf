@@ -20,8 +20,7 @@ resource "azurerm_linux_web_app" "web_app" {
     identity_ids = [azurerm_user_assigned_identity.asp.id]
   }
 
-  container_registry_use_managed_identity       = true
-  container_registry_managed_identity_client_id = azurerm_user_assigned_identity.asp.client_id
+  
 
   app_settings = {
     "APPINSIGHTS_INSTRUMENTATIONKEY" = azurerm_application_insights.web_insights.instrumentation_key
@@ -29,6 +28,9 @@ resource "azurerm_linux_web_app" "web_app" {
   }
 
   site_config {
+    container_registry_use_managed_identity       = true
+    container_registry_managed_identity_client_id = azurerm_user_assigned_identity.asp.client_id
+    
     application_stack {
       java_version = "21"
       java_server = "TOMCAT"

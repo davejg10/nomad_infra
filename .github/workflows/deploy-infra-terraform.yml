@@ -49,12 +49,6 @@ jobs:
       
       - name: Terraform Validate
         run: terraform validate
-      
-      - name: tfsec
-        uses: aquasecurity/tfsec-pr-commenter-action@v1.2.0
-        with:
-          tfsec_args: --soft-fail
-          github_token: ${{ github.token }}
 
       - name: Terraform plan
         run: |

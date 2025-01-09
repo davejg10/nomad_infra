@@ -65,7 +65,7 @@ resource "azurerm_role_definition" "push_acr_image" {
   description = "A custom role allow you to push images to the ACR: ${azurerm_container_registry.acr.name}."
 
   permissions {
-    actions: [
+    actions = [
         "Microsoft.ContainerRegistry/registries/pull/read",
         "Microsoft.ContainerRegistry/registries/push/write"
     ],
@@ -84,7 +84,7 @@ resource "azurerm_role_definition" "deploy_web_app_image" {
   description = "A custom role allow you to fetch publish_profile and deploy Web Apps to: ${azurerm_linux_web_app.web_app.name}."
 
   permissions {
-    actions: [
+    actions = [
       "Microsoft.Web/sites/containers/*"
     ],
     data_actions = [

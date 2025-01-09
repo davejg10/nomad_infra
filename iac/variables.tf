@@ -34,6 +34,10 @@ variable "asp_sku_name" {
   type = string
 }
 
+variable "exposed_container_port" {
+  type = number
+}
+
 // Key Vault
 variable "key_vault_sku_name" {
   type = string

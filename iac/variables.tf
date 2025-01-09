@@ -66,12 +66,12 @@ variable "acr_zone_redundancy_enabled" {
 
 // Config as Code - Github
 variable "github_organisation_target" {
-  type = string
+  type    = string
   default = "davejg10"
 }
 
 variable "github_repository_name" {
-  type = string
+  type    = string
   default = "nomad_backend"
 }
 

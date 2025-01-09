@@ -26,19 +26,19 @@ resource "azurerm_user_assigned_identity" "github" {
 }
 
 resource "azurerm_role_assignment" "github_to_key_vault" {
-  scope                = azurerm_key_vault.nomad.id
+  scope              = azurerm_key_vault.nomad.id
   role_definition_id = azurerm_role_definition.manage_key_vault_secrets.role_definition_resource_id
-  principal_id         = azurerm_user_assigned_identity.github.principal_id
+  principal_id       = azurerm_user_assigned_identity.github.principal_id
 }
 resource "azurerm_role_assignment" "github_to_acr" {
-  scope                = azurerm_container_registry.acr.id
+  scope              = azurerm_container_registry.acr.id
   role_definition_id = azurerm_role_definition.push_acr_image.role_definition_resource_id
-  principal_id         = azurerm_user_assigned_identity.github.principal_id
+  principal_id       = azurerm_user_assigned_identity.github.principal_id
 }
 resource "azurerm_role_assignment" "github_to_web_app" {
-  scope                = azurerm_linux_web_app.web_app.id
+  scope              = azurerm_linux_web_app.web_app.id
   role_definition_id = azurerm_role_definition.deploy_web_app_image.role_definition_resource_id
-  principal_id         = azurerm_user_assigned_identity.github.principal_id
+  principal_id       = azurerm_user_assigned_identity.github.principal_id
 }
 
 resource "azurerm_role_definition" "manage_key_vault_secrets" {
@@ -47,7 +47,7 @@ resource "azurerm_role_definition" "manage_key_vault_secrets" {
   description = "A custom role tallowing all secret management in Key Vault: ${azurerm_key_vault.nomad.name}."
 
   permissions {
-    actions     = []
+    actions = []
     data_actions = [
       "Microsoft.KeyVault/vaults/secrets/*",
     ]
@@ -66,11 +66,11 @@ resource "azurerm_role_definition" "push_acr_image" {
 
   permissions {
     actions = [
-        "Microsoft.ContainerRegistry/registries/pull/read",
-        "Microsoft.ContainerRegistry/registries/push/write"
+      "Microsoft.ContainerRegistry/registries/pull/read",
+      "Microsoft.ContainerRegistry/registries/push/write"
     ]
     data_actions = []
-    not_actions = []
+    not_actions  = []
   }
 
   assignable_scopes = [
@@ -89,7 +89,7 @@ resource "azurerm_role_definition" "deploy_web_app_image" {
       # "microsoft.web/sites/deployments/read"
     ]
     data_actions = [
-      "Microsoft.Web/sites/publishxml/Action"
+      "Microsoft.Web/sites/publishxml/action"
     ]
     not_actions = []
   }

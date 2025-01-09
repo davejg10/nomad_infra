@@ -1,5 +1,5 @@
 resource "azurerm_federated_identity_credential" "github" {
-  name                = "${var.github_repository_name}-${var.environment_settings.environment}"
+  name = "${var.github_repository_name}-${var.environment_settings.environment}"
 
   resource_group_name = data.azurerm_resource_group.rg.name
   audience            = ["api://AzureADTokenExchange"]

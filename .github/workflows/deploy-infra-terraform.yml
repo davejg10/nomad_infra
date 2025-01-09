@@ -1,26 +1,37 @@
-name: terraform-destroy
-run-name: Terraform destroy dev instance of nomad-backend
+name: deploy-infra-terraform
+run-name: Terraform deploy ${{ github.event.inputs.app_name }} in ${{ github.event.inputs.environment }}
 
 on:
   workflow_dispatch:
-
+    inputs:
+      environment:
+        type: choice
+        description: Environment
+        options: 
+          - dev
+          # - test
+          # - prod
+      app_name:
+        type: choice
+        description: Application name
+        options: 
+          - nomad-backend
+    
 env:
  ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
  ARM_TENANT_ID: ${{ vars.AZURE_TENANT_ID }}
  ARM_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
  ARM_USE_AZUREAD: true
  work_dir: ./iac
- environment: dev
- app_name: nomad-backend
 
 permissions:
   id-token: write
   contents: read
 
 jobs:
-  terraform_destroy:
+  terraform_plan:
     runs-on: ubuntu-latest
-    environment: dev
+    environment: ${{ github.event.inputs.environment }}
     defaults:
       run:
         working-directory: ${{ env.work_dir }}
@@ -34,12 +45,54 @@ jobs:
           terraform init -input=false \
             -backend-config="resource_group_name=${{ vars.BACKEND_AZURE_RESOURCE_GROUP_NAME }}" \
             -backend-config="storage_account_name=${{ vars.BACKEND_AZURE_STORAGE_ACCOUNT_NAME }}" \
-            -backend-config="container_name=${{ env.app_name }}"
-
-      - name: Terraform destroy
-        run: |
-          terraform destroy -auto-approve \
-            -var "resource_group_name=${{ vars.AZURE_RESOURCE_GROUP_NAME }}" \
-            -var "environment_settings={environment=${{ env.environment }}}" \
-            -var-file="tfvars/${{ env.environment }}/main.tfvars"
+            -backend-config="container_name=${{ github.event.inputs.app_name }}"
       
+      - name: Terraform Validate
+        run: terraform validate
+      
+      - name: tfsec
+        uses: aquasecurity/tfsec-pr-commenter-action@v1.2.0
+        with:
+          tfsec_args: --soft-fail
+          github_token: ${{ github.token }}
+
+      - name: Terraform plan
+        run: |
+          terraform plan -input=false \
+            -var "resource_group_name=${{ vars.AZURE_RESOURCE_GROUP_NAME }}" \
+            -var "environment_settings={environment=${{ github.event.inputs.environment }}}" \
+            -var-file="tfvars/${{ github.event.inputs.environment }}/main.tfvars" \
+            -out ${{ github.run_number }}-${{ github.event.inputs.environment }}.tfplan
+      
+      - name: Publish Terraform Plan
+        uses: actions/upload-artifact@v4
+        with:
+          name: tfplan-${{ github.event.inputs.environment }}
+          path: ${{ env.work_dir }}/${{ github.run_number }}-${{ github.event.inputs.environment }}.tfplan
+      
+  terraform_apply:
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment }}
+    needs: terraform_plan
+    defaults:
+      run:
+        working-directory: ${{ env.work_dir }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: tfplan-${{ github.event.inputs.environment }}
+          path: ${{ env.work_dir }}
+
+      - uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform init
+        run: |
+          terraform init -input=false \
+            -backend-config="resource_group_name=${{ vars.BACKEND_AZURE_RESOURCE_GROUP_NAME }}" \
+            -backend-config="storage_account_name=${{ vars.BACKEND_AZURE_STORAGE_ACCOUNT_NAME }}" \
+            -backend-config="container_name=${{ github.event.inputs.app_name }}"
+
+      - name: Terraform apply
+        run: terraform apply -lock-timeout=300s ${{ github.run_number }}-${{ github.event.inputs.environment }}.tfplan

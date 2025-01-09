@@ -68,7 +68,7 @@ resource "azurerm_role_definition" "push_acr_image" {
     actions = [
         "Microsoft.ContainerRegistry/registries/pull/read",
         "Microsoft.ContainerRegistry/registries/push/write"
-    ],
+    ]
     data_actions = []
     not_actions = []
   }
@@ -86,7 +86,7 @@ resource "azurerm_role_definition" "deploy_web_app_image" {
   permissions {
     actions = [
       "Microsoft.Web/sites/containers/*"
-    ],
+    ]
     data_actions = [
       "Microsoft.Web/sites/publishingProfiles/list/action"
     ]

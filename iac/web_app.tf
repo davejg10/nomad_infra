@@ -28,18 +28,13 @@ resource "azurerm_linux_web_app" "web_app" {
   site_config {
     container_registry_use_managed_identity       = true
     container_registry_managed_identity_client_id = azurerm_user_assigned_identity.asp.client_id
-    
-    application_stack {
-      java_version = "21"
-      java_server = "TOMCAT"
-      java_server_version = "10.1"
-    }
   }
 
   lifecycle {
     ignore_changes = [
       tags,
-      virtual_network_subnet_id
+      virtual_network_subnet_id,
+      site_config["application_stack"] // Deploy our app separately
     ]
   }
 }

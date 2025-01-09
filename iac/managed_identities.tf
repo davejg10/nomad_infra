@@ -85,7 +85,7 @@ resource "azurerm_role_definition" "deploy_web_app_image" {
 
   permissions {
     actions = [
-      "Microsoft.Web/sites/containers/*"
+      "Microsoft.Web/sites/*"
     ]
     data_actions = [
       "Microsoft.Web/sites/publishingProfiles/list/action"

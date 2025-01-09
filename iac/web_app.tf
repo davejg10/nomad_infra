@@ -20,8 +20,6 @@ resource "azurerm_linux_web_app" "web_app" {
     identity_ids = [azurerm_user_assigned_identity.asp.id]
   }
 
-  
-
   app_settings = {
     "APPINSIGHTS_INSTRUMENTATIONKEY" = azurerm_application_insights.web_insights.instrumentation_key
     "WEBSITES_PORT" = var.exposed_container_port

@@ -1,5 +1,5 @@
 resource "azurerm_user_assigned_identity" "asp" {
-  name = "id-asp-${var.environment_settings.environment}-${var.environment_settings.region_code}-${var.environment_settings.app_name}-${var.environment_settings.identifier}"
+  name = "id-${var.environment_settings.environment}-${var.environment_settings.region_code}-${var.environment_settings.app_name}-asp-${var.environment_settings.identifier}"
 
   resource_group_name = data.azurerm_resource_group.rg.name
   location            = var.environment_settings.region
@@ -17,15 +17,26 @@ resource "azurerm_role_assignment" "webapp_pull_acr" {
   principal_id         = azurerm_user_assigned_identity.asp.principal_id
 }
 
-resource "azurerm_user_assigned_identity" "github_to_key_Vault" {
-  name = "id-ghkv-${var.environment_settings.environment}-${var.environment_settings.region_code}-${var.environment_settings.app_name}-${var.environment_settings.identifier}"
+// Identity used in nomad-backend repo to deploy, insert secret, push to acr..
+resource "azurerm_user_assigned_identity" "github" {
+  name = "id-${var.environment_settings.environment}-${var.environment_settings.region_code}-${var.environment_settings.app_name}-github-${var.environment_settings.identifier}"
 
   resource_group_name = data.azurerm_resource_group.rg.name
   location            = var.environment_settings.region
 }
 
 resource "azurerm_role_assignment" "github_to_key_Vault" {
-  scope                = azurerm_key_vault.nomad.id
-  role_definition_name = "Key Vault Secrets Officer"
-  principal_id         = azurerm_user_assigned_identity.github_to_key_Vault.principal_id
+  scope                = data.azurerm_client_config.current.subscription_id
+  role_definition_name = "Contributor"
+  principal_id         = azurerm_user_assigned_identity.github.principal_id
 }
+# resource "azurerm_role_assignment" "github_to_key_Vault" {
+#   scope                = azurerm_key_vault.nomad.id
+#   role_definition_name = "Key Vault Secrets Officer"
+#   principal_id         = azurerm_user_assigned_identity.github.principal_id
+# }
+# resource "azurerm_role_assignment" "github_to_key_Vault" {
+#   scope                = azurerm_key_vault.nomad.id
+#   role_definition_name = "Key Vault Secrets Officer"
+#   principal_id         = azurerm_user_assigned_identity.github.principal_id
+# }

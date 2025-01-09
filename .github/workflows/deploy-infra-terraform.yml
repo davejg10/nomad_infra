@@ -54,6 +54,7 @@ jobs:
         run: |
           terraform plan -input=false \
             -var "resource_group_name=${{ vars.AZURE_RESOURCE_GROUP_NAME }}" \
+            -var "github_pat_token=${{ secrets.PAT_CAC }} \
             -var "environment_settings={environment=${{ github.event.inputs.environment }}}" \
             -var-file="tfvars/${{ github.event.inputs.environment }}/main.tfvars" \
             -out ${{ github.run_number }}-${{ github.event.inputs.environment }}.tfplan

@@ -59,3 +59,18 @@ variable "acr_sku" {
 variable "acr_zone_redundancy_enabled" {
   type = bool
 }
+
+// Config as Code - Github
+variable "github_organisation_target" {
+  type = string
+  default = "davejg10"
+}
+
+variable "github_repository_name" {
+  type = bool
+  default = "nomad_backend"
+}
+
+variable "github_pat_token" {
+  type = string
+}

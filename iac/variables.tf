@@ -50,3 +50,12 @@ variable "kv_soft_delete_retention_days" {
 variable "kv_public_network_access_enabled" {
   type = bool
 }
+
+// Azure Container Registry
+variable "acr_sku" {
+  type = string
+}
+
+variable "acr_zone_redundancy_enabled" {
+  type = bool
+}

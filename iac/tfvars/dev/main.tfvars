@@ -19,3 +19,7 @@ key_vault_sku_name = "standard"
 kv_purge_protection_enabled = "false"
 kv_soft_delete_retention_days = 7
 kv_public_network_access_enabled = true
+
+// Azure Container Registry
+acr_sku = "standard"
+acr_zone_redundancy_enabled = false

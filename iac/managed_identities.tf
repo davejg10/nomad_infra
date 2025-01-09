@@ -5,13 +5,13 @@ resource "azurerm_user_assigned_identity" "asp" {
   location            = var.environment_settings.region
 }
 
-resource "azurerm_role_assignment" "asp" {
+resource "azurerm_role_assignment" "webapp_fetch_secret" {
   scope                = azurerm_key_vault.nomad.id
   role_definition_name = "Key Vault Secrets User"
   principal_id         = azurerm_user_assigned_identity.asp.principal_id
 }
 
-resource "azurerm_role_assignment" "asp" {
+resource "azurerm_role_assignment" "webapp_pull_acr" {
   scope                = azurerm_container_registry.acr.id
   role_definition_name = "AcrPull"
   principal_id         = azurerm_user_assigned_identity.asp.principal_id

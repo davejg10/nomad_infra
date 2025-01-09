@@ -86,10 +86,11 @@ resource "azurerm_role_definition" "deploy_web_app_image" {
   permissions {
     actions = [
       "microsoft.web/sites/deployments/write",
+      "Microsoft.Web/sites/publishxml/action"
       # "microsoft.web/sites/deployments/read"
     ]
     data_actions = [
-      "Microsoft.Web/sites/publishxml/action"
+      # "Microsoft.Web/sites/publishxml/action"
     ]
     not_actions = []
   }

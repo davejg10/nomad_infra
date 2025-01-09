@@ -9,11 +9,6 @@ variable "environment_settings" {
   })
 }
 
-variable "resource_group_name" {
-  type        = string
-  description = "Passed in via Github Actions"
-}
-
 // Networking
 variable "vnet_address_space" {
   type = string

@@ -26,6 +26,7 @@ terraform {
 provider "azurerm" {
   use_oidc                        = true
   resource_provider_registrations = "core"
+  subscription_id = "fd1f9c42-234f-4f5a-b49c-04bcfb79351d"
 
   resource_providers_to_register = [
     # "Microsoft.ContainerService",
@@ -49,5 +50,5 @@ provider "github" {
 data "azurerm_client_config" "current" {}
 
 data "azurerm_resource_group" "rg" {
-  name = var.resource_group_name
+  name = "rg-${var.environment_settings.environment}-${var.environment_settings.region_code}-${var.environment_settings.app_name}-${var.environment_settings.identifier}"
 }

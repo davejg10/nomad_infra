@@ -67,7 +67,7 @@ variable "github_organisation_target" {
 }
 
 variable "github_repository_name" {
-  type = bool
+  type = string
   default = "nomad_backend"
 }
 

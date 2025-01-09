@@ -26,7 +26,7 @@ resource "azurerm_user_assigned_identity" "github" {
 }
 
 resource "azurerm_role_assignment" "github_to_key_Vault" {
-  scope                = data.azurerm_client_config.current.subscription_id
+  scope                = "/subscriptions/fd1f9c42-234f-4f5a-b49c-04bcfb79351d"
   role_definition_name = "Contributor"
   principal_id         = azurerm_user_assigned_identity.github.principal_id
 }

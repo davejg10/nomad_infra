@@ -44,7 +44,7 @@ resource "azurerm_role_assignment" "github_to_web_app" {
 resource "azurerm_role_definition" "manage_key_vault_secrets" {
   name        = "${var.environment_settings.environment}-github-helper-${var.environment_settings.app_name}"
   scope       = azurerm_key_vault.nomad.id
-  description = "A custom role tallowing all secret management in Key Vault: ${azurerm_key_vault.nomad.id.name}."
+  description = "A custom role tallowing all secret management in Key Vault: ${azurerm_key_vault.nomad.name}."
 
   permissions {
     actions     = []
@@ -79,7 +79,7 @@ resource "azurerm_role_definition" "push_acr_image" {
 }
 
 resource "azurerm_role_definition" "deploy_web_app_image" {
-  name        = "${var.environment_settings.environment}-webapp-deploy-${aazurerm_linux_web_app.web_app.name}"
+  name        = "${var.environment_settings.environment}-webapp-deploy-${azurerm_linux_web_app.web_app.name}"
   scope       = azurerm_linux_web_app.web_app.id
   description = "A custom role allow you to fetch publish_profile and deploy Web Apps to: ${azurerm_linux_web_app.web_app.name}."
 

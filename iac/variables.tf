@@ -72,4 +72,5 @@ variable "github_repository_name" {
 
 variable "github_pat_token" {
   type = string
+  sensitive   = true
 }

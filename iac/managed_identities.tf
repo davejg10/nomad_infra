@@ -42,7 +42,7 @@ resource "azurerm_role_assignment" "github_to_web_app" {
 }
 
 resource "azurerm_role_definition" "manage_key_vault_secrets" {
-  name        = "${var.environment_settings.environment}-github-helper-${var.environment_settings.app_name}"
+  name        = "${var.environment_settings.environment}-kv-secrets-${azurerm_key_vault.nomad.name}"
   scope       = azurerm_key_vault.nomad.id
   description = "A custom role tallowing all secret management in Key Vault: ${azurerm_key_vault.nomad.name}."
 
@@ -85,13 +85,10 @@ resource "azurerm_role_definition" "deploy_web_app_image" {
 
   permissions {
     actions = [
-      "microsoft.web/sites/deployments/write",
+      # "microsoft.web/sites/deployments/write",
       "Microsoft.Web/sites/publishxml/action"
-      # "microsoft.web/sites/deployments/read"
     ]
-    data_actions = [
-      # "Microsoft.Web/sites/publishxml/action"
-    ]
+    data_actions = []
     not_actions = []
   }
 

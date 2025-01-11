@@ -19,7 +19,7 @@ exposed_container_port = 8080 //Tomcat webserver runs on port 8080
 key_vault_sku_name = "standard"
 kv_purge_protection_enabled = "false"
 kv_soft_delete_retention_days = 7
-kv_public_network_access_enabled = true
+kv_public_network_access_enabled = false
 
 // Azure Container Registry
 acr_sku = "Standard"

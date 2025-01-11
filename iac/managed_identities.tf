@@ -30,9 +30,14 @@ resource "azurerm_role_assignment" "github_to_key_vault" {
   role_definition_id = azurerm_role_definition.manage_key_vault_secrets.role_definition_resource_id
   principal_id       = azurerm_user_assigned_identity.github.principal_id
 }
+
+data "azurerm_container_registry" "devops" {
+  name                = "acr-glb-uks-devopsutils"
+  resource_group_name = local.hub_rg_name
+}
 resource "azurerm_role_assignment" "github_to_acr" {
-  scope              = azurerm_container_registry.acr.id
-  role_definition_id = azurerm_role_definition.push_acr_image.role_definition_resource_id
+  scope              = data.azurerm_container_registry.acr.id
+  role_definition_name = "AcrPush"
   principal_id       = azurerm_user_assigned_identity.github.principal_id
 }
 resource "azurerm_role_assignment" "github_to_web_app" {
@@ -56,25 +61,6 @@ resource "azurerm_role_definition" "manage_key_vault_secrets" {
 
   assignable_scopes = [
     azurerm_key_vault.nomad.id
-  ]
-}
-
-resource "azurerm_role_definition" "push_acr_image" {
-  name        = "${var.environment_settings.environment}-acrpush-${azurerm_container_registry.acr.name}"
-  scope       = azurerm_container_registry.acr.id
-  description = "A custom role allow you to push images to the ACR: ${azurerm_container_registry.acr.name}."
-
-  permissions {
-    actions = [
-      "Microsoft.ContainerRegistry/registries/pull/read",
-      "Microsoft.ContainerRegistry/registries/push/write"
-    ]
-    data_actions = []
-    not_actions  = []
-  }
-
-  assignable_scopes = [
-    azurerm_container_registry.acr.id
   ]
 }
 

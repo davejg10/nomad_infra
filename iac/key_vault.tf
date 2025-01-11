@@ -35,18 +35,11 @@ resource "azurerm_private_endpoint" "key_vault" {
 
   private_dns_zone_group {
     name                 = "dns-group-${var.environment_settings.environment}-${var.environment_settings.region_code}-${var.environment_settings.app_name}-${var.environment_settings.identifier}"
-    private_dns_zone_ids = [azurerm_private_dns_zone.key_vault.id]
+    private_dns_zone_ids = [data.azurerm_private_dns_zone.key_vault.id]
   }
 }
 
-resource "azurerm_private_dns_zone" "key_vault" {
+data "azurerm_private_dns_zone" "vault" {
   name                = "privatelink.vaultcore.azure.net"
-  resource_group_name = data.azurerm_resource_group.rg.name
-}
-
-resource "azurerm_private_dns_zone_virtual_network_link" "key_vault" {
-  name                  = "${var.environment_settings.environment}-key-vault-${var.environment_settings.app_name}-${var.environment_settings.identifier}"
-  resource_group_name   = data.azurerm_resource_group.rg.name
-  private_dns_zone_name = azurerm_private_dns_zone.key_vault.name
-  virtual_network_id    = azurerm_virtual_network.vnet.id
+  resource_group_name = local.hub_rg_name
 }

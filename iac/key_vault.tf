@@ -35,7 +35,7 @@ resource "azurerm_private_endpoint" "key_vault" {
 
   private_dns_zone_group {
     name                 = "dns-group-${var.environment_settings.environment}-${var.environment_settings.region_code}-${var.environment_settings.app_name}-${var.environment_settings.identifier}"
-    private_dns_zone_ids = [data.azurerm_private_dns_zone.key_vault.id]
+    private_dns_zone_ids = [data.azurerm_private_dns_zone.vault.id]
   }
 }
 

@@ -12,7 +12,7 @@ resource "azurerm_role_assignment" "web_app_fetch_secret" {
 }
 
 resource "azurerm_role_assignment" "webapp_pull_acr" {
-  scope                = azurerm_container_registry.acr.id
+  scope                = data.azurerm_container_registry.devops.id
   role_definition_name = "AcrPull"
   principal_id         = azurerm_user_assigned_identity.asp.principal_id
 }
@@ -31,12 +31,8 @@ resource "azurerm_role_assignment" "github_to_key_vault" {
   principal_id       = azurerm_user_assigned_identity.github.principal_id
 }
 
-data "azurerm_container_registry" "devops" {
-  name                = "acr-glb-uks-devopsutils"
-  resource_group_name = local.hub_rg_name
-}
 resource "azurerm_role_assignment" "github_to_acr" {
-  scope              = data.azurerm_container_registry.acr.id
+  scope              = data.azurerm_container_registry.devops.id
   role_definition_name = "AcrPush"
   principal_id       = azurerm_user_assigned_identity.github.principal_id
 }

@@ -11,12 +11,7 @@ resource "azurerm_key_vault" "nomad" {
 
   sku_name = var.key_vault_sku_name
 
-  // Was going to whitelist github runner ips but there are > 4000 ranges!
-  // Public until we create self-hosted runners
   public_network_access_enabled = var.kv_public_network_access_enabled
-  #   network_acls {
-  #     default_action = "Allow"
-  #   }
 }
 
 resource "azurerm_private_endpoint" "key_vault" {
@@ -41,5 +36,5 @@ resource "azurerm_private_endpoint" "key_vault" {
 
 data "azurerm_private_dns_zone" "vault" {
   name                = "privatelink.vaultcore.azure.net"
-  resource_group_name = local.hub_rg_name
+  resource_group_name = var.hub_rg_name
 }

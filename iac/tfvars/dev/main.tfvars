@@ -22,5 +22,3 @@ kv_soft_delete_retention_days = 7
 kv_public_network_access_enabled = false
 
 // Azure Container Registry
-acr_sku = "Standard"
-acr_zone_redundancy_enabled = false

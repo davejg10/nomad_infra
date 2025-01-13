@@ -64,21 +64,16 @@ resource "azurerm_subnet_network_security_group_association" "private_endpoints_
   network_security_group_id = azurerm_network_security_group.private_endpoints_subnet.id
 }
 
-locals {
-  hub_vnet_name = "vnet-glb-uks-devopsutils"
-  hub_rg_name = "rg-glb-uks-devopsutils"
-}
-
 data "azurerm_virtual_network" "hub" {
-  name                = local.hub_vnet_name
-  resource_group_name = local.hub_rg_name
+  name                = var.hub_vnet_name
+  resource_group_name = var.hub_rg_name
 }
 
 resource "azurerm_virtual_network_peering" "hub_to_spoke" {
   name                      = "hub-to-${var.environment_settings.app_name}-${var.environment_settings.identifier}"
   
-  resource_group_name       = local.hub_rg_name
-  virtual_network_name      = local.hub_vnet_name
+  resource_group_name       = var.hub_rg_name
+  virtual_network_name      = var.hub_vnet_name
   remote_virtual_network_id = azurerm_virtual_network.vnet.id
 }
 

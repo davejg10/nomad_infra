@@ -12,7 +12,7 @@ resource "azurerm_role_assignment" "web_app_fetch_secret" {
 }
 
 resource "azurerm_role_assignment" "webapp_pull_acr" {
-  scope                = data.azurerm_container_registry.devops.id
+  scope                = data.azurerm_container_registry.devopsutils.id
   role_definition_name = "AcrPull"
   principal_id         = azurerm_user_assigned_identity.asp.principal_id
 }
@@ -31,9 +31,10 @@ resource "azurerm_role_assignment" "github_to_key_vault" {
   principal_id       = azurerm_user_assigned_identity.github.principal_id
 }
 
+// This role definition is created in 'devops' repo under 'management' config
 resource "azurerm_role_assignment" "github_to_acr" {
-  scope              = data.azurerm_container_registry.devops.id
-  role_definition_name = "AcrPush"
+  scope              = data.azurerm_container_registry.devopsutils.id
+  role_definition_name = "devopsutils-acr-task-run"
   principal_id       = azurerm_user_assigned_identity.github.principal_id
 }
 resource "azurerm_role_assignment" "github_to_web_app" {
@@ -67,7 +68,6 @@ resource "azurerm_role_definition" "deploy_web_app_image" {
 
   permissions {
     actions = [
-      # "microsoft.web/sites/deployments/write",
       "Microsoft.Web/sites/publishxml/action"
     ]
     data_actions = []

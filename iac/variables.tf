@@ -9,6 +9,20 @@ variable "environment_settings" {
   })
 }
 
+// Hub config
+variable "hub_rg_name" {
+  type = string
+  default = "rg-glb-uks-devopsutils"
+}
+variable "hub_vnet_name" {
+  type = string
+  default = "vnet-glb-uks-devopsutils"
+}
+variable "hub_acr_name" {
+  type = string
+  default = "acrglbuksdevopsutils"
+}
+
 // Networking
 variable "vnet_address_space" {
   type = string

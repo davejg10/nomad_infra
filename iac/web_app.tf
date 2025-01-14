@@ -23,7 +23,9 @@ resource "azurerm_linux_web_app" "web_app" {
   app_settings = {
     "APPINSIGHTS_INSTRUMENTATIONKEY" = azurerm_application_insights.web_insights.instrumentation_key
     "WEBSITES_PORT"                  = var.exposed_container_port
-    "WEBSITE_PULL_IMAGE_OVER_VNET"   = true
+    "WEBSITE_VNET_ROUTE_ALL "        = 1 // Route all outbound traffic through our VNet
+    "WEBSITE_DNS_SERVER" = "168.63.129.16"
+    "WEBSITE_VNET_ROUTE_ALL" = "1"
   }
 
   site_config {
@@ -33,8 +35,6 @@ resource "azurerm_linux_web_app" "web_app" {
 
   lifecycle {
     ignore_changes = [
-      tags,
-      virtual_network_subnet_id,
       site_config["application_stack"] // Deploy our app separately
     ]
   }
@@ -52,3 +52,5 @@ resource "azurerm_application_insights" "web_insights" {
   location            = var.environment_settings.region
   application_type    = "web"
 }
+
+# https://kv-dev-uks-nomad-01.vault.azure.net/

@@ -10,6 +10,15 @@ locals {
   }
 }
 
+data "azurerm_private_dns_zone" "devopsutils" {
+  for_each = {
+    for key, value in local.private_dns_zones : key => value
+  }
+
+  name                = each.value
+  resource_group_name = var.hub_rg_name
+}
+
 resource "azurerm_private_dns_zone_virtual_network_link" "all_zones" {
   for_each = {
     for key, value in local.private_dns_zones : key => value
@@ -17,6 +26,6 @@ resource "azurerm_private_dns_zone_virtual_network_link" "all_zones" {
 
   name                  = "${var.environment_settings.environment}-${each.key}-${var.environment_settings.app_name}"
   resource_group_name   = data.azurerm_resource_group.rg.name
-  private_dns_zone_name = azurerm_private_dns_zone.all_zones[each.key].name
+  private_dns_zone_name = azurerm_private_dns_zone.devopsutils[each.key].name
   virtual_network_id    = azurerm_virtual_network.vnet.id
 }

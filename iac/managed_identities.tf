@@ -37,6 +37,7 @@ resource "azurerm_role_assignment" "github_to_acr" {
   role_definition_name = "devopsutils-acr-task-run"
   principal_id       = azurerm_user_assigned_identity.github.principal_id
 }
+
 resource "azurerm_role_assignment" "github_to_web_app" {
   scope              = azurerm_linux_web_app.web_app.id
   role_definition_id = azurerm_role_definition.deploy_web_app_image.role_definition_resource_id
@@ -46,7 +47,7 @@ resource "azurerm_role_assignment" "github_to_web_app" {
 resource "azurerm_role_definition" "manage_key_vault_secrets" {
   name        = "${var.environment_settings.environment}-kv-secrets-${azurerm_key_vault.nomad.name}"
   scope       = azurerm_key_vault.nomad.id
-  description = "A custom role tallowing all secret management in Key Vault: ${azurerm_key_vault.nomad.name}."
+  description = "A custom role allowing all secret management in Key Vault: ${azurerm_key_vault.nomad.name}."
 
   permissions {
     actions = []

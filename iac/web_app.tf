@@ -24,12 +24,12 @@ resource "azurerm_linux_web_app" "web_app" {
     "APPINSIGHTS_INSTRUMENTATIONKEY" = azurerm_application_insights.web_insights.instrumentation_key
     "WEBSITES_PORT"                  = var.exposed_container_port
     "WEBSITE_DNS_SERVER" = "168.63.129.16"
-    "WEBSITE_VNET_ROUTE_ALL" = 1 // Route all outbound traffic through our VNet
   }
 
   site_config {
     container_registry_use_managed_identity       = true
     container_registry_managed_identity_client_id = azurerm_user_assigned_identity.asp.client_id
+    vnet_route_all_enabled = true
   }
 
   lifecycle {

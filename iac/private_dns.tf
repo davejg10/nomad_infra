@@ -26,6 +26,6 @@ resource "azurerm_private_dns_zone_virtual_network_link" "all_zones" {
 
   name                  = "${var.environment_settings.environment}-${each.key}-${var.environment_settings.app_name}"
   resource_group_name   = data.azurerm_resource_group.rg.name
-  private_dns_zone_name = azurerm_private_dns_zone.devopsutils[each.key].name
+  private_dns_zone_name = data.azurerm_private_dns_zone.devopsutils[each.key].name
   virtual_network_id    = azurerm_virtual_network.vnet.id
 }

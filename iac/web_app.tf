@@ -33,6 +33,7 @@ resource "azurerm_linux_web_app" "web_app" {
 
   lifecycle {
     ignore_changes = [
+      virtual_network_subnet_id, // Managed via azurerm_app_service_virtual_network_swift_connection below
       site_config["application_stack"] // Deploy our app separately
     ]
   }

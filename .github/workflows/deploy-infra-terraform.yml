@@ -9,7 +9,7 @@ on:
         description: Environment
         options: 
           - dev
-          # - test
+          - test
           # - prod
       app_name:
         type: choice

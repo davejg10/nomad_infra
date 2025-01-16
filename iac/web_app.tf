@@ -23,7 +23,6 @@ resource "azurerm_linux_web_app" "web_app" {
   app_settings = {
     "APPINSIGHTS_INSTRUMENTATIONKEY" = azurerm_application_insights.web_insights.instrumentation_key
     "WEBSITES_PORT"                  = var.exposed_container_port
-    "WEBSITE_PULL_IMAGE_OVER_VNET"   = true
   }
 
   site_config {

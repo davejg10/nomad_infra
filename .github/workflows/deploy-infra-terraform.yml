@@ -1,4 +1,4 @@
-name: deploy-infra-terraform
+name: deploy-nomad-infra
 run-name: Terraform deploy ${{ github.event.inputs.app_name }} in ${{ github.event.inputs.environment }}
 
 on:
@@ -37,29 +37,16 @@ jobs:
         working-directory: ${{ env.work_dir }}
     steps:
       - uses: actions/checkout@v4
-
-      - name: Terraform init
-        run: |
-          terraform init -input=false \
-            -backend-config="resource_group_name=${{ vars.BACKEND_AZURE_RESOURCE_GROUP_NAME }}" \
-            -backend-config="storage_account_name=${{ vars.BACKEND_AZURE_STORAGE_ACCOUNT_NAME }}" \
-            -backend-config="container_name=${{ github.event.inputs.app_name }}"
       
-      - name: Terraform Validate
-        run: terraform validate
-
       - name: Terraform plan
-        run: |
-          terraform plan -input=false \
-            -var "github_pat_token=${{ secrets.PAT_CAC }}" \
-            -var-file="tfvars/${{ github.event.inputs.environment }}/main.tfvars" \
-            -out ${{ github.run_number }}-${{ github.event.inputs.environment }}.tfplan
-      
-      - name: Publish Terraform Plan
-        uses: actions/upload-artifact@v4
+        uses: davejg10/pipeline_templates/.github/actions/terraform_plan@v1
         with:
-          name: tfplan-${{ github.event.inputs.environment }}
-          path: ${{ env.work_dir }}/${{ github.run_number }}-${{ github.event.inputs.environment }}.tfplan
+          backend_azure_resource_group_name: ${{ vars.backend_azure_resource_group_name }}
+          backend_azure_storage_account_name: ${{ vars.backend_azure_storage_account_name }}
+          backend_container_name: ${{ github.event.inputs.app_name }}
+          environment: ${{ github.event.inputs.environment }}
+          work_dir: ${{ env.work_dir }}
+          additional_tf_vars: -var "github_pat_token=${{ secrets.PAT_CAC }}" \
       
   terraform_apply:
     runs-on: self-hosted
@@ -71,17 +58,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/download-artifact@v4
-        with:
-          name: tfplan-${{ github.event.inputs.environment }}
-          path: ${{ env.work_dir }}
-
-      - name: Terraform init
-        run: |
-          terraform init -input=false \
-            -backend-config="resource_group_name=${{ vars.BACKEND_AZURE_RESOURCE_GROUP_NAME }}" \
-            -backend-config="storage_account_name=${{ vars.BACKEND_AZURE_STORAGE_ACCOUNT_NAME }}" \
-            -backend-config="container_name=${{ github.event.inputs.app_name }}"
-
       - name: Terraform apply
-        run: terraform apply -lock-timeout=300s ${{ github.run_number }}-${{ github.event.inputs.environment }}.tfplan
+        uses: davejg10/pipeline_templates/.github/actions/terraform_apply@v1
+        with:
+          backend_azure_resource_group_name: ${{ vars.backend_azure_resource_group_name }}
+          backend_azure_storage_account_name: ${{ vars.backend_azure_storage_account_name }}
+          backend_container_name: ${{ github.event.inputs.app_name }}
+          work_dir: ${{ env.work_dir }}

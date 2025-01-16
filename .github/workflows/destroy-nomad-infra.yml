@@ -1,0 +1,67 @@
+name: destroy-nomad-infra
+run-name: Terraform destroy ${{ github.event.inputs.app_name }} in ${{ github.event.inputs.environment }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        type: choice
+        description: Environment
+        options: 
+          - dev
+          # - test
+          # - prod
+      app_name:
+        type: choice
+        description: Application name
+        options: 
+          - nomad-backend
+
+env:
+ ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+ ARM_TENANT_ID: ${{ vars.AZURE_TENANT_ID }}
+ ARM_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+ ARM_USE_AZUREAD: true
+ work_dir: ./iac
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  terraform_plan_destroy:
+    runs-on: self-hosted
+    environment: ${{ github.event.inputs.environment }}
+    defaults:
+      run:
+        working-directory: ${{ env.work_dir }}
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Terraform plan
+        uses: davejg10/pipeline_templates/.github/actions/terraform_plan_destroy@v1
+        with:
+          backend_azure_resource_group_name: ${{ vars.backend_azure_resource_group_name }}
+          backend_azure_storage_account_name: ${{ vars.backend_azure_storage_account_name }}
+          backend_container_name: ${{ github.event.inputs.app_name }}
+          environment: ${{ github.event.inputs.environment }}
+          work_dir: ${{ env.work_dir }}
+          additional_tf_vars: -var "github_pat_token=${{ secrets.PAT_CAC }}"
+      
+  terraform_apply:
+    runs-on: self-hosted
+    environment: ${{ github.event.inputs.environment }}
+    needs: terraform_plan_destroy
+    defaults:
+      run:
+        working-directory: ${{ env.work_dir }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Terraform apply
+        uses: davejg10/pipeline_templates/.github/actions/terraform_apply@v1
+        with:
+          backend_azure_resource_group_name: ${{ vars.backend_azure_resource_group_name }}
+          backend_azure_storage_account_name: ${{ vars.backend_azure_storage_account_name }}
+          backend_container_name: ${{ github.event.inputs.app_name }}
+          work_dir: ${{ env.work_dir }}

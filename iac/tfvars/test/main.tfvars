@@ -7,9 +7,9 @@ environment_settings = {
 }
 
 // Networking
-vnet_address_space = "10.0.0.0/25"
-asp_subnet_address_prefixes = "10.0.0.0/27"
-pe_subnet_address_prefixes = "10.0.0.32/28"
+vnet_address_space = "10.0.0.128/25"
+asp_subnet_address_prefixes = "10.0.0.128/27"
+pe_subnet_address_prefixes = "10.0.0.160/28"
 
 // App service
 asp_sku_name = "B2"

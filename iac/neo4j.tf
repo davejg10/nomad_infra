@@ -58,7 +58,7 @@ resource "azurerm_linux_virtual_machine" "neo4j" {
   source_image_reference {
     publisher = "Canonical"
     offer     = "UbuntuServer"
-    sku       = "22.04-LTS"
+    sku       = "24.04-LTS"
     version   = "latest"
   }
 

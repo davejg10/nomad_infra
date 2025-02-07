@@ -8,7 +8,7 @@ resource "azurerm_service_plan" "asp" {
 }
 
 resource "azurerm_linux_web_app" "web_app" {
-  name = "web-${var.environment_settings.environment}-${var.environment_settings.region_code}-${var.environment_settings.app_name}-${var.environment_settings.identifier}"
+  name = "web-t-${var.environment_settings.environment}-${var.environment_settings.region_code}-${var.environment_settings.app_name}-${var.environment_settings.identifier}"
 
   resource_group_name = data.azurerm_resource_group.rg.name
   location            = var.environment_settings.region

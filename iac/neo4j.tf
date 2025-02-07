@@ -24,7 +24,7 @@ resource "azurerm_network_interface" "neo4j" {
 }
 
 resource "azurerm_managed_disk" "neo4j" {
-  name                 = "${local.vm_name}-disk1"
+  name                 = "${local.neo4j_vm_name}-disk1"
   resource_group_name = data.azurerm_resource_group.rg.name
   location            = var.environment_settings.region
   storage_account_type = "Standard_LRS"

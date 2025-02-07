@@ -56,9 +56,9 @@ resource "azurerm_linux_virtual_machine" "neo4j" {
   admin_username        = "azureuser"
 
   source_image_reference {
-    publisher = "pcloudhosting"
-    offer     = "neo4j1"
-    sku       = "neo4j"
+    publisher = "Canonical"
+    offer     = "UbuntuServer"
+    sku       = "22.04-LTS"
     version   = "latest"
   }
 

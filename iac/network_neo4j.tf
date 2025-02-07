@@ -11,5 +11,5 @@ resource "azurerm_network_security_group" "neo4j_subnet" {
 }
 resource "azurerm_subnet_network_security_group_association" "neo4j_subnet" {
   subnet_id                 = azurerm_subnet.neo4j.id
-  network_security_group_id = azurerm_network_security_group.neo4j.id
+  network_security_group_id = azurerm_network_security_group.neo4j_subnet.id
 }

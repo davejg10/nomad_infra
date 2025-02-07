@@ -1,3 +1,7 @@
+locals {
+  neo4j_vm_name = "vm-dev-uks-nomad-neo4j-01"
+}
+
 resource "azurerm_public_ip" "example" {
   name                = "test-publicip"
   resource_group_name = data.azurerm_resource_group.rg.name
@@ -6,7 +10,7 @@ resource "azurerm_public_ip" "example" {
 }
 
 resource "azurerm_network_interface" "neo4j" {
-  name                = "${azurerm_linux_virtual_machine.neo4j.name}-nic-01"
+  name                = "${local.neo4j_vm_name}-nic-01"
   resource_group_name = data.azurerm_resource_group.rg.name
   location            = var.environment_settings.region
 
@@ -43,7 +47,7 @@ resource "tls_private_key" "example_ssh" {
 
 # https://medium.com/neo4j/how-to-automate-neo4j-deploys-on-azure-d1eaeb15b70a
 resource "azurerm_linux_virtual_machine" "neo4j" {
-  name                  = "vm-dev-uks-nomad-neo4j-01"
+  name                  = local.neo4j_vm_name
   resource_group_name = data.azurerm_resource_group.rg.name
   location            = var.environment_settings.region
   network_interface_ids = [azurerm_network_interface.neo4j.id]

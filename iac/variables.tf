@@ -38,6 +38,18 @@ variable "pe_subnet_address_prefixes" {
   description = "Address space for the subnet containing any private endpoints."
 }
 
+variable "neo4j_subnet_address_prefixes" {
+  type        = string
+  description = "Address space for the subnet containing the virtual machines hosting the neo4j databases."
+}
+
+//NEO4J Virtual machine
+variable "neo4j_static_private_ip" {
+  type        = string
+  description = "The static ip given to the network interface attached to the virtual machine hosting the neo4j database."
+}
+
+
 // App Service
 variable "asp_sku_name" {
   type = string
@@ -62,20 +74,4 @@ variable "kv_soft_delete_retention_days" {
 
 variable "kv_public_network_access_enabled" {
   type = bool
-}
-
-// Config as Code - Github
-variable "github_organisation_target" {
-  type    = string
-  default = "davejg10"
-}
-
-variable "github_repository_name" {
-  type    = string
-  default = "nomad_backend"
-}
-
-variable "github_pat_token" {
-  type = string
-  sensitive   = true
 }

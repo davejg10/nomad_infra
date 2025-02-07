@@ -7,10 +7,3 @@ resource "azurerm_federated_identity_credential" "github" {
   parent_id           = azurerm_user_assigned_identity.github.id
   subject             = "repo:${var.github_organisation_target}/${var.github_repository_name}:environment:${var.environment_settings.environment}"
 }
-
-resource "github_actions_environment_secret" "azure_client_id" {
-  repository      = var.github_repository_name
-  environment     = var.environment_settings.environment
-  secret_name     = "AZURE_CLIENT_ID"
-  plaintext_value = azurerm_user_assigned_identity.github.client_id
-}

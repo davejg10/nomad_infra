@@ -46,7 +46,6 @@ jobs:
           backend_container_name: ${{ github.event.inputs.app_name }}
           environment: ${{ github.event.inputs.environment }}
           work_dir: ${{ env.work_dir }}
-          additional_tf_vars: -var "github_pat_token=${{ secrets.PAT_CAC }}"
       
   terraform_apply:
     runs-on: self-hosted

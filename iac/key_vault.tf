@@ -1,5 +1,5 @@
 resource "azurerm_key_vault" "nomad" {
-  name = "kv-${var.environment_settings.environment}-${var.environment_settings.region_code}-${var.environment_settings.app_name}-${var.environment_settings.identifier}"
+  name = "kv-t-${var.environment_settings.environment}-${var.environment_settings.region_code}-${var.environment_settings.app_name}-${var.environment_settings.identifier}"
 
   resource_group_name = data.azurerm_resource_group.rg.name
   location            = var.environment_settings.region

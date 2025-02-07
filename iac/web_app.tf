@@ -23,6 +23,9 @@ resource "azurerm_linux_web_app" "web_app" {
   app_settings = {
     "APPINSIGHTS_INSTRUMENTATIONKEY" = azurerm_application_insights.web_insights.instrumentation_key
     "WEBSITES_PORT"                  = var.exposed_container_port
+    "NEO4J_URI"                      = "bolt://${var.neo4j_static_private_ip}:7687"
+    "NEO4J_USER"                     = "neo4j"
+    # "NEO4J_PASSWORD"
   }
 
   site_config {

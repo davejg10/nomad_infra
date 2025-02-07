@@ -14,6 +14,7 @@ neo4j_subnet_address_prefixes = "10.0.0.48/28"
 
 //NEO4J Virtual machine
 neo4j_static_private_ip = "10.0.0.48"
+neo4j_vm_size           = "Standard_B1s"
 
 // App service
 asp_sku_name = "B2"

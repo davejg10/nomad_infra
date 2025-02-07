@@ -25,8 +25,8 @@ resource "azurerm_network_interface" "neo4j" {
 
 resource "azurerm_managed_disk" "neo4j" {
   name                 = "${local.vm_name}-disk1"
-  location             = azurerm_resource_group.example.location
-  resource_group_name  = azurerm_resource_group.example.name
+  resource_group_name = data.azurerm_resource_group.rg.name
+  location            = var.environment_settings.region
   storage_account_type = "Standard_LRS"
   create_option        = "Empty"
   disk_size_gb         = 10
@@ -52,7 +52,7 @@ resource "azurerm_linux_virtual_machine" "neo4j" {
   location            = var.environment_settings.region
   network_interface_ids = [azurerm_network_interface.neo4j.id]
   computer_name         = "neo4j"
-  size                  = var.vm_size
+  size                  = var.neo4j_vm_size
   admin_username        = "azureuser"
 
   source_image_reference {

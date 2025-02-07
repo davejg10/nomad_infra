@@ -48,6 +48,10 @@ variable "neo4j_static_private_ip" {
   type        = string
   description = "The static ip given to the network interface attached to the virtual machine hosting the neo4j database."
 }
+variable "neo4j_vm_size" {
+  type = string
+  description = "Size of the VM hosting the neo4j database"
+}
 
 
 // App Service
@@ -74,4 +78,15 @@ variable "kv_soft_delete_retention_days" {
 
 variable "kv_public_network_access_enabled" {
   type = bool
+}
+
+// Github federated credentials
+variable "github_organisation_target" {
+  type    = string
+  default = "davejg10"
+}
+
+variable "github_repository_name" {
+  type    = string
+  default = "nomad_backend"
 }

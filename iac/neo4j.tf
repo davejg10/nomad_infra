@@ -4,7 +4,7 @@ locals {
   templated_file = base64encode(templatefile("${path.module}/${local.script_name}"))
   command_to_execute = jsonencode({
     commandToExecute = "echo ${local.templated_file} | base64 -d > ./${local.script_name} && chmod +x ${local.script_name} && ./${local_script_name}"
-  }
+  })
 
   neo4j_vm_name = "vm-dev-uks-nomad-neo4j-01"
 }

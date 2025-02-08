@@ -1,4 +1,11 @@
 locals {
+
+  script_name    = "install_neo4j.sh"
+  templated_file = base64encode(templatefile("${path.module}/${local.script_name}"))
+  command_to_execute = jsonencode({
+    commandToExecute = "echo ${local.templated_file} | base64 -d > ./${local.script_name} && chmod +x ${local.script_name} && ./${local_script_name}"
+  }
+
   neo4j_vm_name = "vm-dev-uks-nomad-neo4j-01"
 }
 
@@ -76,4 +83,14 @@ resource "azurerm_linux_virtual_machine" "neo4j" {
     type = "SystemAssigned"
   }
 
+}
+
+resource "azurerm_virtual_machine_extension" "example" {
+  name                 = "hostname"
+  virtual_machine_id   = azurerm_linux_virtual_machine.neo4j.id
+  publisher            = "Microsoft.Azure.Extensions"
+  type                 = "CustomScript"
+  type_handler_version = "2.0"
+
+  protected_settings = local.command_to_execute
 }

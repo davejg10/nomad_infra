@@ -16,6 +16,8 @@ resource "random_password" "neo4j_pwd" {
 }
 
 resource "azurerm_key_vault_secret" "neo4j_pwd" {
+  depends_on = [azurerm_role_assignment.this_deployer]
+
   name         = "neo4j-password"
   value        = random_password.neo4j_pwd.result
   key_vault_id = azurerm_key_vault.nomad.id

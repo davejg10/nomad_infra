@@ -1,3 +1,11 @@
+// Identity deploying this Terraform
+resource "azurerm_role_assignment" "this_deployer" {
+  scope                = azurerm_key_vault.nomad.id
+  role_definition_id   = azurerm_role_definition.deploy_web_app_image.role_definition_resource_id
+  principal_id         = data.azurerm_client_config.current.object_id
+}
+
+// Managed identity used in Web App hosting application
 resource "azurerm_user_assigned_identity" "asp" {
   name = "id-${var.environment_settings.environment}-${var.environment_settings.region_code}-${var.environment_settings.app_name}-asp-${var.environment_settings.identifier}"
 

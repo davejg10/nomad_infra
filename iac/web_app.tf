@@ -25,7 +25,7 @@ resource "azurerm_linux_web_app" "web_app" {
     "WEBSITES_PORT"                  = var.exposed_container_port
     "NEO4J_URI"                      = "bolt://${var.neo4j_static_private_ip}:7687"
     "NEO4J_USER"                     = var.neo4j_user
-    "NEO4J_PASSWORD"                 = "@Microsoft.KeyVault({${azurerm_key_vault_secret.neo4j_pwd.resource_versionless_id}})"
+    "NEO4J_PASSWORD"                 = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.neo4j_pwd.id})"
   }
 
   site_config {

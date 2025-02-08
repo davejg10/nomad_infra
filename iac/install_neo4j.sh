@@ -19,7 +19,7 @@ sudo apt-get install neo4j=${neo4j_version} -y
 sudo systemctl enable neo4j
 
 # Set password
-sudo neo4j-admin dbms set-initial-password mypassword
+sudo neo4j-admin dbms set-initial-password ${neo4j_pass}
 
 # Make neo4j reachable from clients other than localhost 
 echo "server.default_listen_address=0.0.0.0" | sudo tee -a /etc/neo4j/neo4j.conf

@@ -31,7 +31,7 @@ resource "azurerm_linux_web_app" "web_app" {
   site_config {
     container_registry_use_managed_identity       = true
     container_registry_managed_identity_client_id = azurerm_user_assigned_identity.asp.client_id
-    vnet_route_all_enabled = true
+    vnet_route_all_enabled                        = true
   }
 
   lifecycle {

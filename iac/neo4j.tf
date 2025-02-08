@@ -1,7 +1,7 @@
 locals {
 
   script_name    = "install_neo4j.sh"
-  templated_file = base64encode(templatefile("${path.module}/${local.script_name}", {neo4j_version = var.neo4j_version, neo4j_pass = azurerm_key_vault_secret.neo4j_pwd.value}))
+  templated_file = base64encode(templatefile("${path.module}/${local.script_name}", {neo4j_version = var.neo4j_version, neo4j_pass = azurerm_key_vault_secret.neo4j_pwd.value }))
   command_to_execute = jsonencode({
     commandToExecute = "echo ${local.templated_file} | base64 -d > ./${local.script_name} && chmod +x ${local.script_name} && ./${local.script_name}"
   })

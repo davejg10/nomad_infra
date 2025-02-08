@@ -1,13 +1,24 @@
 locals {
 
   script_name    = "install_neo4j.sh"
-  # templated_file = base64encode(templatefile("${path.module}/${local.script_name}"))
-  templated_file = base64encode(file("${path.module}/${local.script_name}"))
+  templated_file = base64encode(templatefile("${path.module}/${local.script_name}", {neo4j_version = var.neo4j_version, neo4j_pass = azurerm_key_vault_secret.neo4j_pwd.value}))
   command_to_execute = jsonencode({
     commandToExecute = "echo ${local.templated_file} | base64 -d > ./${local.script_name} && chmod +x ${local.script_name} && ./${local.script_name}"
   })
 
   neo4j_vm_name = "vm-dev-uks-nomad-neo4j-01"
+}
+
+resource "random_password" "neo4j_pwd" {
+  length           = 12
+  special          = true
+  override_special = "!#$%&*()-_=+[]{}<>:?"
+}
+
+resource "azurerm_key_vault_secret" "neo4j_pwd" {
+  name         = "neo4j-password"
+  value        = random_password.neo4j_pwd.result
+  key_vault_id = azurerm_key_vault.nomad.id
 }
 
 resource "azurerm_public_ip" "example" {
@@ -53,7 +64,6 @@ resource "tls_private_key" "example_ssh" {
   rsa_bits  = 4096
 }
 
-# https://medium.com/neo4j/how-to-automate-neo4j-deploys-on-azure-d1eaeb15b70a
 resource "azurerm_linux_virtual_machine" "neo4j" {
   name                  = local.neo4j_vm_name
   resource_group_name = data.azurerm_resource_group.rg.name

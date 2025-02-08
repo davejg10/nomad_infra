@@ -16,6 +16,9 @@ neo4j_subnet_address_prefixes = "10.0.0.48/28"
 neo4j_static_private_ip = "10.0.0.52"
 neo4j_vm_size           = "Standard_B2s"
 
+neo4j_version = "1:2025.01.0"
+neo4j_user = "neo4j"
+
 // App service
 asp_sku_name = "B2"
 exposed_container_port = 8080 //Tomcat webserver runs on port 8080

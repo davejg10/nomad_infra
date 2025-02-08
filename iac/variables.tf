@@ -53,6 +53,16 @@ variable "neo4j_vm_size" {
   description = "Size of the VM hosting the neo4j database"
 }
 
+variable "neo4j_version" {
+  type = string
+  description = "The version of neo4j installed in ./install_neo4j.sh script, which is run as a custom script extension"
+}
+
+variable "neo4j_user" {
+  type = string
+  description = "The username created for the admin user of neo4j, passed into ./install_neo4j.sh script"
+}
+
 
 // App Service
 variable "asp_sku_name" {

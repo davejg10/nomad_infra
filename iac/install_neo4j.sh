@@ -13,7 +13,7 @@ sudo apt-get update
 sudo add-apt-repository universe -y
 
 # Install neo4j 
-sudo apt-get install neo4j=1:2025.01.0 -y
+sudo apt-get install neo4j=${neo4j_version} -y
 
 # Start neo4j automatically on system startup
 sudo systemctl enable neo4j
@@ -21,5 +21,13 @@ sudo systemctl enable neo4j
 # Set password
 sudo neo4j-admin dbms set-initial-password mypassword
 
+# Make neo4j reachable from clients other than localhost 
+echo "server.default_listen_address=0.0.0.0" >> sudo tee -a /etc/neo4j/neo4j.conf
+server.http.listen_address=:7474 >> sudo tee -a /etc/neo4j/neo4j.conf
+server.bolt.listen_address=:7687 >> sudo tee -a /etc/neo4j/neo4j.conf
+
 # Start the database
 sudo systemctl start neo4j
+
+exit 0 
+

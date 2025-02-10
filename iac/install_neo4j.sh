@@ -1,6 +1,9 @@
 # Setting frontend to noninteractive to avoid password prompts
 export DEBIAN_FRONTEND=noninteractive
 
+# Install azcli
+curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+
 # Install java
 sudo apt install openjdk-21-jre-headless -y
 
@@ -15,11 +18,20 @@ sudo add-apt-repository universe -y
 # Install neo4j 
 sudo apt-get install neo4j=${neo4j_version} -y
 
+# Move neo4j installation to our attached data disk in a directory we created in ./mount_drive.sh
+# sudo mv /var/lib/neo4j /datadisk/
+# # Create a symlink so systemctl and other services know where to find neo4j
+# sudo ln -s /datadisk/neo4j /var/lib/neo4j
+
 # Start neo4j automatically on system startup
 sudo systemctl enable neo4j
 
 # Set password
 sudo neo4j-admin dbms set-initial-password ${neo4j_pass}
+
+
+# BACKUPS=========
+# The command can also be invoked over the network if access is enabled using server.backup.listen_address.
 
 # Make neo4j reachable from clients other than localhost 
 echo "server.default_listen_address=0.0.0.0" | sudo tee -a /etc/neo4j/neo4j.conf

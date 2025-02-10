@@ -73,7 +73,10 @@ variable "neo4j_disk_snapshot_name" {
   description = "Name of the last taken snapshot of the neo4j data disk. Passed in via Github workflow. Will be null if none found."
 }
 
-variable ""
+# variable "neo4j_datadisk_suffix" {
+#   type = string
+#   description = "Suffix added to the data disk created so that we can search for the snapshot of the disk in an earlier step in the workflow when it is next run"
+# }
 
 variable "backup_vault_rg_name" {
   type = string

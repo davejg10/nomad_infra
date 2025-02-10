@@ -15,7 +15,7 @@ sudo apt-get update
 sudo add-apt-repository universe -y
 
 # Programatiicaly find datadisk name by suggesting size and mountpoint empty
-DATADISK=$(lsblk -d -n -o NAME,SIZE,MOUNTPOINT | awk -v size="${neo4j_data_disk_size_gb}" '$2 == size  && $3 == "" {print $1}' | head -1)
+DATADISK=$(lsblk -d -n -o NAME,SIZE,MOUNTPOINT | awk -v size="${neo4j_data_disk_size_gb}G" '$2 == size  && $3 == "" {print $1}' | head -1)
 
 # Mount disk
 sudo mkdir $NEO4J_DATA_DIR
@@ -45,10 +45,10 @@ sudo chown -R neo4j:neo4j $NEO4J_DATA_DIR/neo4j
 # Create directories
 if [[ "${neo4j_snapshot_found}" == false ]]; then
     sudo mkdir -p $NEO4J_DATA_DIR/neo4j/{data,import,plugins,log}
-    # Set password (only works before DB has been started)
+    # Set the initial password (only works before the database has been started).
     sudo neo4j-admin dbms set-initial-password ${neo4j_pass}
 else
-    # Disable auth as the password passed into this script may not be the same as the password used before.
+    # Disable authentication because the password passed into this script may not be the same as the previous password.
     sudo sed -i "s|#dbms.security.auth_enabled=.*|dbms.security.auth_enabled=false|" /etc/neo4j/neo4j.conf
     sudo systemctl restart neo4j 
     until nc -z localhost 7687; do   

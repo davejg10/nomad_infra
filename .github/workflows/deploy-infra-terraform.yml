@@ -41,6 +41,14 @@ jobs:
       - name: Get backup snapshot name
         run: |
           neo4j_disk_snapshot_name="null"
+
+          # # Check if VM exists, if it does we dont need to restore from backup
+          # NEO4J_VM_ID=$(az vm show --name <vm-name> --resource-group <resource-group-name> --query "id" --output tsv)
+          # if [[ -z "$VM_ID" ]]; then
+          #     echo "VM does not exist."
+          # else
+          #     echo "VM exists: $VM_ID"
+          # fi
           echo "neo4j_disk_snapshot_name=$neo4j_disk_snapshot_name" >> $GITHUB_ENV
       
       - name: Terraform plan

@@ -73,6 +73,8 @@ variable "neo4j_disk_snapshot_name" {
   description = "Name of the last taken snapshot of the neo4j data disk. Passed in via Github workflow. Will be null if none found."
 }
 
+variable ""
+
 variable "backup_vault_rg_name" {
   type = string
   description = "Name of the Resource Group containing the backup vault in this environment"

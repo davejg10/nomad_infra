@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Setting frontend to noninteractive to avoid password prompts
 export DEBIAN_FRONTEND=noninteractive
 
@@ -19,7 +21,7 @@ DATADISK=$(lsblk -d -n -o NAME,SIZE,MOUNTPOINT | awk -v size="${neo4j_data_disk_
 
 sudo mkdir $NEO4J_DATA_DIR
 # Format disk
-sudo mkfs.ext4 /dev/sdc
+sudo mkfs.ext4 /dev/$DATADISK
 # Mount disk
 sudo mount /dev/$DATADISK $NEO4J_DATA_DIR
 # Add to fstab for persistence
@@ -42,14 +44,14 @@ sudo sed -i "s|#server.default_listen_address=.*|server.default_listen_address=0
 sudo sed -i "s|#server.http.listen_address=.*|server.http.listen_address=:7474|" /etc/neo4j/neo4j.conf
 sudo sed -i "s|#server.bolt.listen_address=.*|server.bolt.listen_address=:7687|" /etc/neo4j/neo4j.conf
 
-sudo chown -R neo4j:neo4j $NEO4J_DATA_DIR/neo4j
-
 # Create directories
 if [[ "${neo4j_snapshot_found}" == "false" ]]; then
     sudo mkdir -p $NEO4J_DATA_DIR/neo4j/{data,import,plugins,log}
+    sudo chown -R neo4j:neo4j $NEO4J_DATA_DIR/neo4j
     # Set the initial password (only works before the database has been started).
     sudo neo4j-admin dbms set-initial-password ${neo4j_pass}
 else
+    sudo chown -R neo4j:neo4j $NEO4J_DATA_DIR/neo4j
     # Disable authentication because the password passed into this script may not be the same as the previous password.
     sudo sed -i "s|#dbms.security.auth_enabled=.*|dbms.security.auth_enabled=false|" /etc/neo4j/neo4j.conf
     sudo systemctl restart neo4j 
@@ -65,10 +67,6 @@ sudo systemctl enable neo4j
 
 # Start the database
 sudo systemctl restart neo4j
-
-# Create read only user for nomad-backend - can only do this with enterprise license
-# cypher-shell -u neo4j -p password "CREATE USER readonlyuser SET PASSWORD 'yourpassword' CHANGE NOT REQUIRED"
-# cypher-shell -u neo4j -p password "GRANT MATCH, READ {*} ON DATABASE mydatabase TO readonlyuser"
 
 exit 0 
 

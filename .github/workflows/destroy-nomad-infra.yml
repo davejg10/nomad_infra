@@ -46,6 +46,7 @@ jobs:
           backend_container_name: ${{ github.event.inputs.app_name }}
           environment: ${{ github.event.inputs.environment }}
           work_dir: ${{ env.work_dir }}
+          additional_tf_vars: -var "neo4j_disk_snapshot_name=null"
       
   terraform_apply:
     runs-on: self-hosted

@@ -1,14 +1,3 @@
-locals {
-
-  script_name    = "install_neo4j.sh"
-  templated_file = base64encode(templatefile("${path.module}/${local.script_name}", {neo4j_version = var.neo4j_version, neo4j_pass = azurerm_key_vault_secret.neo4j_pwd.value }))
-  command_to_execute = jsonencode({
-    commandToExecute = "echo ${local.templated_file} | base64 -d > ./${local.script_name} && chmod +x ${local.script_name} && ./${local.script_name}"
-  })
-
-  neo4j_vm_name = "vm-dev-uks-nomad-neo4j-01"
-}
-
 resource "random_password" "neo4j_pwd" {
   length           = 12
   special          = true
@@ -42,48 +31,6 @@ resource "azurerm_network_interface" "neo4j" {
     private_ip_address            = var.neo4j_static_private_ip
     public_ip_address_id          = azurerm_public_ip.example.id
   }
-}
-
-# locals { 
-#   neo4j_managed_disk_id = var.neo4j_snapshot_found ? azurerm_managed_disk.neo4j_snapshot_copy[0].id : azurerm_managed_disk.neo4j[0].id
-# }
-
-resource "azurerm_managed_disk" "neo4j" {
-  # count = var.neo4j_snapshot_found ? 0 : 1
-
-  name                 = "${local.neo4j_vm_name}-neo4j-datadisk"
-  resource_group_name = data.azurerm_resource_group.rg.name
-  location            = var.environment_settings.region
-  storage_account_type = "Standard_LRS"
-  create_option        = "Empty"
-  disk_size_gb         = var.neo4j_data_disk_size_gb
-}
-
-# data "azurerm_managed_disk" "neo4j_snapshot" {
-#   count = var.neo4j_snapshot_found ? 1 : 0
-
-#   name                = "example-datadisk"
-#   resource_group_name = "example-resources"
-# }
-
-# resource "azurerm_managed_disk" "neo4j_snapshot_copy" {
-#   count = var.neo4j_snapshot_found ? 1 : 0
-
-#   name                 = "${local.neo4j_vm_name}-neo4j-datadisk-snapshotcopy"
-#   resource_group_name  = data.azurerm_resource_group.rg.name
-#   location             = var.environment_settings.region
-#   storage_account_type = "Standard_LRS"
-#   create_option        = "Copy"
-#   source_resource_id   = data.azurerm_managed_disk.neo4j_snapshot[0].id
-#   disk_size_gb         = var.neo4j_data_disk_size_gb
-# }
-
-resource "azurerm_virtual_machine_data_disk_attachment" "neo4j" {
-  # managed_disk_id    = local.neo4j_managed_disk_id
-  managed_disk_id = azurerm_managed_disk.neo4j.id
-  virtual_machine_id = azurerm_linux_virtual_machine.neo4j.id
-  lun                = "10"
-  caching            = "ReadWrite"
 }
 
 # Create (and display) an SSH key
@@ -124,7 +71,25 @@ resource "azurerm_linux_virtual_machine" "neo4j" {
 
 }
 
+locals {
+
+  script_name    = "install_neo4j.sh"
+  templated_file = base64encode(templatefile("${path.module}/${local.script_name}", {
+    neo4j_version           = var.neo4j_version,
+    neo4j_pass              = azurerm_key_vault_secret.neo4j_pwd.value,
+    neo4j_data_disk_size_gb = var.neo4j_data_disk_size_gb
+    neo4j_snapshot_found    = local.neo4j_snapshot_found
+  }))
+  command_to_execute = jsonencode({
+    commandToExecute = "echo ${local.templated_file} | base64 -d > ./${local.script_name} && chmod +x ${local.script_name} && ./${local.script_name}"
+  })
+
+  neo4j_vm_name = "vm-dev-uks-nomad-neo4j-01"
+}
+
 resource "azurerm_virtual_machine_extension" "example" {
+  depends_on [azurerm_virtual_machine_data_disk_attachment.neo4j]
+
   name                 = "hostname"
   virtual_machine_id   = azurerm_linux_virtual_machine.neo4j.id
   publisher            = "Microsoft.Azure.Extensions"

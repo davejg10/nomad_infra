@@ -68,6 +68,15 @@ variable "neo4j_data_disk_size_gb" {
   description = "Size in Gb of the data disk that will store the Neo4j data"
 }
 
+variable "neo4j_disk_snapshot_name" {
+  type = string
+  description = "Name of the last taken snapshot of the neo4j data disk. Passed in via Github workflow. Will be null if none found."
+}
+
+variable "backup_vault_rg_name" {
+  type = string
+  description = "Name of the Resource Group containing the backup vault in this environment"
+}
 
 // App Service
 variable "asp_sku_name" {

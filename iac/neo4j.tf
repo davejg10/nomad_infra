@@ -44,12 +44,12 @@ resource "azurerm_network_interface" "neo4j" {
   }
 }
 
-locals { 
-  neo4j_managed_disk_id = var.neo4j_snapshot_found ? azurerm_managed_disk.neo4j_snapshot_copy[0].id : azurerm_managed_disk.neo4j[0].id
-}
+# locals { 
+#   neo4j_managed_disk_id = var.neo4j_snapshot_found ? azurerm_managed_disk.neo4j_snapshot_copy[0].id : azurerm_managed_disk.neo4j[0].id
+# }
 
 resource "azurerm_managed_disk" "neo4j" {
-  count = var.neo4j_snapshot_found ? 0 : 1
+  # count = var.neo4j_snapshot_found ? 0 : 1
 
   name                 = "${local.neo4j_vm_name}-neo4j-datadisk"
   resource_group_name = data.azurerm_resource_group.rg.name
@@ -59,27 +59,28 @@ resource "azurerm_managed_disk" "neo4j" {
   disk_size_gb         = var.neo4j_data_disk_size_gb
 }
 
-data "azurerm_managed_disk" "neo4j_snapshot" {
-  count = var.neo4j_snapshot_found ? 1 : 0
+# data "azurerm_managed_disk" "neo4j_snapshot" {
+#   count = var.neo4j_snapshot_found ? 1 : 0
 
-  name                = "example-datadisk"
-  resource_group_name = "example-resources"
-}
+#   name                = "example-datadisk"
+#   resource_group_name = "example-resources"
+# }
 
-resource "azurerm_managed_disk" "neo4j_snapshot_copy" {
-  count = var.neo4j_snapshot_found ? 1 : 0
+# resource "azurerm_managed_disk" "neo4j_snapshot_copy" {
+#   count = var.neo4j_snapshot_found ? 1 : 0
 
-  name                 = "${local.neo4j_vm_name}-neo4j-datadisk-snapshotcopy"
-  resource_group_name  = data.azurerm_resource_group.rg.name
-  location             = var.environment_settings.region
-  storage_account_type = "Standard_LRS"
-  create_option        = "Copy"
-  source_resource_id   = data.azurerm_managed_disk.neo4j_snapshot[0].id
-  disk_size_gb         = var.neo4j_data_disk_size_gb
-}
+#   name                 = "${local.neo4j_vm_name}-neo4j-datadisk-snapshotcopy"
+#   resource_group_name  = data.azurerm_resource_group.rg.name
+#   location             = var.environment_settings.region
+#   storage_account_type = "Standard_LRS"
+#   create_option        = "Copy"
+#   source_resource_id   = data.azurerm_managed_disk.neo4j_snapshot[0].id
+#   disk_size_gb         = var.neo4j_data_disk_size_gb
+# }
 
 resource "azurerm_virtual_machine_data_disk_attachment" "neo4j" {
-  managed_disk_id    = local.neo4j_managed_disk_id
+  # managed_disk_id    = local.neo4j_managed_disk_id
+  managed_disk_id = azurerm_managed_disk.neo4j.id
   virtual_machine_id = azurerm_linux_virtual_machine.neo4j.id
   lun                = "10"
   caching            = "ReadWrite"

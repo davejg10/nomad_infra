@@ -88,7 +88,7 @@ locals {
 }
 
 resource "azurerm_virtual_machine_extension" "example" {
-  depends_on [azurerm_virtual_machine_data_disk_attachment.neo4j]
+  depends_on = [azurerm_virtual_machine_data_disk_attachment.neo4j]
 
   name                 = "hostname"
   virtual_machine_id   = azurerm_linux_virtual_machine.neo4j.id

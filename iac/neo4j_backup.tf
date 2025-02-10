@@ -1,6 +1,6 @@
 locals {
   neo4j_snapshot_found = var.neo4j_disk_snapshot_name == "null" ? false : true  
-  neo4j_managed_disk_id = var.neo4j_snapshot_found ? azurerm_managed_disk.neo4j_snapshot_copy[0].id : azurerm_managed_disk.neo4j[0].id
+  neo4j_managed_disk_id = local.neo4j_snapshot_found ? azurerm_managed_disk.neo4j_snapshot_copy[0].id : azurerm_managed_disk.neo4j[0].id
 }
 
 

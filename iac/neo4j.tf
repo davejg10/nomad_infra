@@ -87,7 +87,7 @@ locals {
   neo4j_vm_name = "vm-dev-uks-nomad-neo4j-01"
 }
 
-resource "azurerm_virtual_machine_extension" "example" {
+resource "azurerm_virtual_machine_extension" "install_neo4j" {
   depends_on = [azurerm_virtual_machine_data_disk_attachment.neo4j]
 
   name                 = "hostname"

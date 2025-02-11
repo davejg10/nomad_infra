@@ -5,7 +5,7 @@ locals {
 resource "random_password" "neo4j_pwd" {
   length           = 12
   special          = true
-  override_special = "!#$%&*()-_=+[]{}<>:?"
+  override_special = "_=+:?[]"
 }
 
 resource "azurerm_key_vault_secret" "neo4j_pwd" {

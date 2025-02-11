@@ -16,6 +16,10 @@ on:
         description: Application name
         options: 
           - nomad-backend
+      deploy_from_backup:
+        type: boolean
+        description: Deploy from backup
+        default: false
     
 env:
  ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
@@ -40,24 +44,15 @@ jobs:
 
       - name: Get backup snapshot name
         run: |
-          NEO4J_DATADISK_SUFFIX="neo4j-datadisk"
-          NEO4J_DISK_SNAPSHOT_NAME="null"
-          snapshot_list_find_latest=$(az snapshot list -g rg-dev-uks-backup-snapshots --query "[?contains(creationData.sourceResourceId, "$NEO4J_DATADISK_SUFFIX")] | sort_by(@, &timeCreated)[-1].name" --output json)
-          if [[ -z "$snapshot_list_find_latest" ]]; then
-              NEO4J_DISK_SNAPSHOT_NAME=$snapshot_find
+          NEO4J_BACKUP_DISK_PREFIX="neo4j-datadisk-backup"
+          NEO4J_BACKUP_DISK_NAME="null"
+          find_backup_disk=$(az disk list -g rg-dev-uks-backup-snapshots --query "[?contains(name, "$NEO4J_DATADISK_SUFFIX")] | sort_by(@, &timeCreated)[-1].name" --output json)
+          if [[ -z "$find_backup_disk" ]]; then
+            NEO4J_BACKUP_DISK_NAME=$find_backup_disk
           fi
 
-
-          # # Check if VM exists, if it does we dont need to restore from backup
-          # NEO4J_VM_ID=$(az vm show --name <vm-name> --resource-group <resource-group-name> --query "id" --output tsv)
-          # if [[ -z "$VM_ID" ]]; then
-          #     echo "VM does not exist."
-          #     neo4j_disk_snapshot_name=$(az snapshot list -g rg-dev-uks-backup-snapshots --query "[?contains(creationData.sourceResourceId, 'neo4j-datadisk')] | sort_by(@, &timeCreated)[-1].name" --output json)
-          # else
-          #     echo "VM exists: $VM_ID"
-          # fi
-          echo "NEO4J_DISK_SNAPSHOT_NAME=$NEO4J_DISK_SNAPSHOT_NAME" >> $GITHUB_ENV
-          echo "NEO4J_DATADISK_SUFFIX=$NEO4J_DATADISK_SUFFIX" >> $GITHUB_ENV
+          echo "NEO4J_BACKUP_DISK_PREFIX=$NEO4J_BACKUP_DISK_PREFIX" >> $GITHUB_ENV
+          echo "NEO4J_BACKUP_DISK_NAME=$NEO4J_BACKUP_DISK_NAME" >> $GITHUB_ENV
 
       
       - name: Terraform plan
@@ -68,7 +63,7 @@ jobs:
           backend_container_name: ${{ github.event.inputs.app_name }}
           environment: ${{ github.event.inputs.environment }}
           work_dir: ${{ env.work_dir }}
-          additional_tf_vars: -var "neo4j_disk_snapshot_name=${{ env.NEO4J_DISK_SNAPSHOT_NAME }}" "neo4j_datadisk_suffix=${{ env.NEO4J_DATADISK_SUFFIX }}"
+          additional_tf_vars: -var "neo4j_backup_disk_name=${{ env.NEO4J_BACKUP_DISK_NAME }}" "neo4j_backup_disk_prefix=${{ env.NEO4J_BACKUP_DISK_PREFIX }}"
       
   terraform_apply:
     runs-on: self-hosted

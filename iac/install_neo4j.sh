@@ -45,7 +45,7 @@ sudo sed -i "s|#server.http.listen_address=.*|server.http.listen_address=:7474|"
 sudo sed -i "s|#server.bolt.listen_address=.*|server.bolt.listen_address=:7687|" /etc/neo4j/neo4j.conf
 
 # Create directories
-if [[ "${neo4j_snapshot_found}" == "false" ]]; then
+if [[ "${deploy_from_backup}" == "false" ]]; then
     sudo mkdir -p $NEO4J_DATA_DIR/neo4j/{data,import,plugins,log}
     sudo chown -R neo4j:neo4j $NEO4J_DATA_DIR/neo4j
     # Set the initial password (only works before the database has been started).

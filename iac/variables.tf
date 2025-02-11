@@ -68,20 +68,20 @@ variable "neo4j_data_disk_size_gb" {
   description = "Size in Gb of the data disk that will store the Neo4j data"
 }
 
-variable "neo4j_disk_snapshot_name" {
-  type = string
-  description = "Name of the last taken snapshot of the neo4j data disk. Passed in via Github workflow. Will be null if none found."
-}
-
-# variable "neo4j_datadisk_suffix" {
-#   type = string
-#   description = "Suffix added to the data disk created so that we can search for the snapshot of the disk in an earlier step in the workflow when it is next run"
-# }
-
 variable "backup_vault_rg_name" {
   type = string
   description = "Name of the Resource Group containing the backup vault in this environment"
 }
+
+variable "neo4j_backup_disk_name" {
+  type = string
+  description "PASSED IN VIA ADDITIONAL_TF_VARS. The workflow deploying this Terraform searches for a backup disk with var.neo4j_backup_disk_prefix. If found it sets this var to the name of the disk. Null if no backup exists"
+}
+variable "neo4j_backup_disk_prefix" {
+  type = string
+  description "PASSED IN VIA ADDITIONAL_TF_VARS. The prefix given to the name of the disk that is backed up on VM destroy."
+}
+
 
 // App Service
 variable "asp_sku_name" {

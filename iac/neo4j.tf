@@ -69,6 +69,18 @@ resource "azurerm_linux_virtual_machine" "neo4j" {
     type = "SystemAssigned"
   }
 
+  provisioner "local-exec" {
+    when    = destroy
+    command = "az disk create --resource-group $RESOURCE_GROUP_NAME --name $DISK_NAME --sku StandardSSD_LRS --size-gb $SIZE_GB --source $SNAPSHOT_ID"
+
+    environment = {
+      SNAPSHOT_ID         = local.neo4j_managed_disk_id
+      DISK_NAME           = "${var.neo4j_backup_disk_prefix}-${timestamp()}"
+      RESOURCE_GROUP_NAME = data.azurerm_resource_group.rg.name
+      SIZE_GB             = var.neo4j_data_disk_size_gb
+    }
+  }
+
 }
 
 locals {
@@ -78,7 +90,7 @@ locals {
     neo4j_version           = var.neo4j_version,
     neo4j_pass              = azurerm_key_vault_secret.neo4j_pwd.value,
     neo4j_data_disk_size_gb = var.neo4j_data_disk_size_gb
-    neo4j_snapshot_found    = local.neo4j_snapshot_found
+    deploy_from_backup      = local.deploy_from_backup
   }))
   command_to_execute = jsonencode({
     commandToExecute = "echo ${local.templated_file} | base64 -d > ./${local.script_name} && chmod +x ${local.script_name} && ./${local.script_name}"

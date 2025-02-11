@@ -13,10 +13,6 @@ resource "random_password" "neo4j_pwd" {
 resource "terraform_data" "kv_network_check" {
   depends_on = [
     azurerm_role_assignment.this_deployer_key_vault_secrets,
-    azurerm_virtual_network_peering.hub_to_spoke,
-    azurerm_virtual_network_peering.spoke_to_hub,
-    azurerm_private_dns_zone_virtual_network_link.all_zones,
-    azurerm_private_endpoint.key_vault
   ]
 
   provisioner "local-exec" {
@@ -24,6 +20,7 @@ resource "terraform_data" "kv_network_check" {
 
     environment = {
       KEY_VAULT_NAME = azurerm_key_vault.nomad.name
+      KEY_VAULT_INTERNAL_IP = azurerm_private_endpoint.keyvault.ip_configuration.private_ip_address
     }
   }
 }

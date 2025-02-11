@@ -109,7 +109,7 @@ locals {
 resource "azurerm_virtual_machine_extension" "mount_datadisk" {
   depends_on = [azurerm_virtual_machine_data_disk_attachment.neo4j]
 
-  name                 = "mount-${azurerm_virtual_machine_data_disk_attachment.managed_disk_id}"
+  name                 = "mount-${azurerm_virtual_machine_data_disk_attachment.neo4j.managed_disk_id}"
   virtual_machine_id   = azurerm_linux_virtual_machine.neo4j.id
   publisher            = "Microsoft.Azure.Extensions"
   type                 = "CustomScript"

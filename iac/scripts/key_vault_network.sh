@@ -20,7 +20,7 @@ while true; do
     NSLOOKUP_RESULT=$(nslookup "$KEY_VAULT_FQDN" | grep "Address" | tail -n 1)
     
     # Check if nslookup was successful by looking for "Non-authoritative answer"
-    if [[ "$NSLOOKUP_RESULT" == *"${KEY_VAULT_INTERNAL_IP}"*]]; then
+    if [[ "$NSLOOKUP_RESULT" == *"${KEY_VAULT_INTERNAL_IP}"* ]]; then
         echo "Key Vault is accessible! NSLookup result: $NSLOOKUP_RESULT"
         sleep 5
         exit 0

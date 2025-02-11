@@ -1,6 +1,6 @@
 locals {
   neo4j_vm_name = "vm-dev-uks-nomad-neo4j-01"
-  key_vault_network_scrip_path = "${path.module}/scripts/key_vault_network.sh"
+  key_vault_network_script_path = "${path.module}/scripts/key_vault_network.sh"
 }
 
 resource "random_password" "neo4j_pwd" {
@@ -12,11 +12,15 @@ resource "random_password" "neo4j_pwd" {
 // Ensure we have network access before trying to insert secret
 resource "terraform_data" "kv_network_check" {
   depends_on = [
-    azurerm_role_assignment.this_deployer_key_vault_secrets
+    azurerm_role_assignment.this_deployer_key_vault_secrets,
+    azurerm_virtual_network_peering.hub_to_spoke,
+    azurerm_virtual_network_peering.spoke_to_hub,
+    azurerm_private_dns_zone_virtual_network_link.all_zones,
+    azurerm_private_endpoint.key_vault
   ]
 
   provisioner "local-exec" {
-    command = "chmod +x ${local.key_vault_network_scrip_path} && ./${local.key_vault_network_scrip_path}"
+    command = "chmod +x ${local.key_vault_network_script_path} && ./${local.key_vault_network_script_path}"
 
     environment = {
       KEY_VAULT_NAME = azurerm_key_vault.nomad.name

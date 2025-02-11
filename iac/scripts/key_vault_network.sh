@@ -1,26 +1,26 @@
-#!/bin/bash
 # Set max timeout (in seconds)
 MAX_TIMEOUT=180  # 3 minutes
 
 # Set retry interval (in seconds)
 RETRY_INTERVAL=5
 
-# Compute Key Vault URL
-KEY_VAULT_URL="https://${KEY_VAULT_NAME}.vault.azure.net/"
+# Compute Key Vault private endpoint FQDN
+KEY_VAULT_FQDN="${KEY_VAULT_NAME}.privatelink.vaultcore.azure.net"
 
 # Track start time
 START_TIME=$(date +%s)
 
-echo "Checking Key Vault availability: $KEY_VAULT_URL"
+echo "Checking Key Vault availability: $KEY_VAULT_FQDN"
 echo "Timeout set to $MAX_TIMEOUT seconds"
 
 while true; do
-    # Attempt to curl the Key Vault endpoint
-    HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$KEY_VAULT_URL")
-
-    # Check if response is HTTP 200 (Success)
-    if [[ "$HTTP_STATUS" == "200" ]]; then
-        echo "Key Vault is accessible! HTTP Status: $HTTP_STATUS"
+    # Attempt to nslookup the Key Vault private endpoint
+    NSLOOKUP_RESULT=$(nslookup "$KEY_VAULT_FQDN" 2>&1)
+    
+    # Check if nslookup was successful by looking for "Non-authoritative answer"
+    if [[ "$NSLOOKUP_RESULT" == *"Non-authoritative answer"* || "$NSLOOKUP_RESULT" == *"address"* ]]; then
+        echo "Key Vault is accessible! NSLookup result: $NSLOOKUP_RESULT"
+        sleep 5
         exit 0
     fi
 
@@ -34,6 +34,6 @@ while true; do
         exit 1
     fi
 
-    echo "Key Vault not reachable yet (HTTP: $HTTP_STATUS). Retrying in $RETRY_INTERVAL seconds..."
+    echo "Key Vault not reachable yet (nslookup result: $NSLOOKUP_RESULT). Retrying in $RETRY_INTERVAL seconds..."
     sleep $RETRY_INTERVAL
 done

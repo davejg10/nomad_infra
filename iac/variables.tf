@@ -73,15 +73,6 @@ variable "backup_vault_rg_name" {
   description = "Name of the Resource Group containing the backup vault in this environment"
 }
 
-variable "neo4j_backup_disk_name" {
-  type = string
-  description = "PASSED IN VIA ADDITIONAL_TF_VARS. The workflow deploying this Terraform searches for a backup disk with var.neo4j_backup_disk_prefix. If found it sets this var to the name of the disk. Null if no backup exists"
-}
-variable "neo4j_backup_disk_prefix" {
-  type = string
-  description = "PASSED IN VIA ADDITIONAL_TF_VARS. The prefix given to the name of the disk that is backed up on VM destroy."
-}
-
 // App Service
 variable "asp_sku_name" {
   type = string

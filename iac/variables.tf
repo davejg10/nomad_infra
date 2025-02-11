@@ -22,6 +22,10 @@ variable "hub_acr_name" {
   type = string
   default = "acrglbuksdevopsutils"
 }
+variable "hub_law_name" {
+  type = string
+  default = "law-glb-uks-devopsutils"
+}
 
 // Networking
 variable "vnet_address_space" {

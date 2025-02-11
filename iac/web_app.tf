@@ -47,10 +47,16 @@ resource "azurerm_app_service_virtual_network_swift_connection" "vnet_integratio
   subnet_id      = azurerm_subnet.app_service_plan.id
 }
 
+data "azurerm_log_analytics_workspace" "central" {
+  name                = var.hub_law_name
+  resource_group_name = var.hub_rg_name
+}
+
 resource "azurerm_application_insights" "web_insights" {
   name = "appi-${var.environment_settings.environment}-${var.environment_settings.region_code}-${var.environment_settings.app_name}-${var.environment_settings.identifier}"
 
   resource_group_name = data.azurerm_resource_group.rg.name
   location            = var.environment_settings.region
+  workspace_id        = data.azurerm_log_analytics_workspace.central.id
   application_type    = "web"
 }

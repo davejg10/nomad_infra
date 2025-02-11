@@ -70,12 +70,9 @@ else
     until nc -z localhost 7687; do   
         sleep 5
     done
-    echo "ALTER USER neo4j SET PASSWORD ${neo4j_pass};" | cypher-shell -u neo4j -d system
+    echo "ALTER USER neo4j SET PASSWORD '${neo4j_pass}';" | cypher-shell -u neo4j -d system
     sudo sed -i "s|dbms.security.auth_enabled=.*|#dbms.security.auth_enabled=false|" /etc/neo4j/neo4j.conf
 fi
-
-# Create directories
-
 
 # Start the database
 sudo systemctl restart neo4j

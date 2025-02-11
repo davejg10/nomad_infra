@@ -5,7 +5,7 @@ data "azurerm_data_protection_backup_vault" "vault" {
 }
 
 resource "azurerm_data_protection_backup_instance_disk" "neo4j" {
-  name                         = "neo4j-datadisk-backup"
+  name                         = "${azurerm_linux_virtual_machine.neo4j.name}-datadisk-backup"
   location                     = data.azurerm_data_protection_backup_vault.vault.location
   vault_id                     = data.azurerm_data_protection_backup_vault.vault.id
   disk_id                      = azurerm_managed_disk.neo4j.id

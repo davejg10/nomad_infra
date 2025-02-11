@@ -124,8 +124,6 @@ resource "azurerm_linux_virtual_machine" "neo4j" {
 }
 
 locals {
-  mount_name_suffix = element(split("/", azurerm_virtual_machine_data_disk_attachment.neo4j.managed_disk_id), length(split("/", azurerm_virtual_machine_data_disk_attachment.neo4j.managed_disk_id)) - 1)
-
   configure_script_name    = "configure_vm.sh"
   templated_file = base64encode(templatefile("${path.module}/scripts/${local.configure_script_name}", {
     neo4j_version           = var.neo4j_version,
@@ -142,7 +140,13 @@ resource "azurerm_virtual_machine_extension" "configure_vm" {
     azurerm_virtual_machine_data_disk_attachment.neo4j
   ]
 
-  name                 = "configure-vm-${local.mount_name_suffix}" // Including the name here allows us to rebuild 
+  lifecycle {
+    replace_triggered_by = [
+      azurerm_virtual_machine_data_disk_attachment.neo4j.id
+    ]
+  }
+
+  name                 = "configure-vm" // Including the name here allows us to rebuild 
   virtual_machine_id   = azurerm_linux_virtual_machine.neo4j.id
   publisher            = "Microsoft.Azure.Extensions"
   type                 = "CustomScript"

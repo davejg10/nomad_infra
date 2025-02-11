@@ -20,7 +20,7 @@ resource "terraform_data" "kv_network_check" {
 
     environment = {
       KEY_VAULT_NAME = azurerm_key_vault.nomad.name
-      KEY_VAULT_INTERNAL_IP = azurerm_private_endpoint.keyvault.ip_configuration.private_ip_address
+      KEY_VAULT_INTERNAL_IP = azurerm_private_endpoint.key_vault.ip_configuration.private_ip_address
     }
   }
 }

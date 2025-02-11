@@ -72,8 +72,15 @@ resource "azurerm_linux_virtual_machine" "neo4j" {
     type = "SystemAssigned"
   }
 
+}
+
+resource "terraform_data" "backup_neo4j_disk" {
+  triggers_replace = [
+    azurerm_linux_virtual_machine.neo4j.id
+  ]
+
   provisioner "local-exec" {
-    when    = destroy
+    when = destroy
     command = "az disk create --resource-group $RESOURCE_GROUP_NAME --name $DISK_NAME --sku StandardSSD_LRS --size-gb $SIZE_GB --source $SNAPSHOT_ID"
 
     environment = {
@@ -83,7 +90,6 @@ resource "azurerm_linux_virtual_machine" "neo4j" {
       SIZE_GB             = var.neo4j_data_disk_size_gb
     }
   }
-
 }
 
 locals {

@@ -75,11 +75,11 @@ variable "backup_vault_rg_name" {
 
 variable "neo4j_backup_disk_name" {
   type = string
-  description "PASSED IN VIA ADDITIONAL_TF_VARS. The workflow deploying this Terraform searches for a backup disk with var.neo4j_backup_disk_prefix. If found it sets this var to the name of the disk. Null if no backup exists"
+  description = "PASSED IN VIA ADDITIONAL_TF_VARS. The workflow deploying this Terraform searches for a backup disk with var.neo4j_backup_disk_prefix. If found it sets this var to the name of the disk. Null if no backup exists"
 }
 variable "neo4j_backup_disk_prefix" {
   type = string
-  description "PASSED IN VIA ADDITIONAL_TF_VARS. The prefix given to the name of the disk that is backed up on VM destroy."
+  description = "PASSED IN VIA ADDITIONAL_TF_VARS. The prefix given to the name of the disk that is backed up on VM destroy."
 }
 
 

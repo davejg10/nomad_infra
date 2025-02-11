@@ -39,7 +39,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Make Key Vault public
-        run: nslookup
+        run: nslookup google.com
 
       - name: Terraform plan
         uses: davejg10/pipeline_templates/.github/actions/terraform_plan@v1

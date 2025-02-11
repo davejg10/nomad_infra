@@ -67,6 +67,15 @@ resource "azurerm_managed_disk" "neo4j" {
   storage_account_type = "Standard_LRS"
   create_option        = "Empty"
   disk_size_gb         = var.neo4j_data_disk_size_gb
+
+  lifecycle {
+    ignore_changes = [ // If we ever restore, and import we dont want the disk to be re-created next time we plan/apply
+      create_option, 
+      name,
+      zone,
+      disk_size_gb
+    ]
+  }
 }
 
 resource "azurerm_virtual_machine_data_disk_attachment" "neo4j" {

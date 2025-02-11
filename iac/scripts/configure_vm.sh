@@ -5,7 +5,6 @@ export DEBIAN_FRONTEND=noninteractive
 
 NEO4J_DATA_DIR="/datadisk"
 
-
 # ===============Mount the drive=================
 # Programatiicaly find datadisk name by suggesting size and mountpoint empty
 DATADISK=$(lsblk -d -n -o NAME,SIZE,MOUNTPOINT | awk -v size="${neo4j_data_disk_size_gb}G" '$2 == size  && $3 == "" {print $1}' | head -1)
@@ -51,16 +50,32 @@ if [ $? -ne 0 ]; then
     sudo sed -i "s|#server.default_listen_address=.*|server.default_listen_address=0.0.0.0|" /etc/neo4j/neo4j.conf
     sudo sed -i "s|#server.http.listen_address=.*|server.http.listen_address=:7474|" /etc/neo4j/neo4j.conf
     sudo sed -i "s|#server.bolt.listen_address=.*|server.bolt.listen_address=:7687|" /etc/neo4j/neo4j.conf
-
-    # Create directories
-    sudo mkdir -p $NEO4J_DATA_DIR/neo4j/{data,import,plugins,log}
-    sudo chown -R neo4j:neo4j $NEO4J_DATA_DIR/neo4j
+    
     # Set the initial password (only works before the database has been started).
     sudo neo4j-admin dbms set-initial-password ${neo4j_pass}
-
+    
+    sudo mkdir -p $NEO4J_DATA_DIR/neo4j/{data,import,plugins,log}
+    sudo chown -R neo4j:neo4j $NEO4J_DATA_DIR/neo4j
+    
     # Start neo4j automatically on system startup
     sudo systemctl enable neo4j
+else
+    sudo mkdir -p $NEO4J_DATA_DIR/neo4j/{data,import,plugins,log}
+    sudo chown -R neo4j:neo4j $NEO4J_DATA_DIR/neo4j
+
+    #Script must have been run before
+    # Disable authentication because the password passed into this script may not be the same as the previous password.
+    sudo sed -i "s|#dbms.security.auth_enabled=.*|dbms.security.auth_enabled=false|" /etc/neo4j/neo4j.conf
+    sudo systemctl restart neo4j 
+    until nc -z localhost 7687; do   
+        sleep 5
+    done
+    echo "ALTER USER neo4j SET PASSWORD ${neo4j_pass};" | cypher-shell -u neo4j -d system
+    sudo sed -i "s|dbms.security.auth_enabled=.*|#dbms.security.auth_enabled=false|" /etc/neo4j/neo4j.conf
 fi
+
+# Create directories
+
 
 # Start the database
 sudo systemctl restart neo4j

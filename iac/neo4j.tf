@@ -74,24 +74,6 @@ resource "azurerm_linux_virtual_machine" "neo4j" {
 
 }
 
-resource "terraform_data" "backup_neo4j_disk" {
-  triggers_replace = [
-    azurerm_linux_virtual_machine.neo4j.id
-  ]
-
-  provisioner "local-exec" {
-    when = destroy
-    command = "az disk create --resource-group $RESOURCE_GROUP_NAME --name $DISK_NAME --sku StandardSSD_LRS --size-gb $SIZE_GB --source $SNAPSHOT_ID"
-
-    environment = {
-      SNAPSHOT_ID         = local.neo4j_managed_disk_id
-      DISK_NAME           = "${var.neo4j_backup_disk_prefix}-${timestamp()}"
-      RESOURCE_GROUP_NAME = data.azurerm_resource_group.rg.name
-      SIZE_GB             = var.neo4j_data_disk_size_gb
-    }
-  }
-}
-
 locals {
 
   script_name    = "install_neo4j.sh"

@@ -82,7 +82,6 @@ variable "neo4j_backup_disk_prefix" {
   description = "PASSED IN VIA ADDITIONAL_TF_VARS. The prefix given to the name of the disk that is backed up on VM destroy."
 }
 
-
 // App Service
 variable "asp_sku_name" {
   type = string

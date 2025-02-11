@@ -28,6 +28,18 @@ resource "azurerm_virtual_machine_data_disk_attachment" "neo4j" {
   virtual_machine_id = azurerm_linux_virtual_machine.neo4j.id
   lun                = "10"
   caching            = "ReadWrite"
+
+  provisioner "local-exec" {
+    when = destroy
+    command = "az disk create --resource-group $RESOURCE_GROUP_NAME --name $DISK_NAME --sku StandardSSD_LRS --size-gb $SIZE_GB --source $SNAPSHOT_ID"
+
+    environment = {
+      SNAPSHOT_ID         = self.managed_disk_id
+      DISK_NAME           = "${var.neo4j_backup_disk_prefix}-${timestamp()}"
+      RESOURCE_GROUP_NAME = "rg-${var.environment_settings.environment}-${var.environment_settings.region_code}-${var.environment_settings.app_name}-${var.environment_settings.identifier}"
+      SIZE_GB             = var.neo4j_data_disk_size_gb
+    }
+  }
 }
 
 data "azurerm_data_protection_backup_vault" "vault" {

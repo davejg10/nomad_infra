@@ -95,26 +95,53 @@ resource "azurerm_linux_virtual_machine" "neo4j" {
 }
 
 locals {
-
-  script_name    = "install_neo4j.sh"
-  templated_file = base64encode(templatefile("${path.module}/${local.script_name}", {
-    neo4j_version           = var.neo4j_version,
-    neo4j_pass              = azurerm_key_vault_secret.neo4j_pwd.value,
-    neo4j_data_disk_size_gb = var.neo4j_data_disk_size_gb
+  neo4j_data_dir    = "/datadisk"
+  mount_script_name = "mount_datadisk.sh"
+  mount_templated_file = base64encode(templatefile("${path.module}/${local.mount_script_name}", {
+    neo4j_data_disk_size_gb = var.neo4j_data_disk_size_gb,
+    neo4j_data_dir          = local.neo4j_data_dir
   }))
-  command_to_execute = jsonencode({
-    commandToExecute = "echo ${local.templated_file} | base64 -d > ./${local.script_name} && chmod +x ${local.script_name} && ./${local.script_name}"
+  mount_command_to_execute = jsonencode({
+    commandToExecute = "echo ${local.mount_templated_file} | base64 -d > ./${local.mount_script_name} && chmod +x ${local.mount_script_name} && ./${local.mount_script_name}"
   })
 }
 
-resource "azurerm_virtual_machine_extension" "install_neo4j" {
+resource "azurerm_virtual_machine_extension" "mount_datadisk" {
   depends_on = [azurerm_virtual_machine_data_disk_attachment.neo4j]
 
-  name                 = "hostname"
+  name                 = "mount-${azurerm_virtual_machine_data_disk_attachment.managed_disk_id}"
   virtual_machine_id   = azurerm_linux_virtual_machine.neo4j.id
   publisher            = "Microsoft.Azure.Extensions"
   type                 = "CustomScript"
   type_handler_version = "2.0"
 
-  protected_settings = local.command_to_execute
+  protected_settings = local.mount_command_to_execute
 }
+
+locals {
+  install_script_name    = "install_neo4j.sh"
+  install_templated_file = base64encode(templatefile("${path.module}/${local.install_script_name}", {
+    neo4j_version           = var.neo4j_version,
+    neo4j_pass              = azurerm_key_vault_secret.neo4j_pwd.value,
+    neo4j_data_dir          = local.neo4j_data_dir
+  }))
+  install_command_to_execute = jsonencode({
+    commandToExecute = "echo ${local.install_templated_file} | base64 -d > ./${local.install_script_name} && chmod +x ${local.install_script_name} && ./${local.install_script_name}"
+  })
+}
+
+resource "azurerm_virtual_machine_extension" "install_neo4j" {
+  depends_on = [
+    azurerm_virtual_machine_data_disk_attachment.neo4j,
+    azurerm_virtual_machine_extension.mount_datadisk
+  ]
+
+  name                 = "install-neo4j"
+  virtual_machine_id   = azurerm_linux_virtual_machine.neo4j.id
+  publisher            = "Microsoft.Azure.Extensions"
+  type                 = "CustomScript"
+  type_handler_version = "2.0"
+
+  protected_settings = local.install_command_to_execute
+}
+

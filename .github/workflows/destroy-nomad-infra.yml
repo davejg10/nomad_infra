@@ -37,13 +37,6 @@ jobs:
         working-directory: ${{ env.work_dir }}
     steps:
       - uses: actions/checkout@v4
-
-      - name: Azure CLI Login
-        uses: azure/login@v2
-        with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ vars.AZURE_TENANT_ID }}
-          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
       
       - name: Terraform plan
         uses: davejg10/pipeline_templates/.github/actions/terraform_plan_destroy@v1
@@ -53,7 +46,6 @@ jobs:
           backend_container_name: ${{ github.event.inputs.app_name }}
           environment: ${{ github.event.inputs.environment }}
           work_dir: ${{ env.work_dir }}
-          additional_tf_vars: -var "neo4j_backup_disk_name=null" "neo4j_backup_disk_prefix=null"
       
   terraform_apply:
     runs-on: self-hosted

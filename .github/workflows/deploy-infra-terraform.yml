@@ -37,26 +37,6 @@ jobs:
         working-directory: ${{ env.work_dir }}
     steps:
       - uses: actions/checkout@v4
-
-      - name: Azure CLI Login
-        uses: azure/login@v2
-        with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ vars.AZURE_TENANT_ID }}
-          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
-
-      - name: Get backup snapshot name
-        run: |
-          NEO4J_BACKUP_DISK_PREFIX="neo4j-datadisk-backup"
-          NEO4J_BACKUP_DISK_NAME="null"
-          find_backup_disk=$(az disk list -g rg-dev-uks-backup-snapshots --query "[?contains(name, "$NEO4J_DATADISK_SUFFIX")] | sort_by(@, &timeCreated)[-1].name" --output json)
-          if [[ -z "$find_backup_disk" ]]; then
-            NEO4J_BACKUP_DISK_NAME=$find_backup_disk
-          fi
-
-          echo "NEO4J_BACKUP_DISK_PREFIX=$NEO4J_BACKUP_DISK_PREFIX" >> $GITHUB_ENV
-          echo "NEO4J_BACKUP_DISK_NAME=$NEO4J_BACKUP_DISK_NAME" >> $GITHUB_ENV
-
       
       - name: Terraform plan
         uses: davejg10/pipeline_templates/.github/actions/terraform_plan@v1
@@ -66,7 +46,6 @@ jobs:
           backend_container_name: ${{ github.event.inputs.app_name }}
           environment: ${{ github.event.inputs.environment }}
           work_dir: ${{ env.work_dir }}
-          additional_tf_vars: -var "neo4j_backup_disk_name=${{ env.NEO4J_BACKUP_DISK_NAME }}" "neo4j_backup_disk_prefix=${{ env.NEO4J_BACKUP_DISK_PREFIX }}"
       
   terraform_apply:
     runs-on: self-hosted

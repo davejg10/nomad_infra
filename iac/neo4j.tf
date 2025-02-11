@@ -1,3 +1,7 @@
+locals {
+  neo4j_vm_name = "vm-dev-uks-nomad-neo4j-01"
+}
+
 resource "random_password" "neo4j_pwd" {
   length           = 12
   special          = true
@@ -34,6 +38,22 @@ resource "azurerm_network_interface" "neo4j" {
     private_ip_address            = var.neo4j_static_private_ip
     public_ip_address_id          = azurerm_public_ip.example.id
   }
+}
+
+resource "azurerm_managed_disk" "neo4j" {
+  name                 = "${local.neo4j_vm_name}-neo4j-datadisk"
+  resource_group_name = data.azurerm_resource_group.rg.name
+  location            = var.environment_settings.region
+  storage_account_type = "Standard_LRS"
+  create_option        = "Empty"
+  disk_size_gb         = var.neo4j_data_disk_size_gb
+}
+
+resource "azurerm_virtual_machine_data_disk_attachment" "neo4j" {
+  managed_disk_id    = azurerm_managed_disk.neo4j.id
+  virtual_machine_id = azurerm_linux_virtual_machine.neo4j.id
+  lun                = "10"
+  caching            = "ReadWrite"
 }
 
 # Create (and display) an SSH key
@@ -81,13 +101,10 @@ locals {
     neo4j_version           = var.neo4j_version,
     neo4j_pass              = azurerm_key_vault_secret.neo4j_pwd.value,
     neo4j_data_disk_size_gb = var.neo4j_data_disk_size_gb
-    deploy_from_backup      = local.deploy_from_backup
   }))
   command_to_execute = jsonencode({
     commandToExecute = "echo ${local.templated_file} | base64 -d > ./${local.script_name} && chmod +x ${local.script_name} && ./${local.script_name}"
   })
-
-  neo4j_vm_name = "vm-dev-uks-nomad-neo4j-01"
 }
 
 resource "azurerm_virtual_machine_extension" "install_neo4j" {

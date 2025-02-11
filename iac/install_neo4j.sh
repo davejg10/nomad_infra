@@ -45,22 +45,10 @@ sudo sed -i "s|#server.http.listen_address=.*|server.http.listen_address=:7474|"
 sudo sed -i "s|#server.bolt.listen_address=.*|server.bolt.listen_address=:7687|" /etc/neo4j/neo4j.conf
 
 # Create directories
-if [[ "${deploy_from_backup}" == "false" ]]; then
-    sudo mkdir -p $NEO4J_DATA_DIR/neo4j/{data,import,plugins,log}
-    sudo chown -R neo4j:neo4j $NEO4J_DATA_DIR/neo4j
-    # Set the initial password (only works before the database has been started).
-    sudo neo4j-admin dbms set-initial-password ${neo4j_pass}
-else
-    sudo chown -R neo4j:neo4j $NEO4J_DATA_DIR/neo4j
-    # Disable authentication because the password passed into this script may not be the same as the previous password.
-    sudo sed -i "s|#dbms.security.auth_enabled=.*|dbms.security.auth_enabled=false|" /etc/neo4j/neo4j.conf
-    sudo systemctl restart neo4j 
-    until nc -z localhost 7687; do   
-        sleep 5
-    done
-    echo "ALTER USER neo4j SET PASSWORD ${neo4j_pass};" | cypher-shell -u neo4j -d system
-    sudo sed -i "s|dbms.security.auth_enabled=.*|#dbms.security.auth_enabled=false|" /etc/neo4j/neo4j.conf
-fi
+sudo mkdir -p $NEO4J_DATA_DIR/neo4j/{data,import,plugins,log}
+sudo chown -R neo4j:neo4j $NEO4J_DATA_DIR/neo4j
+# Set the initial password (only works before the database has been started).
+sudo neo4j-admin dbms set-initial-password ${neo4j_pass}
 
 # Start neo4j automatically on system startup
 sudo systemctl enable neo4j

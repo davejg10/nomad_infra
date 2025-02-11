@@ -14,6 +14,10 @@ resource "terraform_data" "kv_network_check" {
   depends_on = [
     azurerm_role_assignment.this_deployer_key_vault_secrets,
   ]
+  
+  triggers_replace = [
+     azurerm_private_endpoint.key_vault.id
+  ]
 
   provisioner "local-exec" {
     command = "chmod +x ${local.key_vault_network_script_path} && ./${local.key_vault_network_script_path}"

@@ -3,8 +3,6 @@
 # Setting frontend to noninteractive to avoid password prompts
 export DEBIAN_FRONTEND=noninteractive
 
-${neo4j_data_dir}="/datadisk"
-
 # Install java
 sudo apt install openjdk-21-jre-headless -y
 

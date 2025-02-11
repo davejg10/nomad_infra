@@ -69,12 +69,11 @@ resource "azurerm_managed_disk" "neo4j" {
   disk_size_gb         = var.neo4j_data_disk_size_gb
 
   lifecycle {
-    ignore_changes = [ // If we ever restore, and import we dont want the disk to be re-created next time we plan/apply
+    ignore_changes = [ // If we ever restore from backup, and import we dont want the disk to be re-created next time we plan/apply
       create_option,
       source_resource_id,
       name,
-      zone,
-      disk_size_gb
+      zone
     ]
   }
 }

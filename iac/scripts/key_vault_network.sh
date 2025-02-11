@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Set max timeout (in seconds)
 MAX_TIMEOUT=180  # 3 minutes
 

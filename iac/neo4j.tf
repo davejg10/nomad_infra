@@ -70,7 +70,8 @@ resource "azurerm_managed_disk" "neo4j" {
 
   lifecycle {
     ignore_changes = [ // If we ever restore, and import we dont want the disk to be re-created next time we plan/apply
-      create_option, 
+      create_option,
+      source_resource_id,
       name,
       zone,
       disk_size_gb

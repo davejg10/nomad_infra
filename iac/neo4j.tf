@@ -1,5 +1,6 @@
 locals {
   neo4j_vm_name = "vm-dev-uks-nomad-neo4j-01"
+  key_vault_network_scrip_path = "${path.module}/scripts/key_vault_network.sh"
 }
 
 resource "random_password" "neo4j_pwd" {
@@ -8,10 +9,24 @@ resource "random_password" "neo4j_pwd" {
   override_special = "_=+:?[]"
 }
 
+// Ensure we have network access before trying to insert secret
+resource "terraform_data" "kv_network_check" {
+  depends_on = [
+    azurerm_role_assignment.this_deployer_key_vault_secrets
+  ]
+
+  provisioner "local-exec" {
+    command = "chmod +x ${local.key_vault_network_scrip_path} && ./${local.key_vault_network_scrip_path}"
+
+    environment = {
+      KEY_VAULT_NAME = azurerm_key_vault.nomad.name
+    }
+  }
+}
+
 resource "azurerm_key_vault_secret" "neo4j_pwd" {
   depends_on = [
-    azurerm_role_assignment.this_deployer_key_vault_secrets,
-    azurerm_private_endpoint.key_vault
+    terraform_data.kv_network_check
   ]
 
   name         = "neo4j-password"
@@ -95,9 +110,12 @@ resource "azurerm_linux_virtual_machine" "neo4j" {
 }
 
 locals {
+  mount_name_suffix = element(split("/", azurerm_virtual_machine_data_disk_attachment.neo4j.managed_disk_id), length(split("/", azurerm_virtual_machine_data_disk_attachment.neo4j.managed_disk_id)) - 1)
+
+
   neo4j_data_dir    = "/datadisk"
   mount_script_name = "mount_datadisk.sh"
-  mount_templated_file = base64encode(templatefile("${path.module}/${local.mount_script_name}", {
+  mount_templated_file = base64encode(templatefile("${path.module}/scripts/${local.mount_script_name}", {
     neo4j_data_disk_size_gb = var.neo4j_data_disk_size_gb,
     neo4j_data_dir          = local.neo4j_data_dir
   }))
@@ -109,7 +127,7 @@ locals {
 resource "azurerm_virtual_machine_extension" "mount_datadisk" {
   depends_on = [azurerm_virtual_machine_data_disk_attachment.neo4j]
 
-  name                 = "mount-${azurerm_virtual_machine_data_disk_attachment.neo4j.managed_disk_id}"
+  name                 = "mount-${local.mount_name_suffix}"
   virtual_machine_id   = azurerm_linux_virtual_machine.neo4j.id
   publisher            = "Microsoft.Azure.Extensions"
   type                 = "CustomScript"
@@ -120,7 +138,7 @@ resource "azurerm_virtual_machine_extension" "mount_datadisk" {
 
 locals {
   install_script_name    = "install_neo4j.sh"
-  install_templated_file = base64encode(templatefile("${path.module}/${local.install_script_name}", {
+  install_templated_file = base64encode(templatefile("${path.module}/scripts/${local.install_script_name}", {
     neo4j_version           = var.neo4j_version,
     neo4j_pass              = azurerm_key_vault_secret.neo4j_pwd.value,
     neo4j_data_dir          = local.neo4j_data_dir

@@ -43,7 +43,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Terraform plan
-        if: ${{ github.event.inputs.redeploy_vm_extension }}
+        if: ${{ github.event.inputs.redeploy_vm_extension == 'true' }}
         uses: davejg10/pipeline_templates/.github/actions/terraform_plan@v1
         with:
           backend_azure_resource_group_name: ${{ vars.backend_azure_resource_group_name }}

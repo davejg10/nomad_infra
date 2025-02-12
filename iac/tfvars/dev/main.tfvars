@@ -10,6 +10,17 @@ environment_settings = {
 vnet_address_space = "10.0.0.0/25"
 asp_subnet_address_prefixes = "10.0.0.0/27"
 pe_subnet_address_prefixes = "10.0.0.32/28"
+neo4j_subnet_address_prefixes = "10.0.0.48/28"
+
+//NEO4J Virtual machine
+neo4j_static_private_ip = "10.0.0.52"
+neo4j_vm_size           = "Standard_B2s"
+
+neo4j_version = "1:2025.01.0"
+neo4j_user = "neo4j"
+neo4j_data_disk_size_gb = "20"
+
+backup_vault_rg_name = "rg-dev-uks-backup"
 
 // App service
 asp_sku_name = "B2"

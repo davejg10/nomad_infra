@@ -16,9 +16,9 @@ terraform {
       source  = "hashicorp/azuread"
       version = "2.30.0"
     }
-    github = {
-      source  = "integrations/github"
-      version = "~> 5.0"
+    random = {
+      source = "hashicorp/random"
+      version = "3.6.3"
     }
   }
 }
@@ -26,7 +26,7 @@ terraform {
 provider "azurerm" {
   use_oidc                        = true
   resource_provider_registrations = "core"
-  subscription_id = "fd1f9c42-234f-4f5a-b49c-04bcfb79351d"
+  subscription_id = "73a3c766-6179-4571-acb5-72b4c3b810bb"
 
   resource_providers_to_register = []
 
@@ -39,10 +39,7 @@ provider "azurerm" {
 
 provider "azuread" {}
 
-provider "github" {
-  token = var.github_pat_token
-  owner = var.github_organisation_target
-}
+provider "random" {}
 
 data "azurerm_client_config" "current" {}
 

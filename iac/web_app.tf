@@ -39,8 +39,13 @@ resource "azurerm_linux_web_app" "web_app" {
     application_logs {
       file_system_level = "Information"
     }
+    http_logs { 
+      file_system {
+        retention_in_days = 7
+        retention_in_mb = 35
+      }
+    }
   }
-  
 
   lifecycle {
     ignore_changes = [

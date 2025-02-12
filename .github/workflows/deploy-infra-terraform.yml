@@ -16,6 +16,10 @@ on:
         description: Application name
         options: 
           - nomad-backend
+      redeploy_vm_extension:
+        type: boolean
+        description: Explicitly re-deploy configure_vm.sh
+      
     
 env:
  ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
@@ -39,6 +43,18 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Terraform plan
+        if: ${{ github.event.inputs.redeploy_vm_extension }}
+        uses: davejg10/pipeline_templates/.github/actions/terraform_plan@v1
+        with:
+          backend_azure_resource_group_name: ${{ vars.backend_azure_resource_group_name }}
+          backend_azure_storage_account_name: ${{ vars.backend_azure_storage_account_name }}
+          backend_container_name: ${{ github.event.inputs.app_name }}
+          environment: ${{ github.event.inputs.environment }}
+          work_dir: ${{ env.work_dir }}
+          additional_tf_vars: -var "vm_extension_replacement=${{ github.run_number }}"
+      
+      - name: Terraform plan
+        if: ${{ github.event.inputs.redeploy_vm_extension != 'true' }}
         uses: davejg10/pipeline_templates/.github/actions/terraform_plan@v1
         with:
           backend_azure_resource_group_name: ${{ vars.backend_azure_resource_group_name }}

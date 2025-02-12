@@ -135,6 +135,15 @@ locals {
   })
 }
 
+variable "vm_extension_replacement" {
+  type = number
+  default = 1
+}
+
+resource "terraform_data" "vm_extension_replacement" {
+  input = var.vm_extension_replacement
+}
+
 resource "azurerm_virtual_machine_extension" "configure_vm" {
   depends_on = [
     azurerm_virtual_machine_data_disk_attachment.neo4j
@@ -142,7 +151,8 @@ resource "azurerm_virtual_machine_extension" "configure_vm" {
 
   lifecycle {
     replace_triggered_by = [
-      azurerm_virtual_machine_data_disk_attachment.neo4j.id
+      azurerm_virtual_machine_data_disk_attachment.neo4j.id,
+      terraform_data.vm_extension_replacement
     ]
   }
 

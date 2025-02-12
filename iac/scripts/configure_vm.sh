@@ -10,8 +10,19 @@ NEO4J_DATA_DIR="/datadisk"
 DATADISK=$(lsblk -d -n -o NAME,SIZE,MOUNTPOINT | awk -v size="${neo4j_data_disk_size_gb}G" '$2 == size  && $3 == "" {print $1}' | head -1)
 if [ -n "$DATADISK" ]; then
     sudo mkdir $NEO4J_DATA_DIR
-    # Format disk
-    sudo mkfs.ext4 /dev/$DATADISK
+
+    # Check if disk is a new raw, unformatted disk
+    # 1. Check with lsblk
+    FSTYPE=$(lsblk -no FSTYPE "$DATADISK" 2>/dev/null)
+    # 2. Check with blkid
+    BLKID_OUTPUT=$(blkid "$DATADISK" 2>/dev/null)
+
+    # Decision logic
+    if [[ -z "$FSTYPE" && -z "$BLKID_OUTPUT" ]]; then
+        # Format disk
+        sudo mkfs.ext4 /dev/$DATADISK
+    fi
+    
     # Mount disk
     sudo mount /dev/$DATADISK $NEO4J_DATA_DIR
     # Add to fstab for persistence

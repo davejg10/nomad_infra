@@ -35,6 +35,13 @@ resource "azurerm_linux_web_app" "web_app" {
     vnet_route_all_enabled                        = true
   }
 
+  logs {
+    application_logs {
+      file_system_level = "Information"
+    }
+  }
+  
+
   lifecycle {
     ignore_changes = [
       virtual_network_subnet_id, // Managed via azurerm_app_service_virtual_network_swift_connection below

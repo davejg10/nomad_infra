@@ -13,12 +13,10 @@ if [ -n "$DATADISK" ]; then
 
     # Check if disk is a new raw, unformatted disk
     # 1. Check with lsblk
-    FSTYPE=$(lsblk -no FSTYPE "$DATADISK" 2>/dev/null)
-    # 2. Check with blkid
-    BLKID_OUTPUT=$(blkid "$DATADISK" 2>/dev/null)
+    FSTYPE=$(lsblk -no FSTYPE "/dev/$DATADISK" 2>/dev/null)
 
     # Decision logic
-    if [[ -z "$FSTYPE" && -z "$BLKID_OUTPUT" ]]; then
+    if [[ -z "$FSTYPE" ]]; then
         # Format disk
         sudo mkfs.ext4 /dev/$DATADISK
     fi

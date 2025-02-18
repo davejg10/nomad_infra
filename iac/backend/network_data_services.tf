@@ -36,4 +36,9 @@ output "data_services_subnet_id" {
   value = azurerm_subnet.data_services.id
 }
 
+output "data_services_subnet_address_prefix" {
+  value = azurerm_subnet.data_services.address_prefixes[0]
+}
+
+
 

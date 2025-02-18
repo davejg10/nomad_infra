@@ -5,7 +5,10 @@ resource "azurerm_subnet" "data_services" {
   virtual_network_name = azurerm_virtual_network.vnet.name
   address_prefixes     = [var.data_services_subnet_address_prefixes]
 
-  service_endpoints = ["Microsoft.Storage"]
+  service_endpoints = [
+    "Microsoft.Storage",
+    "Microsoft.ServiceBus"
+  ]
 
   delegation {
     name = "appservice-delegation"

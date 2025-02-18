@@ -10,3 +10,4 @@ environment_settings = {
 
 sku_name = "FC1"
 
+producer_blob_container_name = "producer-deployment-package"

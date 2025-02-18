@@ -21,17 +21,30 @@ resource "azurerm_linux_web_app" "web_app" {
   }
 
   app_settings = {
-    "APPINSIGHTS_INSTRUMENTATIONKEY" = azurerm_application_insights.web_insights.instrumentation_key
-    "WEBSITES_PORT"                  = var.exposed_container_port
-    "NEO4J_URI"                      = "bolt://${var.neo4j_static_private_ip}:7687"
-    "NEO4J_USER"                     = var.neo4j_user
-    "NEO4J_PASSWORD"                 = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.neo4j_pwd.id})"
+    "WEBSITES_PORT"                         = var.exposed_container_port
+    "NEO4J_URI"                             = "bolt://${var.neo4j_static_private_ip}:7687"
+    "NEO4J_USER"                            = var.neo4j_user
+    "NEO4J_PASSWORD"                        = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.neo4j_pwd.id})"
+    "APPLICATIONINSIGHTS_CONNECTION_STRING" = azurerm_application_insights.web_insights.connection_string,
+    "SPRING_PROFILE"                        = var.environment_settings.environment
   }
 
   site_config {
     container_registry_use_managed_identity       = true
     container_registry_managed_identity_client_id = azurerm_user_assigned_identity.asp.client_id
     vnet_route_all_enabled                        = true
+  }
+
+  logs {
+    application_logs {
+      file_system_level = "Information"
+    }
+    http_logs { 
+      file_system {
+        retention_in_days = 7
+        retention_in_mb = 35
+      }
+    }
   }
 
   lifecycle {

@@ -2,10 +2,10 @@ locals {
   private_dns_zones = {
     "vaultcore" = "privatelink.vaultcore.azure.net"
     "blob" = "privatelink.blob.core.windows.net",
-    "monitor1" = "privatelink.agentsvc.azure-automation.net",
-    "monitor2" = "privatelink.monitor.azure.com",
-    "monitor3" = "privatelink.ods.opinsights.azure.com",
-    "monitor4" = "privatelink.oms.opinsights.azure.com",
+    # "monitor1" = "privatelink.agentsvc.azure-automation.net", // Have commented the Azure Monitor private link scope in devops repo.
+    # "monitor2" = "privatelink.monitor.azure.com", // for cost savings and saved complexity
+    # "monitor3" = "privatelink.ods.opinsights.azure.com",
+    # "monitor4" = "privatelink.oms.opinsights.azure.com",
   }
 }
 

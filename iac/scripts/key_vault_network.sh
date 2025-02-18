@@ -1,4 +1,6 @@
 #!/bin/bash
+# This script is used when deploying the infra stack. It ensures the agent (which is self hosted within our network) can resolve the name of the Key Vault
+# By polling for this, we ensure that all resources related to private endpoints are deployed and working, and therefore we can operate on the data plane
 
 # Set max timeout (in seconds)
 MAX_TIMEOUT=180  # 3 minutes

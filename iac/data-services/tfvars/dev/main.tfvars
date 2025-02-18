@@ -6,5 +6,7 @@ environment_settings = {
   identifier     = "02"
 }
 
-// Networking
-data_services_subnet_address_prefixes = "10.0.0.64/26"
+// App Service Plan
+
+sku_name = "FC1"
+

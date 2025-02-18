@@ -9,8 +9,7 @@ variable "environment_settings" {
   })
 }
 
-variable "data_services_subnet_address_prefixes" {
-  type        = string
-  description = "Address space for the subnet the Azure Function Apps deployed in this configuration"
+variable "sku_name" {
+  type = string
+  description = "The SKU used for the App Service Plan hosting the Function Apps"
 }
-

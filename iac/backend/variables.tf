@@ -47,6 +47,11 @@ variable "neo4j_subnet_address_prefixes" {
   description = "Address space for the subnet containing the virtual machines hosting the neo4j databases."
 }
 
+variable "data_services_subnet_address_prefixes" {
+  type        = string
+  description = "Address space for the subnet the Azure Function Apps deployed in this configuration"
+}
+
 //NEO4J Virtual machine
 variable "neo4j_static_private_ip" {
   type        = string

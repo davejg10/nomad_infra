@@ -11,7 +11,7 @@ vnet_address_space = "10.0.0.0/25"
 asp_subnet_address_prefixes = "10.0.0.0/27"
 pe_subnet_address_prefixes = "10.0.0.32/28"
 neo4j_subnet_address_prefixes = "10.0.0.48/28"
-
+data_services_subnet_address_prefixes = "10.0.0.64/26"
 //NEO4J Virtual machine
 neo4j_static_private_ip = "10.0.0.52"
 neo4j_vm_size           = "Standard_B1ms"

@@ -15,12 +15,12 @@ resource "azurerm_storage_account" "producer" {
 
   network_rules {
     default_action             = "Deny"
-    virtual_network_subnet_ids = [data.terraform_remote_state.devopsutils.outputs.data_services_subnet_id]
+    virtual_network_subnet_ids = [data.terraform_remote_state.backend.outputs.data_services_subnet_id]
   }
 }
 
 resource "azurerm_linux_function_app" "producer" {
-  name                = "example-linux-function-app"
+  name                = "fa-${var.environment_settings.environment}-${var.environment_settings.region_code}-${var.environment_settings.app_name}-${var.environment_settings.identifier}-producer"
   resource_group_name      = data.azurerm_resource_group.rg.name
   location                 = var.environment_settings.region
 
@@ -29,5 +29,11 @@ resource "azurerm_linux_function_app" "producer" {
   service_plan_id            = azurerm_service_plan.producer.id
 
   site_config {}
+
+  lifecycle {
+    ignore_changes = [
+      virtual_network_subnet_id, // Managed via azurerm_app_service_virtual_network_swift_connection
+    ]
+  }
 }
 

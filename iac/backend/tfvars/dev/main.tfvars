@@ -18,7 +18,6 @@ neo4j_vm_size           = "Standard_B1ms"
 
 neo4j_version = "1:2025.01.0"
 neo4j_user = "neo4j"
-neo4j_password_secret_key = "neo4j-password"
 neo4j_data_disk_size_gb = "10"
 
 backup_vault_rg_name = "rg-dev-uks-backup"

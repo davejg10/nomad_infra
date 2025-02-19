@@ -44,7 +44,7 @@ resource "azurerm_key_vault_secret" "neo4j_pwd" {
     terraform_data.kv_network_check
   ]
 
-  name         = var.neo4j_password_secret_key
+  name         = "neo4j-password"
   value        = random_password.neo4j_pwd.result
   key_vault_id = azurerm_key_vault.nomad.id
 }

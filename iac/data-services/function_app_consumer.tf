@@ -3,7 +3,7 @@ resource "azurerm_service_plan" "consumer" {
   resource_group_name = data.azurerm_resource_group.rg.name
   location            = var.environment_settings.region
   os_type             = "Linux"
-  sku_name            = var.sku_name
+  sku_name            = var.consumer_sku_name
 }
 
 resource "azurerm_storage_account" "consumer" {
@@ -39,7 +39,7 @@ resource "azurerm_storage_container" "consumer_container" {
 }
 
 locals {
-  consumer_blob_storage_container = "${azurerm_storage_account.function_apps.primary_blob_endpoint}${var.consumer_blob_container_name}"
+  consumer_blob_storage_container = "${azurerm_storage_account.consumer.primary_blob_endpoint}${var.consumer_blob_container_name}"
 }
 
 resource "azapi_resource" "consumer" {

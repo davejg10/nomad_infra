@@ -3,7 +3,7 @@ resource "azurerm_service_plan" "producer" {
   resource_group_name = data.azurerm_resource_group.rg.name
   location            = var.environment_settings.region
   os_type             = "Linux"
-  sku_name            = var.sku_name
+  sku_name            = var.producer_sku_name
 }
 
 resource "azurerm_storage_account" "producer" {
@@ -34,7 +34,7 @@ resource "azurerm_role_assignment" "producer_to_app_key_vault" {
 
 resource "azurerm_storage_container" "producer_container" {
   name                  = var.producer_blob_container_name
-  storage_account_id    = azurerm_storage_account.function_apps.id
+  storage_account_id    = azurerm_storage_account.producer.id
   container_access_type = "private"
 }
 

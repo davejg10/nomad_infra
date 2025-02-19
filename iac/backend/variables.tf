@@ -72,6 +72,11 @@ variable "neo4j_user" {
   description = "The username created for the admin user of neo4j, passed into ./install_neo4j.sh script"
 }
 
+variable "neo4j_password_secret_key" {
+  type = string
+  description = "The key for the Key Vault secret storing the Neo4j password"
+}
+
 variable "neo4j_data_disk_size_gb" {
   type = string
   description = "Size in Gb of the data disk that will store the Neo4j data"

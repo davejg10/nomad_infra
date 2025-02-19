@@ -29,24 +29,28 @@ resource "terraform_data" "kv_network_check" {
   }
 }
 
+resource "azurerm_key_vault_secret" "neo4j_pwd" {
+  depends_on = [
+    terraform_data.kv_network_check
+  ]
+
+  name         = var.neo4j_password_secret_key
+  value        = random_password.neo4j_pwd.result
+  key_vault_id = azurerm_key_vault.nomad.id
+}
+
+// These are each used in the Function Apps to connect to the Database
 output "neo4j_user" {
   value = var.neo4j_user
 }
 output "neo4j_uri" {
   value = "bolt://${var.neo4j_static_private_ip}:7687"
 }
-output "neo4j_password_secret_id" {
-  value = azurerm_key_vault_secret.neo4j_pwd.id
+output "neo4j_password_secret_key" {
+  value = var.neo4j_password_secret_key
 }
-
-resource "azurerm_key_vault_secret" "neo4j_pwd" {
-  depends_on = [
-    terraform_data.kv_network_check
-  ]
-
-  name         = "neo4j-password"
-  value        = random_password.neo4j_pwd.result
-  key_vault_id = azurerm_key_vault.nomad.id
+output "key_vault_uri" {
+  value = azurerm_key_vault.nomad.vault_uri
 }
 
 resource "azurerm_public_ip" "example" {

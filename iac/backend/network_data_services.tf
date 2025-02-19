@@ -6,8 +6,7 @@ resource "azurerm_subnet" "data_services" {
   address_prefixes     = [var.data_services_subnet_address_prefixes]
 
   service_endpoints = [
-    "Microsoft.Storage",
-    "Microsoft.ServiceBus"
+    "Microsoft.Storage"
   ]
 
   delegation {

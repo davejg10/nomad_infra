@@ -8,6 +8,8 @@ environment_settings = {
 
 // App Service Plan
 
-sku_name = "FC1"
+consumer_sku_name = "FC1"
+producer_sku_name = "FC1"
 
 producer_blob_container_name = "producer-deployment-package"
+consumer_blob_container_name = "consumer-deployment-package"

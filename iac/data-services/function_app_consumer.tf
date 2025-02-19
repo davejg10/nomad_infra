@@ -1,13 +1,13 @@
-resource "azurerm_service_plan" "producer" {
-  name                = "asp-${var.environment_settings.environment}-${var.environment_settings.region_code}-${var.environment_settings.app_name}-${var.environment_settings.identifier}-producer"
+resource "azurerm_service_plan" "consumer" {
+  name                = "asp-${var.environment_settings.environment}-${var.environment_settings.region_code}-${var.environment_settings.app_name}-${var.environment_settings.identifier}-consumer"
   resource_group_name = data.azurerm_resource_group.rg.name
   location            = var.environment_settings.region
   os_type             = "Linux"
   sku_name            = var.sku_name
 }
 
-resource "azurerm_storage_account" "producer" {
-  name                     = "st${var.environment_settings.environment}${var.environment_settings.region_code}${var.environment_settings.app_name}${var.environment_settings.identifier}"
+resource "azurerm_storage_account" "consumer" {
+  name                     = "st${var.environment_settings.environment}${var.environment_settings.region_code}${var.environment_settings.app_name}${var.environment_settings.identifier}consumer"
   resource_group_name      = data.azurerm_resource_group.rg.name
   location                 = var.environment_settings.region
   account_tier             = "Standard"
@@ -20,27 +20,27 @@ resource "azurerm_storage_account" "producer" {
   }
 }
 
-resource "azurerm_role_assignment" "producer_storage_roleassignment" {
-  scope                = azurerm_storage_container.producer_container.id
+resource "azurerm_role_assignment" "consumer_storage_roleassignment" {
+  scope                = azurerm_storage_container.consumer_container.id
   role_definition_name = "Storage Blob Data Owner"
-  principal_id         = data.azurerm_linux_function_app.producer.identity[0].principal_id
+  principal_id         = data.azurerm_linux_function_app.consumer.identity[0].principal_id
 }
 
-resource "azurerm_storage_container" "producer_container" {
-  name                  = var.producer_blob_container_name
-  storage_account_id    = azurerm_storage_account.function_apps.id
+resource "azurerm_storage_container" "consumer_container" {
+  name                  = var.consumer_blob_container_name
+  storage_account_id    = azurerm_storage_account.consumer.id
   container_access_type = "private"
 }
 
 locals {
-  producer_blob_storage_container = "${azurerm_storage_account.producer.primary_blob_endpoint}${var.producer_blob_container_name}"
+  consumer_blob_storage_container = "${azurerm_storage_account.function_apps.primary_blob_endpoint}${var.consumer_blob_container_name}"
 }
 
-resource "azapi_resource" "producer" {
+resource "azapi_resource" "consumer" {
   type = "Microsoft.Web/sites@2023-12-01"
   schema_validation_enabled = false
   location = var.environment_settings.region
-  name = "fa-${var.environment_settings.environment}-${var.environment_settings.region_code}-${var.environment_settings.app_name}-${var.environment_settings.identifier}-producer"
+  name = "fa-${var.environment_settings.environment}-${var.environment_settings.region_code}-${var.environment_settings.app_name}-${var.environment_settings.identifier}-consumer"
   parent_id = data.azurerm_resource_group.rg.id
 
   identity {
@@ -50,20 +50,20 @@ resource "azapi_resource" "producer" {
   body = {
     kind = "functionapp,linux",
     properties = {
-      serverFarmId = azurerm_service_plan.producer.id,
+      serverFarmId = azurerm_service_plan.consumer.id,
         functionAppConfig = {
           deployment = {
             storage = {
               type = "blobContainer",
-              value = local.producer_blob_storage_container,
+              value = local.blob_storage_container,
               authentication = {
                 type = "SystemAssignedIdentity"
               }
             }
           },
           scaleAndConcurrency = {
-            maximumInstanceCount = var.producer_max_instance_count,
-            instanceMemoryMB     = var.producer_instance_memory
+            maximumInstanceCount = var.consumer_max_instance_count,
+            instanceMemoryMB     = var.consumer_instance_memory
           },
           runtime = { 
             name = "java", 
@@ -74,7 +74,7 @@ resource "azapi_resource" "producer" {
           appSettings = [
             {
               name = "AzureWebJobsStorage__accountName",
-              value = azurerm_storage_account.producer.name
+              value = azurerm_storage_account.consumer.name
             },
             {
               name = "NEO4J_URI",
@@ -100,16 +100,16 @@ resource "azapi_resource" "producer" {
     ]
   }
   
-  depends_on = [ azurerm_service_plan.producer, azurerm_storage_account.producer ]
+  depends_on = [ azurerm_service_plan.consumer, azurerm_storage_account.consumer ]
 }
 
 # The subnet is created in ../backend Terraform config directory
-resource "azurerm_app_service_virtual_network_swift_connection" "producer_vnet_integration" {
-  app_service_id = data.azurerm_linux_function_app.producer.id
+resource "azurerm_app_service_virtual_network_swift_connection" "consumer_vnet_integration" {
+  app_service_id = data.azurerm_linux_function_app.consumer.id
   subnet_id      = data.terraform_remote_state.backend.outputs.data_services_subnet_id
 }
 
-data "azurerm_linux_function_app" "producer" {
-  name                = azapi_resource.producer.name
+data "azurerm_linux_function_app" "consumer" {
+  name                = azapi_resource.consumer.name
   resource_group_name = data.azurerm_resource_group.rg.name
 }

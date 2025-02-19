@@ -38,6 +38,10 @@ provider "azurerm" {
 
 provider "azuread" {}
 
+provider "azapi" {
+  disable_default_output = true
+}
+
 data "azurerm_client_config" "current" {}
 
 data "azurerm_resource_group" "rg" {

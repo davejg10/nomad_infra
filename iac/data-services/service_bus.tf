@@ -5,17 +5,9 @@ resource "azurerm_servicebus_namespace" "nomad" {
   sku                 = "Standard"
 
   local_auth_enabled            = false
-  public_network_access_enabled = false
-
-  network_rule_set {
-    default_action                = "Deny"
-    public_network_access_enabled = false
-    ip_rules                      = [
-      "82.133.78.250",
-      data.terraform_remote_state.backend.outputs.data_services_subnet_address_prefix
-    ]
-    
-  }
+  // Service bus is public as Service Endpoints/Private Endpoints is a premium feature
+  // Premium costs 70p per hour!
+  public_network_access_enabled = true
 }
 
 resource "azurerm_role_assignment" "servicebus_sender" {

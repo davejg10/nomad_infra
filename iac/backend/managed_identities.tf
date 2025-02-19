@@ -33,6 +33,10 @@ resource "azurerm_user_assigned_identity" "github" {
   location            = var.environment_settings.region
 }
 
+output "github_client_id" {
+  value = azurerm_user_assigned_identity.github.client_id
+}
+
 resource "azurerm_role_assignment" "github_to_key_vault" {
   scope              = azurerm_key_vault.nomad.id
   role_definition_id = azurerm_role_definition.manage_key_vault_secrets.role_definition_resource_id

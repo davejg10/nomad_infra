@@ -20,9 +20,15 @@ resource "azurerm_storage_account" "consumer" {
   }
 }
 
-resource "azurerm_role_assignment" "consumer_storage_roleassignment" {
+resource "azurerm_role_assignment" "consumer_to_package_storage" {
   scope                = azurerm_storage_container.consumer_container.id
   role_definition_name = "Storage Blob Data Owner"
+  principal_id         = data.azurerm_linux_function_app.consumer.identity[0].principal_id
+}
+
+resource "azurerm_role_assignment" "consumer_to_app_key_vault" {
+  scope                = data.terraform_remote_state.backend.outputs.key_vault_id
+  role_definition_name = "Key Vault Secrets User"
   principal_id         = data.azurerm_linux_function_app.consumer.identity[0].principal_id
 }
 

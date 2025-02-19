@@ -38,3 +38,7 @@ data "azurerm_private_dns_zone" "vault" {
   name                = "privatelink.vaultcore.azure.net"
   resource_group_name = var.hub_rg_name
 }
+
+output "key_vault_id" {
+  value = azurerm_key_vault.nomad.id
+}

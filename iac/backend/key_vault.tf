@@ -42,3 +42,6 @@ data "azurerm_private_dns_zone" "vault" {
 output "key_vault_id" {
   value = azurerm_key_vault.nomad.id
 }
+output "key_vault_uri" {
+  value = azurerm_key_vault.nomad.vault_uri
+}

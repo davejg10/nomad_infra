@@ -73,3 +73,8 @@ resource "azurerm_application_insights" "web_insights" {
   workspace_id        = data.azurerm_log_analytics_workspace.central.id
   application_type    = "web"
 }
+
+output "app_insights_connection_string" {
+  value = azurerm_application_insights.web_insights.connection_string
+  sensitive = true
+}

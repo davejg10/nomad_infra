@@ -82,17 +82,22 @@ resource "azapi_resource" "producer" {
               name = "AzureWebJobsStorage__accountName",
               value = azurerm_storage_account.producer.name
             },
+            # flexconsumption Function Apps cant use Key Vault reference so secrets must be fetched in code
             {
-              name = "NEO4J_URI",
+              name = "key_vault_uri",
+              value = data.terraform_remote_state.backend.outputs.key_vault_uri
+            },
+            {
+              name = "neo4j_uri",
               value = data.terraform_remote_state.backend.outputs.neo4j_uri
             },
             {
-              name = "NEO4J_USER",
+              name = "neo4j_user",
               value = data.terraform_remote_state.backend.outputs.neo4j_user
             },
             {
-              name = "NEO4J_PASSWORD",
-              value = "@Microsoft.KeyVault(SecretUri=${data.terraform_remote_state.backend.outputs.neo4j_password_secret_id})"
+              name = "neo4j_password_key",
+              value = data.terraform_remote_state.backend.outputs.neo4j_password_secret_key
             }
           ]
         }

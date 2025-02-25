@@ -101,15 +101,15 @@ resource "azapi_update_resource" "service_bus_scale" {
           scale = {
             rules = [
               {
-                name = "azure-servicebus"
-                type = "azure-servicebus"
+                name     = "azure-servicebus"
+                type     = "azure-servicebus"
                 identity = azurerm_user_assigned_identity.one2goasia.id
               }
             ]
           }
         }
       }
-      
+
     }
   }
 

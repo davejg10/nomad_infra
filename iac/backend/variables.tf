@@ -27,7 +27,7 @@ variable "hub_law_name" {
   default = "law-glb-uks-devopsutils"
 }
 variable "ghrunner_subnet_name" {
-  type = string
+  type    = string
   default = "snt-ghrunners"
 }
 

@@ -1,7 +1,7 @@
 data "azurerm_subnet" "ghrunners" {
-  name = var.ghrunner_subnet_name
+  name                 = var.ghrunner_subnet_name
   virtual_network_name = var.hub_vnet_name
-  resource_group_name = var.hub_rg_name
+  resource_group_name  = var.hub_rg_name
 }
 
 resource "azurerm_key_vault" "nomad" {
@@ -20,8 +20,8 @@ resource "azurerm_key_vault" "nomad" {
   public_network_access_enabled = var.kv_public_network_access_enabled
 
   network_acls {
-    bypass                     = "AzureServices"
-    default_action             = "Deny"
+    bypass         = "AzureServices"
+    default_action = "Deny"
     virtual_network_subnet_ids = [
       azurerm_subnet.data_services.id,
       azurerm_subnet.neo4j.id,

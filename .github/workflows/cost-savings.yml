@@ -1,26 +1,26 @@
-# name: Save hosting costs
+name: Save hosting costs
 
-# on:
-#   schedule:
-#     - cron: "0 23 * * *"  # Runs every day at 11 PM UTC
-#   workflow_dispatch:
+on:
+  schedule:
+    - cron: "0 2 * * *"  # Runs every day at 11 PM UTC
+  workflow_dispatch:
 
-# env:
-#   environment: dev
+env:
+  environment: dev
     
-# jobs:
-#   test:
-#     runs-on: self-hosted
-#     environment: ${{ env.environment }}
-#     steps:
-#       - uses: actions/checkout@v4
+jobs:
+  test:
+    runs-on: self-hosted
+    environment: ${{ env.environment }}
+    steps:
+      - uses: actions/checkout@v4
 
-      # - name: Azure CLI Login
-      #   uses: azure/login@v2
-      #   with:
-      #     client-id: ${{ secrets.AZURE_CLIENT_ID }}
-      #     tenant-id: ${{ vars.AZURE_TENANT_ID }}
-      #     subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+      - name: Azure CLI Login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
 
-#       - name: Run cost savings script
-#         run: bash ./.github/scripts/save_cost.sh ${{ env.environment }}
+      - name: Run cost savings script
+        run: bash ./.github/scripts/save_cost.sh ${{ env.environment }}

@@ -56,12 +56,13 @@ resource "azapi_resource" "consumer" {
   body = {
     kind = "functionapp,linux",
     properties = {
+      keyVaultReferenceIdentity = "SystemAssigned"
       serverFarmId = azurerm_service_plan.consumer.id,
         functionAppConfig = {
           deployment = {
             storage = {
               type = "blobContainer",
-              value = local.blob_storage_container,
+              value = local.consumer_blob_storage_container,
               authentication = {
                 type = "SystemAssignedIdentity"
               }

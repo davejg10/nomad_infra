@@ -17,7 +17,7 @@ terraform {
       version = "2.30.0"
     }
     random = {
-      source = "hashicorp/random"
+      source  = "hashicorp/random"
       version = "3.6.3"
     }
   }
@@ -26,7 +26,7 @@ terraform {
 provider "azurerm" {
   use_oidc                        = true
   resource_provider_registrations = "core"
-  subscription_id = "73a3c766-6179-4571-acb5-72b4c3b810bb"
+  subscription_id                 = "73a3c766-6179-4571-acb5-72b4c3b810bb"
 
   resource_providers_to_register = []
 

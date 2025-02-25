@@ -1,8 +1,8 @@
 // Managed Identity deploying this Terraform
 resource "azurerm_role_assignment" "this_deployer_key_vault_secrets" {
-  scope                = azurerm_key_vault.nomad.id
-  role_definition_id   = azurerm_role_definition.manage_key_vault_secrets.role_definition_resource_id
-  principal_id         = data.azurerm_client_config.current.object_id
+  scope              = azurerm_key_vault.nomad.id
+  role_definition_id = azurerm_role_definition.manage_key_vault_secrets.role_definition_resource_id
+  principal_id       = data.azurerm_client_config.current.object_id
 }
 
 // Managed Identity used in Web App hosting application
@@ -45,9 +45,9 @@ resource "azurerm_role_assignment" "github_to_key_vault" {
 
 // This role definition is created in 'devops' repo under 'management' config
 resource "azurerm_role_assignment" "github_to_acr" {
-  scope              = data.azurerm_container_registry.devopsutils.id
+  scope                = data.azurerm_container_registry.devopsutils.id
   role_definition_name = "acr-task-run"
-  principal_id       = azurerm_user_assigned_identity.github.principal_id
+  principal_id         = azurerm_user_assigned_identity.github.principal_id
 }
 
 resource "azurerm_role_assignment" "github_to_web_app" {
@@ -84,7 +84,7 @@ resource "azurerm_role_definition" "deploy_web_app_image" {
       "Microsoft.Web/sites/publishxml/action"
     ]
     data_actions = []
-    not_actions = []
+    not_actions  = []
   }
 
   assignable_scopes = [

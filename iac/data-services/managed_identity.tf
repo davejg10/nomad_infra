@@ -28,7 +28,7 @@ resource "azurerm_role_definition" "deploy_function_app_image" {
       "Microsoft.Web/serverfarms/read"
     ]
     data_actions = []
-    not_actions = []
+    not_actions  = []
   }
 
   assignable_scopes = [

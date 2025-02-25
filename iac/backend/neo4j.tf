@@ -49,9 +49,6 @@ output "neo4j_uri" {
 output "neo4j_password_secret_key" {
   value = var.neo4j_password_secret_key
 }
-output "key_vault_uri" {
-  value = azurerm_key_vault.nomad.vault_uri
-}
 
 // These are each used in the Function Apps to connect to the Database
 output "neo4j_user" {

@@ -26,6 +26,10 @@ variable "hub_law_name" {
   type    = string
   default = "law-glb-uks-devopsutils"
 }
+variable "ghrunner_subnet_name" {
+  type = string
+  default = "snt-ghrunners"
+}
 
 // Networking
 variable "vnet_address_space" {
@@ -35,11 +39,6 @@ variable "vnet_address_space" {
 variable "asp_subnet_address_prefixes" {
   type        = string
   description = "Address space for the subnet containing the Azure App Service."
-}
-
-variable "pe_subnet_address_prefixes" {
-  type        = string
-  description = "Address space for the subnet containing any private endpoints."
 }
 
 variable "neo4j_subnet_address_prefixes" {

@@ -104,7 +104,6 @@ resource "azapi_update_resource" "service_bus_scale" {
                 name = "azure-servicebus"
                 type = "azure-servicebus"
                 identity = azurerm_user_assigned_identity.one2goasia.id
-              
               }
             ]
           }

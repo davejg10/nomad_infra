@@ -10,24 +10,24 @@ resource "random_password" "neo4j_pwd" {
 }
 
 // Ensure we have network access before trying to insert secret
-resource "terraform_data" "kv_network_check" {
-  depends_on = [
-    azurerm_role_assignment.this_deployer_key_vault_secrets,
-  ]
+# resource "terraform_data" "kv_network_check" {
+#   depends_on = [
+#     azurerm_role_assignment.this_deployer_key_vault_secrets,
+#   ]
 
-  triggers_replace = [
-    azurerm_private_endpoint.key_vault.id
-  ]
+#   triggers_replace = [
+#     azurerm_private_endpoint.key_vault.id
+#   ]
 
-  provisioner "local-exec" {
-    command = "chmod +x ${local.key_vault_network_script_path} && ./${local.key_vault_network_script_path}"
+#   provisioner "local-exec" {
+#     command = "chmod +x ${local.key_vault_network_script_path} && ./${local.key_vault_network_script_path}"
 
-    environment = {
-      KEY_VAULT_NAME        = azurerm_key_vault.nomad.name
-      KEY_VAULT_INTERNAL_IP = azurerm_private_endpoint.key_vault.private_service_connection[0].private_ip_address
-    }
-  }
-}
+#     environment = {
+#       KEY_VAULT_NAME        = azurerm_key_vault.nomad.name
+#       KEY_VAULT_INTERNAL_IP = azurerm_private_endpoint.key_vault.private_service_connection[0].private_ip_address
+#     }
+#   }
+# }
 
 resource "azurerm_key_vault_secret" "neo4j_pwd" {
   depends_on = [

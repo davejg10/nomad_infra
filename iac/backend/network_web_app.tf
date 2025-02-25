@@ -4,6 +4,12 @@ resource "azurerm_subnet" "app_service_plan" {
   virtual_network_name = azurerm_virtual_network.vnet.name
   address_prefixes     = [var.asp_subnet_address_prefixes]
 
+  service_endpoints = [
+    "Microsoft.Storage",
+    "Microsoft.KeyVault",
+    "Microsoft.Sql"
+  ]
+
   delegation {
     name = "appservice-delegation"
 

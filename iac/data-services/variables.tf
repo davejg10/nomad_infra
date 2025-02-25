@@ -9,7 +9,6 @@ variable "environment_settings" {
   })
 }
 
-<<<<<<< HEAD
 // Hub config
 variable "hub_rg_name" {
   type    = string
@@ -31,11 +30,6 @@ variable "hub_law_name" {
 // Producer Function App config
 variable "producer_sku_name" {
   type        = string
-=======
-// Producer Function App config
-variable "producer_sku_name" {
-  type = string
->>>>>>> e188f34 (Added consumer infra)
   description = "The SKU used for the App Service Plan hosting the Function Apps"
 }
 
@@ -82,8 +76,4 @@ variable "github_organisation_target" {
 variable "github_repository_name" {
   type    = string
   default = "nomad_data_services"
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> e188f34 (Added consumer infra)

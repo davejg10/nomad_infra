@@ -50,17 +50,6 @@ output "neo4j_password_secret_key" {
   value = var.neo4j_password_secret_key
 }
 
-// These are each used in the Function Apps to connect to the Database
-output "neo4j_user" {
-  value = var.neo4j_user
-}
-output "neo4j_uri" {
-  value = "bolt://${var.neo4j_static_private_ip}:7687"
-}
-output "neo4j_password_secret_key" {
-  value = var.neo4j_password_secret_key
-}
-
 resource "azurerm_public_ip" "example" {
   name                = "test-publicip"
   resource_group_name = data.azurerm_resource_group.rg.name

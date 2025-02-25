@@ -1,5 +1,5 @@
 resource "azurerm_key_vault" "nomad" {
-  name = "kv-t-${var.environment_settings.environment}-${var.environment_settings.region_code}-${var.environment_settings.app_name}-${var.environment_settings.identifier}"
+  name = "kv-${var.environment_settings.environment}-${var.environment_settings.region_code}-${var.environment_settings.app_name}-${var.environment_settings.identifier}"
 
   resource_group_name = data.azurerm_resource_group.rg.name
   location            = var.environment_settings.region
@@ -37,4 +37,11 @@ resource "azurerm_private_endpoint" "key_vault" {
 data "azurerm_private_dns_zone" "vault" {
   name                = "privatelink.vaultcore.azure.net"
   resource_group_name = var.hub_rg_name
+}
+
+output "key_vault_id" {
+  value = azurerm_key_vault.nomad.id
+}
+output "key_vault_uri" {
+  value = azurerm_key_vault.nomad.vault_uri
 }

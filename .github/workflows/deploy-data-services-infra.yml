@@ -1,5 +1,5 @@
-name: destroy-nomad-infra
-run-name: Terraform destroy ${{ github.event.inputs.app_name }} in ${{ github.event.inputs.environment }}
+name: deploy-nomad-data-services
+run-name: Terraform deploy ${{ github.event.inputs.app_name }} in ${{ github.event.inputs.environment }}
 
 on:
   workflow_dispatch:
@@ -9,28 +9,27 @@ on:
         description: Environment
         options: 
           - dev
-          # - test
+          - test
           # - prod
       app_name:
         type: choice
         description: Application name
         options: 
-          - backend
           - data-services
-
+      
 env:
-  ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
-  ARM_TENANT_ID: ${{ vars.AZURE_TENANT_ID }}
-  ARM_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
-  ARM_USE_AZUREAD: true
-  work_dir: ./iac/${{ github.event.inputs.app_name }}
+ ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+ ARM_TENANT_ID: ${{ vars.AZURE_TENANT_ID }}
+ ARM_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+ ARM_USE_AZUREAD: true
+ work_dir: ./iac/${{ github.event.inputs.environment }}
 
 permissions:
   id-token: write
   contents: read
 
 jobs:
-  terraform_plan_destroy:
+  terraform_plan:
     runs-on: self-hosted
     environment: ${{ github.event.inputs.environment }}
     defaults:
@@ -38,9 +37,9 @@ jobs:
         working-directory: ${{ env.work_dir }}
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Terraform plan
-        uses: davejg10/pipeline_templates/.github/actions/terraform_plan_destroy@v1
+        uses: davejg10/pipeline_templates/.github/actions/terraform_plan@v1
         with:
           backend_azure_resource_group_name: ${{ vars.backend_azure_resource_group_name }}
           backend_azure_storage_account_name: ${{ vars.backend_azure_storage_account_name }}
@@ -51,7 +50,7 @@ jobs:
   terraform_apply:
     runs-on: self-hosted
     environment: ${{ github.event.inputs.environment }}
-    needs: terraform_plan_destroy
+    needs: terraform_plan
     defaults:
       run:
         working-directory: ${{ env.work_dir }}

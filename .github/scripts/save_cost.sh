@@ -13,7 +13,6 @@ check_webapp_exists() {
     return $?
 }
 
-
 # Function to check if a VM exists before stopping
 check_vm_exists() {
     az vm show --name "$1" --resource-group "$2" &> /dev/null

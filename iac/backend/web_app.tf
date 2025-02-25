@@ -39,17 +39,17 @@ resource "azurerm_linux_web_app" "web_app" {
     application_logs {
       file_system_level = "Information"
     }
-    http_logs { 
+    http_logs {
       file_system {
         retention_in_days = 7
-        retention_in_mb = 35
+        retention_in_mb   = 35
       }
     }
   }
 
   lifecycle {
     ignore_changes = [
-      virtual_network_subnet_id, // Managed via azurerm_app_service_virtual_network_swift_connection below
+      virtual_network_subnet_id,       // Managed via azurerm_app_service_virtual_network_swift_connection below
       site_config["application_stack"] // Deploy our app separately
     ]
   }
@@ -72,4 +72,9 @@ resource "azurerm_application_insights" "web_insights" {
   location            = var.environment_settings.region
   workspace_id        = data.azurerm_log_analytics_workspace.central.id
   application_type    = "web"
+}
+
+output "app_insights_connection_string" {
+  value     = azurerm_application_insights.web_insights.connection_string
+  sensitive = true
 }

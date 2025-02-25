@@ -1,5 +1,5 @@
 locals {
-  neo4j_vm_name = "vm-dev-uks-nomad-neo4j-01"
+  neo4j_vm_name                 = "vm-dev-uks-nomad-neo4j-01"
   key_vault_network_script_path = "${path.module}/scripts/key_vault_network.sh"
 }
 
@@ -14,16 +14,16 @@ resource "terraform_data" "kv_network_check" {
   depends_on = [
     azurerm_role_assignment.this_deployer_key_vault_secrets,
   ]
-  
+
   triggers_replace = [
-     azurerm_private_endpoint.key_vault.id
+    azurerm_private_endpoint.key_vault.id
   ]
 
   provisioner "local-exec" {
     command = "chmod +x ${local.key_vault_network_script_path} && ./${local.key_vault_network_script_path}"
 
     environment = {
-      KEY_VAULT_NAME = azurerm_key_vault.nomad.name
+      KEY_VAULT_NAME        = azurerm_key_vault.nomad.name
       KEY_VAULT_INTERNAL_IP = azurerm_private_endpoint.key_vault.private_service_connection[0].private_ip_address
     }
   }
@@ -34,9 +34,20 @@ resource "azurerm_key_vault_secret" "neo4j_pwd" {
     terraform_data.kv_network_check
   ]
 
-  name         = "neo4j-password"
+  name         = var.neo4j_password_secret_key
   value        = random_password.neo4j_pwd.result
   key_vault_id = azurerm_key_vault.nomad.id
+}
+
+// These are each used in the Function Apps to connect to the Database
+output "neo4j_user" {
+  value = var.neo4j_user
+}
+output "neo4j_uri" {
+  value = "bolt://${var.neo4j_static_private_ip}:7687"
+}
+output "neo4j_password_secret_key" {
+  value = var.neo4j_password_secret_key
 }
 
 resource "azurerm_public_ip" "example" {
@@ -62,8 +73,8 @@ resource "azurerm_network_interface" "neo4j" {
 
 resource "azurerm_managed_disk" "neo4j" {
   name                 = "${local.neo4j_vm_name}-neo4j-datadisk"
-  resource_group_name = data.azurerm_resource_group.rg.name
-  location            = var.environment_settings.region
+  resource_group_name  = data.azurerm_resource_group.rg.name
+  location             = var.environment_settings.region
   storage_account_type = "Standard_LRS"
   create_option        = "Empty"
   disk_size_gb         = var.neo4j_data_disk_size_gb
@@ -93,8 +104,8 @@ resource "tls_private_key" "example_ssh" {
 
 resource "azurerm_linux_virtual_machine" "neo4j" {
   name                  = local.neo4j_vm_name
-  resource_group_name = data.azurerm_resource_group.rg.name
-  location            = var.environment_settings.region
+  resource_group_name   = data.azurerm_resource_group.rg.name
+  location              = var.environment_settings.region
   network_interface_ids = [azurerm_network_interface.neo4j.id]
   computer_name         = "neo4j"
   size                  = var.neo4j_vm_size
@@ -124,7 +135,7 @@ resource "azurerm_linux_virtual_machine" "neo4j" {
 }
 
 locals {
-  configure_script_name    = "configure_vm.sh"
+  configure_script_name = "configure_vm.sh"
   templated_file = base64encode(templatefile("${path.module}/scripts/${local.configure_script_name}", {
     neo4j_version           = var.neo4j_version,
     neo4j_pass              = azurerm_key_vault_secret.neo4j_pwd.value,
@@ -136,7 +147,7 @@ locals {
 }
 
 variable "vm_extension_replacement" {
-  type = number
+  type    = number
   default = 1
 }
 

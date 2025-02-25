@@ -53,7 +53,6 @@ jobs:
           additional_tf_vars: -var "vm_extension_replacement=${{ github.run_number }}"
       
       - name: Terraform plan
-        if: ${{ github.event.inputs.redeploy_vm_extension != 'true' }}
         uses: davejg10/pipeline_templates/.github/actions/terraform_plan@v1
         with:
           backend_azure_resource_group_name: ${{ vars.backend_azure_resource_group_name }}

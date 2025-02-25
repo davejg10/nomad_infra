@@ -1,5 +1,6 @@
 data "azurerm_subnet" "ghrunners" {
   name = var.ghrunner_subnet_name
+  virtual_network_name = var.hub_vnet_name
   resource_group_name = var.hub_rg_name
 }
 

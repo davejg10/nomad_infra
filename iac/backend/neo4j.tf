@@ -29,6 +29,16 @@ resource "terraform_data" "kv_network_check" {
   }
 }
 
+output "neo4j_user" {
+  value = var.neo4j_user
+}
+output "neo4j_uri" {
+  value = "bolt://${var.neo4j_static_private_ip}:7687"
+}
+output "neo4j_password_secret_id" {
+  value = azurerm_key_vault_secret.neo4j_pwd.id
+}
+
 resource "azurerm_key_vault_secret" "neo4j_pwd" {
   depends_on = [
     terraform_data.kv_network_check

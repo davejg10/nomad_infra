@@ -30,9 +30,9 @@ resource "random_password" "neo4j_pwd" {
 # }
 
 resource "azurerm_key_vault_secret" "neo4j_pwd" {
-  depends_on = [
-    terraform_data.kv_network_check
-  ]
+  # depends_on = [
+  #   terraform_data.kv_network_check
+  # ]
 
   name         = var.neo4j_password_secret_key
   value        = random_password.neo4j_pwd.result

@@ -1,4 +1,4 @@
-name: deploy-nomad-infra
+name: deploy-nomad-backend
 run-name: Terraform deploy ${{ github.event.inputs.app_name }} in ${{ github.event.inputs.environment }}
 
 on:
@@ -15,18 +15,17 @@ on:
         type: choice
         description: Application name
         options: 
-          - nomad-backend
+          - backend
       redeploy_vm_extension:
         type: boolean
         description: Explicitly re-deploy configure_vm.sh
-      
     
 env:
  ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
  ARM_TENANT_ID: ${{ vars.AZURE_TENANT_ID }}
  ARM_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
  ARM_USE_AZUREAD: true
- work_dir: ./iac/backend
+ work_dir: ./iac/${{ github.event.inputs.environment }}
 
 permissions:
   id-token: write
@@ -48,7 +47,7 @@ jobs:
         with:
           backend_azure_resource_group_name: ${{ vars.backend_azure_resource_group_name }}
           backend_azure_storage_account_name: ${{ vars.backend_azure_storage_account_name }}
-          backend_container_name: ${{ github.event.inputs.app_name }}
+          backend_container_name: nomad-${{ github.event.inputs.app_name }}
           environment: ${{ github.event.inputs.environment }}
           work_dir: ${{ env.work_dir }}
           additional_tf_vars: -var "vm_extension_replacement=${{ github.run_number }}"
@@ -59,7 +58,7 @@ jobs:
         with:
           backend_azure_resource_group_name: ${{ vars.backend_azure_resource_group_name }}
           backend_azure_storage_account_name: ${{ vars.backend_azure_storage_account_name }}
-          backend_container_name: ${{ github.event.inputs.app_name }}
+          backend_container_name: nomad-${{ github.event.inputs.app_name }}
           environment: ${{ github.event.inputs.environment }}
           work_dir: ${{ env.work_dir }}
       
@@ -78,5 +77,5 @@ jobs:
         with:
           backend_azure_resource_group_name: ${{ vars.backend_azure_resource_group_name }}
           backend_azure_storage_account_name: ${{ vars.backend_azure_storage_account_name }}
-          backend_container_name: ${{ github.event.inputs.app_name }}
+          backend_container_name: nomad-${{ github.event.inputs.app_name }}
           work_dir: ${{ env.work_dir }}

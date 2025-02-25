@@ -1,5 +1,5 @@
 resource "azurerm_user_assigned_identity" "one2goasia" {
-  name = "id-${var.environment_settings.environment}-${var.environment_settings.region_code}-${var.environment_settings.app_name}-acaj"
+  name = "id-${var.environment_settings.environment}-${var.environment_settings.region_code}-${var.environment_settings.app_name}-${var.environment_settings.identifier}-acaj"
 
   resource_group_name = data.azurerm_resource_group.rg.name
   location            = var.environment_settings.region

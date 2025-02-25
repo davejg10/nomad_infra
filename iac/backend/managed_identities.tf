@@ -7,7 +7,7 @@ resource "azurerm_role_assignment" "this_deployer_key_vault_secrets" {
 
 // Managed Identity used in Web App hosting application
 resource "azurerm_user_assigned_identity" "asp" {
-  name = "id-${var.environment_settings.environment}-${var.environment_settings.region_code}-${var.environment_settings.app_name}-asp-${var.environment_settings.identifier}"
+  name = "id-${var.environment_settings.environment}-${var.environment_settings.region_code}-${var.environment_settings.app_name}-${var.environment_settings.identifier}-asp"
 
   resource_group_name = data.azurerm_resource_group.rg.name
   location            = var.environment_settings.region
@@ -27,7 +27,7 @@ resource "azurerm_role_assignment" "webapp_pull_acr" {
 
 // Managed Identity used in nomad-backend repo to deploy, insert secret, push to acr..
 resource "azurerm_user_assigned_identity" "github" {
-  name = "id-${var.environment_settings.environment}-${var.environment_settings.region_code}-${var.environment_settings.app_name}-github-${var.environment_settings.identifier}"
+  name = "id-${var.environment_settings.environment}-${var.environment_settings.region_code}-${var.environment_settings.app_name}-${var.environment_settings.identifier}-github"
 
   resource_group_name = data.azurerm_resource_group.rg.name
   location            = var.environment_settings.region
@@ -57,7 +57,7 @@ resource "azurerm_role_assignment" "github_to_web_app" {
 }
 
 resource "azurerm_role_definition" "manage_key_vault_secrets" {
-  name        = "${var.environment_settings.environment}-kv-secrets-${azurerm_key_vault.nomad.name}"
+  name        = "kv-secrets-${azurerm_key_vault.nomad.name}"
   scope       = azurerm_key_vault.nomad.id
   description = "A custom role allowing all secret management in Key Vault: ${azurerm_key_vault.nomad.name}."
 
@@ -75,7 +75,7 @@ resource "azurerm_role_definition" "manage_key_vault_secrets" {
 }
 
 resource "azurerm_role_definition" "deploy_web_app_image" {
-  name        = "${var.environment_settings.environment}-webapp-deploy-${azurerm_linux_web_app.web_app.name}"
+  name        = "webapp-deploy-${azurerm_linux_web_app.web_app.name}"
   scope       = azurerm_linux_web_app.web_app.id
   description = "A custom role allow you to fetch publish_profile and deploy Web Apps to: ${azurerm_linux_web_app.web_app.name}."
 

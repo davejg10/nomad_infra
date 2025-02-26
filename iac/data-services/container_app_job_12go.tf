@@ -81,7 +81,6 @@ resource "azurerm_container_app_job" "one2goasia" {
           "queueName"              = azurerm_servicebus_queue.pre_processed.name
           "namespace"              = azurerm_servicebus_namespace.nomad.name
           "messageCount"           = "5"
-          "activationMessageCount" = "2"
         }
       }
     }

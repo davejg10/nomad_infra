@@ -27,24 +27,24 @@ variable "hub_law_name" {
   default = "law-glb-uks-devopsutils"
 }
 
-// Producer Function App config
-variable "producer_sku_name" {
+// Job Orchestrator Function App config
+variable "job_orchestrator_sku_name" {
   type        = string
   description = "The SKU used for the App Service Plan hosting the Function Apps"
 }
 
-variable "producer_blob_container_name" {
+variable "job_orchestrator_blob_container_name" {
   type        = string
   description = "Name of the container created in the shared Storage Account that stores the deployment package"
 }
 
-variable "producer_max_instance_count" {
+variable "job_orchestrator_max_instance_count" {
   default     = 40
   type        = number
   description = "Max number of instances of this Function. Min is 40"
 }
 
-variable "producer_instance_memory" {
+variable "job_orchestrator_instance_memory" {
   default     = 2048
   type        = number
   description = "Memory in MB for each instance."

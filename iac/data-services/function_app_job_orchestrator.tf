@@ -7,7 +7,7 @@ resource "azurerm_service_plan" "job_orchestrator" {
 }
 
 resource "azurerm_storage_account" "job_orchestrator" {
-  name                     = "st${var.environment_settings.environment}${var.environment_settings.region_code}${var.environment_settings.app_name}${var.environment_settings.identifier}job-orchestrator"
+  name                     = "st${var.environment_settings.environment}${var.environment_settings.region_code}${var.environment_settings.app_name}${var.environment_settings.identifier}joborchestrator"
   resource_group_name      = data.azurerm_resource_group.rg.name
   location                 = var.environment_settings.region
   account_tier             = "Standard"

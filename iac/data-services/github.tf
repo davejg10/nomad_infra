@@ -45,3 +45,10 @@ resource "azurerm_role_definition" "deploy_function_app_image" {
     data.azurerm_resource_group.rg.id
   ]
 }
+
+// This role definition is created in 'devops' repo under 'management' config
+resource "azurerm_role_assignment" "github_to_acr" {
+  scope                = data.azurerm_container_registry.devopsutils.id
+  role_definition_name = "acr-task-run"
+  principal_id         = azurerm_user_assigned_identity.github.principal_id
+}

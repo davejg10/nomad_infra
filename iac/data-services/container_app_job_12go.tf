@@ -22,11 +22,6 @@ resource "azurerm_role_assignment" "consumer_servicebus_receiver" {
   principal_id         = azurerm_user_assigned_identity.one2goasia.principal_id
 }
 
-data "azurerm_container_registry" "devopsutils" {
-  name                = var.hub_acr_name
-  resource_group_name = var.hub_rg_name
-}
-
 resource "azurerm_container_app_job" "one2goasia" {
   name = "aca-${var.environment_settings.environment}-${var.environment_settings.region_code}-one2goasia"
 

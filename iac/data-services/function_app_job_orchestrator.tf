@@ -3,7 +3,7 @@ resource "azurerm_service_plan" "job_orchestrator" {
   resource_group_name = data.azurerm_resource_group.rg.name
   location            = var.environment_settings.region
   os_type             = "Linux"
-  sku_name            = var.producer_sku_name
+  sku_name            = var.job_orchestrator_sku_name
 }
 
 resource "azurerm_storage_account" "job_orchestrator" {

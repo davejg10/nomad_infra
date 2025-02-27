@@ -1,3 +1,9 @@
+data "azurerm_subnet" "ghrunners" {
+  name                 = var.ghrunner_subnet_name
+  virtual_network_name = var.hub_vnet_name
+  resource_group_name  = var.hub_rg_name
+}
+
 resource "azurerm_key_vault" "nomad" {
   name = "kv-${var.environment_settings.environment}-${var.environment_settings.region_code}-${var.environment_settings.app_name}-${var.environment_settings.identifier}"
 
@@ -12,31 +18,17 @@ resource "azurerm_key_vault" "nomad" {
   sku_name = var.key_vault_sku_name
 
   public_network_access_enabled = var.kv_public_network_access_enabled
-}
 
-resource "azurerm_private_endpoint" "key_vault" {
-  name = "pe-kv-${var.environment_settings.environment}-${var.environment_settings.region_code}-${var.environment_settings.app_name}-${var.environment_settings.identifier}"
-
-  resource_group_name = data.azurerm_resource_group.rg.name
-  location            = var.environment_settings.region
-  subnet_id           = azurerm_subnet.private_endpoints.id
-
-  private_service_connection {
-    name                           = "pe-kv-serviceconnection-${var.environment_settings.environment}-${var.environment_settings.region_code}-${var.environment_settings.app_name}-${var.environment_settings.identifier}"
-    private_connection_resource_id = azurerm_key_vault.nomad.id
-    subresource_names              = ["vault"]
-    is_manual_connection           = false
+  network_acls {
+    bypass         = "AzureServices"
+    default_action = "Deny"
+    virtual_network_subnet_ids = [
+      azurerm_subnet.data_services.id,
+      azurerm_subnet.neo4j.id,
+      azurerm_subnet.app_service_plan.id,
+      data.azurerm_subnet.ghrunners.id
+    ]
   }
-
-  private_dns_zone_group {
-    name                 = "dns-group-${var.environment_settings.environment}-${var.environment_settings.region_code}-${var.environment_settings.app_name}-${var.environment_settings.identifier}"
-    private_dns_zone_ids = [data.azurerm_private_dns_zone.vault.id]
-  }
-}
-
-data "azurerm_private_dns_zone" "vault" {
-  name                = "privatelink.vaultcore.azure.net"
-  resource_group_name = var.hub_rg_name
 }
 
 output "key_vault_id" {

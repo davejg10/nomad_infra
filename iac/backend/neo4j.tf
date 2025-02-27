@@ -1,5 +1,5 @@
 locals {
-  neo4j_vm_name                 = "vm-dev-uks-nomad-neo4j-01"
+  neo4j_vm_name                 = "vm-${var.environment_settings.environment}-${var.environment_settings.region_code}-${var.environment_settings.app_name}-${var.environment_settings.identifier}-neo4j"
   key_vault_network_script_path = "${path.module}/scripts/key_vault_network.sh"
 }
 
@@ -9,31 +9,7 @@ resource "random_password" "neo4j_pwd" {
   override_special = "_=+:?[]"
 }
 
-// Ensure we have network access before trying to insert secret
-resource "terraform_data" "kv_network_check" {
-  depends_on = [
-    azurerm_role_assignment.this_deployer_key_vault_secrets,
-  ]
-
-  triggers_replace = [
-    azurerm_private_endpoint.key_vault.id
-  ]
-
-  provisioner "local-exec" {
-    command = "chmod +x ${local.key_vault_network_script_path} && ./${local.key_vault_network_script_path}"
-
-    environment = {
-      KEY_VAULT_NAME        = azurerm_key_vault.nomad.name
-      KEY_VAULT_INTERNAL_IP = azurerm_private_endpoint.key_vault.private_service_connection[0].private_ip_address
-    }
-  }
-}
-
 resource "azurerm_key_vault_secret" "neo4j_pwd" {
-  depends_on = [
-    terraform_data.kv_network_check
-  ]
-
   name         = var.neo4j_password_secret_key
   value        = random_password.neo4j_pwd.result
   key_vault_id = azurerm_key_vault.nomad.id
@@ -72,7 +48,7 @@ resource "azurerm_network_interface" "neo4j" {
 }
 
 resource "azurerm_managed_disk" "neo4j" {
-  name                 = "${local.neo4j_vm_name}-neo4j-datadisk"
+  name                 = "${local.neo4j_vm_name}-datadisk"
   resource_group_name  = data.azurerm_resource_group.rg.name
   location             = var.environment_settings.region
   storage_account_type = "Standard_LRS"

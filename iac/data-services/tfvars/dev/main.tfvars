@@ -7,8 +7,8 @@ environment_settings = {
 }
 
 // App Service Plan
-producer_sku_name            = "FC1"
-producer_blob_container_name = "producer-deployment-package"
+job_orchestrator_sku_name            = "FC1"
+job_orchestrator_blob_container_name = "job-orchestrator-deployment-package"
 
 // Container app jobs
 acr_namespace_name = "nomad-data"

@@ -1,5 +1,5 @@
 resource "azurerm_user_assigned_identity" "one2goasia" {
-  name = "id-${var.environment_settings.environment}-${var.environment_settings.region_code}-${var.environment_settings.app_name}-acaj"
+  name = "id-${var.environment_settings.environment}-${var.environment_settings.region_code}-${var.environment_settings.app_name}-${var.environment_settings.identifier}-acaj"
 
   resource_group_name = data.azurerm_resource_group.rg.name
   location            = var.environment_settings.region
@@ -20,11 +20,6 @@ resource "azurerm_role_assignment" "consumer_servicebus_receiver" {
   scope                = azurerm_servicebus_namespace.nomad.id
   role_definition_name = "Azure Service Bus Data Receiver"
   principal_id         = azurerm_user_assigned_identity.one2goasia.principal_id
-}
-
-data "azurerm_container_registry" "devopsutils" {
-  name                = var.hub_acr_name
-  resource_group_name = var.hub_rg_name
 }
 
 resource "azurerm_container_app_job" "one2goasia" {
@@ -81,14 +76,17 @@ resource "azurerm_container_app_job" "one2goasia" {
           "queueName"              = azurerm_servicebus_queue.pre_processed.name
           "namespace"              = azurerm_servicebus_namespace.nomad.name
           "messageCount"           = "5"
-          "activationMessageCount" = "2"
         }
       }
     }
   }
 }
 
-
+//This block forces the below azapi_update_resource to be executed each time. 
+// Otherwise after successive rebuilds we were losing the manged identity on the job
+resource "terraform_data" "azapi_update_replacement" {
+  triggers_replace = timestamp()
+}
 // Terraform provider doesnt allow you to use pod managed identity to authenticate with Azure Service Bus event scaler
 resource "azapi_update_resource" "service_bus_scale" {
   type        = "Microsoft.App/jobs@2024-02-02-preview"
@@ -101,19 +99,23 @@ resource "azapi_update_resource" "service_bus_scale" {
           scale = {
             rules = [
               {
-                name = "azure-servicebus"
-                type = "azure-servicebus"
+                name     = "azure-servicebus"
+                type     = "azure-servicebus"
                 identity = azurerm_user_assigned_identity.one2goasia.id
-              
               }
             ]
           }
         }
       }
-      
+
     }
   }
-
+  lifecycle {
+    replace_triggered_by = [
+      terraform_data.azapi_update_replacement
+    ]
+  }
+  
   depends_on = [
     azurerm_container_app_job.one2goasia,
   ]

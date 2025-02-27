@@ -3,6 +3,12 @@ resource "azurerm_subnet" "neo4j" {
   resource_group_name  = data.azurerm_resource_group.rg.name
   virtual_network_name = azurerm_virtual_network.vnet.name
   address_prefixes     = [var.neo4j_subnet_address_prefixes]
+
+  service_endpoints = [
+    "Microsoft.Storage",
+    "Microsoft.KeyVault",
+    "Microsoft.Sql"
+  ]
 }
 resource "azurerm_network_security_group" "neo4j_subnet" {
   name                = "nsg-neo4j-${var.environment_settings.environment}-${var.environment_settings.region_code}-${var.environment_settings.app_name}-${var.environment_settings.identifier}"

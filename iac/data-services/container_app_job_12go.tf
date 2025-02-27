@@ -82,11 +82,11 @@ resource "azurerm_container_app_job" "one2goasia" {
   }
 }
 
+//This block forces the below azapi_update_resource to be executed each time. 
+// Otherwise after successive rebuilds we were losing the manged identity on the job
 resource "terraform_data" "azapi_update_replacement" {
-  triggers_replaces = timestamp()
+  triggers_replace = timestamp()
 }
-
-
 // Terraform provider doesnt allow you to use pod managed identity to authenticate with Azure Service Bus event scaler
 resource "azapi_update_resource" "service_bus_scale" {
   type        = "Microsoft.App/jobs@2024-02-02-preview"
@@ -116,7 +116,6 @@ resource "azapi_update_resource" "service_bus_scale" {
     ]
   }
   
-
   depends_on = [
     azurerm_container_app_job.one2goasia,
   ]

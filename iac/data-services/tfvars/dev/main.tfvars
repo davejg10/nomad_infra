@@ -14,5 +14,5 @@ job_orchestrator_blob_container_name = "job-orchestrator-deployment-package"
 acr_namespace_name = "nomad-data"
 
 // one2goasia
-one_2_go_asia_job_cpu    = 0.5
-one_2_go_asia_job_memory = "1Gi"
+one_2_go_asia_job_cpu    = 2
+one_2_go_asia_job_memory = "4Gi"

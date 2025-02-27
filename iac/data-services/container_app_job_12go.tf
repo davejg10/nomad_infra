@@ -82,6 +82,10 @@ resource "azurerm_container_app_job" "one2goasia" {
   }
 }
 
+resource "terraform_data" "azapi_update_replacement" {
+  triggers_replaces = timestamp()
+}
+
 
 // Terraform provider doesnt allow you to use pod managed identity to authenticate with Azure Service Bus event scaler
 resource "azapi_update_resource" "service_bus_scale" {
@@ -106,6 +110,12 @@ resource "azapi_update_resource" "service_bus_scale" {
 
     }
   }
+  lifecycle {
+    replace_triggered_by = [
+      terraform_data.azapi_update_replacement
+    ]
+  }
+  
 
   depends_on = [
     azurerm_container_app_job.one2goasia,

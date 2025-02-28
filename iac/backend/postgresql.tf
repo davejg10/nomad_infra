@@ -77,7 +77,6 @@ resource "terraform_data" "postgres_dns_resolver" {
 resource "terraform_data" "setup_db" {
   provisioner "local-exec" {
     command = <<EOT
-      sudo apt install postgresql -y
       export PGPASSWORD=${random_password.postgres_pwd.result}
       psql -h ${azurerm_postgresql_flexible_server.nomad.fqdn} -p 5432 -U ${var.postgres_user} -d postgres -f ${local.postgres_setup_db_script_path}
       EOT

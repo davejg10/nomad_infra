@@ -75,14 +75,11 @@ resource "terraform_data" "postgres_dns_resolver" {
 resource "terraform_data" "initialize_db" {
   provisioner "local-exec" {
     command = <<EOT
+      export NOMAD_ADMIN_USER=${azurerm_user_assigned_identity.github.name}
+      export NOMAD_BACKEND_USER=${azurerm_user_assigned_identity.asp.name}
       export PGPASSWORD=$(az account get-access-token --resource-type oss-rdbms --query "[accessToken]" -o tsv)
-      psql -h ${azurerm_postgresql_flexible_server.nomad.fqdn} -p 5432 -U ${local.mi_deployer_principal_name} -d postgres -f initialize_db.sql
+      psql -h ${azurerm_postgresql_flexible_server.nomad.fqdn} -p 5432 -U ${local.mi_deployer_principal_name} -d postgres -f ${local.postgres_setup_db_script_path}
       EOT
-
-      environment = {
-        NOMAD_ADMIN_USER = azurerm_user_assigned_identity.github.name
-        NOMAD_BACKEND_USER = azurerm_user_assigned_identity.asp.name
-      }
   }
   depends_on = [
     terraform_data.postgres_dns_resolver,

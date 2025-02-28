@@ -30,20 +30,26 @@ resource "azurerm_private_dns_zone" "postgresql" {
   resource_group_name   = data.azurerm_resource_group.rg.name
 }
 
-resource "azurerm_private_dns_zone_virtual_network_link" "this_vnet" {
+resource "azurerm_private_dns_zone_virtual_network_link" "postgres_this_vnet" {
   name                  = "${var.environment_settings.environment}-postgres-${var.environment_settings.app_name}"
   private_dns_zone_name = azurerm_private_dns_zone.postgresql.name
   virtual_network_id    = azurerm_virtual_network.vnet.id
   resource_group_name   = data.azurerm_resource_group.rg.name
 
-  depends_on            = [azurerm_subnet.postgresql]
+  depends_on            = [
+    azurerm_subnet.postgresql,
+    azurerm_virtual_network_peering.spoke_to_hub
+  ]
 }
 
-resource "azurerm_private_dns_zone_virtual_network_link" "hub_vnet" {
+resource "azurerm_private_dns_zone_virtual_network_link" "postgres_hub_vnet" {
   name                  = "${var.environment_settings.environment}-postgres-${var.environment_settings.app_name}"
   private_dns_zone_name = azurerm_private_dns_zone.postgresql.name
   virtual_network_id    = data.azurerm_virtual_network.hub.id
   resource_group_name   = data.azurerm_resource_group.rg.name
 
-  depends_on            = [azurerm_subnet.postgresql]
+  depends_on            = [
+    azurerm_subnet.postgresql,
+    azurerm_virtual_network_peering.hub_to_spoke
+  ]
 }

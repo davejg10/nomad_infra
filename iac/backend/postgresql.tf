@@ -41,7 +41,10 @@ resource "azurerm_postgresql_flexible_server" "nomad" {
   storage_tier = var.postgres_storage_tier
 
   sku_name   = var.postges_sku_name
-  depends_on = [azurerm_private_dns_zone_virtual_network_link.postgresql]
+  depends_on = [
+    azurerm_private_dns_zone_virtual_network_link.postgres_this_vnet,
+    azurerm_private_dns_zone_virtual_network_link.postgres_hub_vnet
+  ]
 
 }
 

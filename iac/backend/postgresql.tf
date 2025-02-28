@@ -54,7 +54,7 @@ resource "azurerm_postgresql_flexible_server_active_directory_administrator" "no
 
 locals {
   postgres_dns_resolver_script_path = "${path.module}/scripts/postgres_dns_resolver.sh"
-  postgres_setup_db_script_path = "${path.module}/sql/01_setup_db.sql"
+  postgres_setup_db_script_path = "${path.module}/scripts/initialize_db.sql"
 }
 
 // Ensure we have network access before trying to execute sql script
@@ -75,6 +75,7 @@ resource "terraform_data" "postgres_dns_resolver" {
 resource "terraform_data" "initialize_db" {
   provisioner "local-exec" {
     command = <<EOT
+      chmod +x ${local.postgres_setup_db_script_path}
       ls -l ${local.postgres_setup_db_script_path}
       export NOMAD_ADMIN_USER="${azurerm_user_assigned_identity.github.name}"
       export NOMAD_BACKEND_USER="${azurerm_user_assigned_identity.asp.name}"

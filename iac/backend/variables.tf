@@ -92,16 +92,6 @@ variable "backup_vault_rg_name" {
 }
 
 // Postgres
-variable "postgres_user" {
-  type = string
-  description = "Username for the Postgres flexible server admin"
-}
-
-variable "postgres_password_secret_key" {
-  type = string
-  description = "The Key for a secret in the Key Vault that stores the Postgres Admin password"
-}
-
 variable "postges_sku_name" {
   type = string
   description = "Name of the SKU to use for the PostgreSQL flexible server."

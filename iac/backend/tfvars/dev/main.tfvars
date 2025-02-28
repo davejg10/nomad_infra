@@ -25,8 +25,6 @@ neo4j_data_disk_size_gb   = "10"
 backup_vault_rg_name = "rg-dev-uks-backup"
 
 // Postgres
-postgres_user = "psqladmin"
-postgres_password_secret_key = "postgres-password"
 postges_sku_name = "B_Standard_B1ms"
 postgres_backup_retention_days = 7
 postgres_storage_mb = 32768

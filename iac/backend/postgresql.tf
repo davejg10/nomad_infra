@@ -15,7 +15,7 @@ output "postgres_user" {
   value = var.postgres_user
 }
 output "postgres_uri" {
-  value = "jdbc:postgresql://${azurerm_postgresql_flexible_server.nomad.fqdn}:5432/${var.postgres_database_name}"
+  value = "jdbc:postgresql://${azurerm_postgresql_flexible_server.nomad.fqdn}:5432"
 }
 output "postgres_password_secret_key" {
   value = var.postgres_password_secret_key
@@ -79,7 +79,7 @@ resource "terraform_data" "setup_db" {
     command = <<EOT
       sudo apt install postgresql
       export PGPASSWORD=${random_password.postgres_pwd.result}
-      psql -h ${azurerm_postgresql_flexible_server.nomad.fqdn} -p 5432 -U ${var.psql_user} -d postgres -f ${local.postgres_setup_db_script_path}
+      psql -h ${azurerm_postgresql_flexible_server.nomad.fqdn} -p 5432 -U ${var.postgres_user} -d postgres -f ${local.postgres_setup_db_script_path}
       EOT
   }
   depends_on = [terraform_data.postgres_dns_resolver]

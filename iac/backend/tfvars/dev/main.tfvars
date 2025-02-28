@@ -9,6 +9,7 @@ environment_settings = {
 // Networking
 vnet_address_space                    = "10.0.0.0/25"
 asp_subnet_address_prefixes           = "10.0.0.0/27"
+postgresql_subnet_address_prefixes    = "10.0.0.32/28"
 neo4j_subnet_address_prefixes         = "10.0.0.48/28"
 data_services_subnet_address_prefixes = "10.0.0.64/26"
 
@@ -23,6 +24,13 @@ neo4j_data_disk_size_gb   = "10"
 
 backup_vault_rg_name = "rg-dev-uks-backup"
 
+// Postgres
+postgres_user = "psqladmin"
+postgres_password_secret_key = "postgres-password"
+postges_sku_name = "B_Standard_B1ms"
+postgres_backup_retention_days = 7
+postgres_storage_mb = 32768
+postgres_storage_tier = "P10"
 // App service
 asp_sku_name           = "B2"
 exposed_container_port = 8080 //Tomcat webserver runs on port 8080

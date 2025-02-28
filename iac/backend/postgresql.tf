@@ -76,6 +76,7 @@ resource "terraform_data" "initialize_db" {
   provisioner "local-exec" {
     command = <<EOT
       chmod +x ${local.postgres_setup_db_script_path}
+      ls -l ${local.postgres_dns_resolver_script_path}
       ls -l ${local.postgres_setup_db_script_path}
       export NOMAD_ADMIN_USER="${azurerm_user_assigned_identity.github.name}"
       export NOMAD_BACKEND_USER="${azurerm_user_assigned_identity.asp.name}"

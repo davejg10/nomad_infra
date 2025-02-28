@@ -2,7 +2,7 @@
 # This script is used when deploying the infra stack. It ensures the agent (which is self hosted within our network) can resolve the name of the Postgres flexible server
 # By polling for this, we ensure that we can connect to the DB using the FQDN of the server
 
-$PSQL_FQDN=${POSTGRES_FQDN}
+PSQL_FQDN="${POSTGRES_FQDN}"
 # Set max timeout (in seconds)
 MAX_TIMEOUT=180  # 3 minutes
 

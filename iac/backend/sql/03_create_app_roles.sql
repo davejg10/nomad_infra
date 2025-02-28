@@ -1,13 +1,13 @@
 
 -- ======================= NOMAD BACKEND USER========================
 -- Grant read access to all tables
-GRANT CONNECT ON DATABASE nomad TO $NOMAD_BACKEND_USER;
-GRANT USAGE ON SCHEMA public TO $NOMAD_BACKEND_USER;
-GRANT SELECT ON ALL TABLES IN SCHEMA public TO $NOMAD_BACKEND_USER;
+GRANT CONNECT ON DATABASE nomad TO nomad_backend;
+GRANT USAGE ON SCHEMA public TO nomad_backend;
+GRANT SELECT ON ALL TABLES IN SCHEMA public TO nomad_backend;
 
 -- Automatically grant read access to future tables
 ALTER DEFAULT PRIVILEGES IN SCHEMA public
-    GRANT SELECT ON TABLES TO $NOMAD_BACKEND_USER;
+    GRANT SELECT ON TABLES TO nomad_backend;
 
 -- Grant write access to specific tables
 -- Will use this for when we have users/preferneces saving routes etc/
@@ -16,10 +16,10 @@ ALTER DEFAULT PRIVILEGES IN SCHEMA public
 -- ======================= NOMAD FUNCTION APP USER========================
 
 -- Grant read access to specific tables
-GRANT CONNECT ON DATABASE nomad TO $NOMAD_FUNCTION_APP_USER;
-GRANT USAGE ON SCHEMA public TO $NOMAD_FUNCTION_APP_USER;
-GRANT SELECT, INSERT, UPDATE ON public.country TO $NOMAD_FUNCTION_APP_USER;
-GRANT SELECT, INSERT, UPDATE ON public.city TO $NOMAD_FUNCTION_APP_USER;
-GRANT SELECT, INSERT, UPDATE ON public.route_definition TO $NOMAD_FUNCTION_APP_USER;
-GRANT SELECT, INSERT, UPDATE ON public.route_operator TO $NOMAD_FUNCTION_APP_USER;
-GRANT SELECT, INSERT, UPDATE ON public.route_instance TO $NOMAD_FUNCTION_APP_USER;
+GRANT CONNECT ON DATABASE nomad TO nomad_function_app;
+GRANT USAGE ON SCHEMA public TO nomad_function_app;
+GRANT SELECT, INSERT, UPDATE ON public.country TO nomad_function_app;
+GRANT SELECT, INSERT, UPDATE ON public.city TO nomad_function_app;
+GRANT SELECT, INSERT, UPDATE ON public.route_definition TO nomad_function_app;
+GRANT SELECT, INSERT, UPDATE ON public.route_operator TO nomad_function_app;
+GRANT SELECT, INSERT, UPDATE ON public.route_instance TO nomad_function_app;

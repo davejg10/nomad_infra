@@ -1,3 +1,7 @@
+locals {
+  mi_deployer_principal_name = "id-${var.environment_settings.environment}-${var.environment_settings.region_code}-${var.environment_settings.app_name}-tf"
+}
+
 // These are each used in the Function Apps to connect to the Database
 output "postgres_uri" {
   value = "jdbc:postgresql://${azurerm_postgresql_flexible_server.nomad.fqdn}:5432"
@@ -44,7 +48,7 @@ resource "azurerm_postgresql_flexible_server_active_directory_administrator" "no
   resource_group_name = data.azurerm_resource_group.rg.name
   tenant_id           = data.azurerm_client_config.current.tenant_id
   object_id           = data.azurerm_client_config.current.object_id
-  principal_name      = data.azuread_user.current_user.user_principal_name
+  principal_name      = local.mi_deployer_principal_name
   principal_type      = "ServicePrincipal"
 }
 
@@ -72,7 +76,7 @@ resource "terraform_data" "initialize_db" {
   provisioner "local-exec" {
     command = <<EOT
       export PGPASSWORD=$(az account get-access-token --resource-type oss-rdbms --query "[accessToken]" -o tsv)
-      psql -h ${azurerm_postgresql_flexible_server.nomad.fqdn} -p 5432 -U ${data.azuread_user.current_user.user_principal_name} -d postgres -f ${local.postgres_setup_db_script_path}
+      psql -h ${azurerm_postgresql_flexible_server.nomad.fqdn} -p 5432 -U ${local.mi_deployer_principal_name} -d postgres -f ${local.postgres_setup_db_script_path}
       EOT
 
       environment = {

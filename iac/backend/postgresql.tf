@@ -54,7 +54,7 @@ resource "azurerm_postgresql_flexible_server_active_directory_administrator" "no
 
 locals {
   postgres_dns_resolver_script_path = "${path.module}/scripts/postgres_dns_resolver.sh"
-  postgres_setup_db_script_path = "${path.module}/scripts/initialize_db.sql"
+  postgres_setup_db_script_path = "${path.module}/sql/01_setup_db.sql"
 }
 
 // Ensure we have network access before trying to execute sql script

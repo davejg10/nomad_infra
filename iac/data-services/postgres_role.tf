@@ -10,7 +10,7 @@ resource "terraform_data" "assign_fa_identity_role" {
       EOT
 
       environment = {
-        # NOMAD_FUNCTION_APP_USER = azurerm_user_assigned_identity.github.name
+        NOMAD_FUNCTION_APP_USER = azurerm_user_assigned_identity.job_orchestrator.name
       }
   }
 }

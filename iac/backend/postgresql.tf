@@ -76,7 +76,7 @@ resource "terraform_data" "initialize_db" {
   provisioner "local-exec" {
     command = <<EOT
       export PGPASSWORD=$(az account get-access-token --resource-type oss-rdbms --query "[accessToken]" -o tsv)
-      psql -h ${azurerm_postgresql_flexible_server.nomad.fqdn} -p 5432 -U ${local.mi_deployer_principal_name} -d postgres -f ${local.postgres_setup_db_script_path}
+      psql -h ${azurerm_postgresql_flexible_server.nomad.fqdn} -p 5432 -U ${local.mi_deployer_principal_name} -d postgres -f ./${local.postgres_setup_db_script_path}
       EOT
 
       environment = {

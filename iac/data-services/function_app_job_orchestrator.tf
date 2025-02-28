@@ -19,16 +19,23 @@ resource "azurerm_storage_account" "job_orchestrator" {
   }
 }
 
+resource "azurerm_user_assigned_identity" "function_app" {
+  name = "id-${var.environment_settings.environment}-${var.environment_settings.region_code}-${var.environment_settings.app_name}-${var.environment_settings.identifier}-function-app"
+
+  resource_group_name = data.azurerm_resource_group.rg.name
+  location            = var.environment_settings.region
+}
+
 resource "azurerm_role_assignment" "job_orchestratorr_to_package_storage" {
   scope                = azurerm_storage_account.job_orchestrator.id
   role_definition_name = "Storage Blob Data Owner"
-  principal_id         = data.azurerm_linux_function_app.job_orchestrator.identity[0].principal_id
+  principal_id         = azurerm_user_assigned_identity.function_app.principal_id
 }
 
 resource "azurerm_role_assignment" "job_orchestrator_to_app_key_vault" {
   scope                = data.terraform_remote_state.backend.outputs.key_vault_id
   role_definition_name = "Key Vault Secrets User"
-  principal_id         = data.azurerm_linux_function_app.job_orchestrator.identity[0].principal_id
+  principal_id         = azurerm_user_assigned_identity.function_app.principal_id
 }
 
 resource "azurerm_storage_container" "job_orchestrator_container" {
@@ -49,7 +56,8 @@ resource "azapi_resource" "job_orchestrator" {
   parent_id                 = data.azurerm_resource_group.rg.id
 
   identity {
-    type = "SystemAssigned"
+    type = "UserAssigned"
+    identity_ids = [azurerm_user_assigned_identity.function_app.id]
   }
 
   body = {
@@ -62,7 +70,8 @@ resource "azapi_resource" "job_orchestrator" {
             type  = "blobContainer",
             value = local.job_orchestrator_blob_storage_container,
             authentication = {
-              type = "SystemAssignedIdentity"
+              type = "UserAssignedIdentity",
+              userAssignedIdentityResourceId = azurerm_user_assigned_identity.function_app.id
             }
           }
         },
@@ -144,10 +153,10 @@ data "azurerm_linux_function_app" "job_orchestrator" {
 resource "azurerm_role_assignment" "job_orchestrator_servicebus_sender" {
   scope                = azurerm_servicebus_namespace.nomad.id
   role_definition_name = "Azure Service Bus Data Sender"
-  principal_id         = data.azurerm_linux_function_app.job_orchestrator.identity[0].principal_id
+  principal_id         = azurerm_user_assigned_identity.function_app.principal_id
 }
 resource "azurerm_role_assignment" "job_orchestrator_servicebus_receiver" {
   scope                = azurerm_servicebus_namespace.nomad.id
   role_definition_name = "Azure Service Bus Data Receiver"
-  principal_id         = data.azurerm_linux_function_app.job_orchestrator.identity[0].principal_id
+  principal_id         = azurerm_user_assigned_identity.function_app.principal_id
 }

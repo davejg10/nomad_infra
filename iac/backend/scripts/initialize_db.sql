@@ -14,9 +14,8 @@ CREATE ROLE nomad_backend;
 CREATE ROLE nomad_function_app; -- We will assign the function app identity to this later when its created
 
 GRANT nomad_backend TO :"NOMAD_BACKEND_USER";
-
+ALTER ROLE :"NOMAD_ADMIN_USER" WITH LOGIN;
 GRANT ALL PRIVILEGES ON DATABASE nomad TO :"NOMAD_ADMIN_USER";
 
 ALTER DATABASE nomad OWNER TO :"NOMAD_ADMIN_USER";
 
-ALTER ROLE nomad_admin WITH CREATEROLE;

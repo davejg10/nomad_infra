@@ -4,18 +4,18 @@
 
 CREATE DATABASE nomad;
 
-SELECT :'nomad_admin_user';
+SELECT :'NOMAD_ADMIN_USER';
 
 -- These are the managed identity we have created
-select * from pgaadauth_create_principal(:'nomad_admin_user', false, false);
-select * from pgaadauth_create_principal(:'nomad_backend_user', false, false);
+select * from pgaadauth_create_principal(:'NOMAD_ADMIN_USER', false, false);
+select * from pgaadauth_create_principal(:'NOMAD_BACKEND_USER', false, false);
 
 CREATE ROLE nomad_admin;
 CREATE ROLE nomad_backend;
 CREATE ROLE nomad_function_app; -- We will assign the function app identity to this later when its created
 
-GRANT nomad_admin TO :'nomad_admin_user';
-GRANT nomad_backend TO :'nomad_backend_user';
+GRANT nomad_admin TO :'NOMAD_ADMIN_USER';
+GRANT nomad_backend TO :'NOMAD_BACKEND_USER';
 
 GRANT ALL PRIVILEGES ON DATABASE nomad TO nomad_admin;
 

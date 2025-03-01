@@ -7,6 +7,8 @@
 
 CREATE DATABASE nomad;
 
+SELECT :'nomad_admin_user';
+
 -- These are the managed identity we have created
 select * from pgaadauth_create_principal(:'nomad_admin_user', false, false);
 select * from pgaadauth_create_principal(:'nomad_backend_user', false, false);

@@ -73,6 +73,8 @@ resource "terraform_data" "postgres_dns_resolver" {
 }
 
 resource "terraform_data" "initialize_db" {
+  triggers_replace = timestamp()
+
   provisioner "local-exec" {
     command = <<EOT
       chmod +x $SCRIPT_PATH

@@ -2,9 +2,6 @@
 -- It creates Postgres users out of them and then assigns them to roles. 
 -- The remaining sql scripts are later executed in the nomad_backend repo using the github managed identity.
 
-\set nomad_admin_user :env:NOMAD_ADMIN_USER
-\set nomad_backend_user :env:NOMAD_BACKEND_USER
-
 CREATE DATABASE nomad;
 
 SELECT :'nomad_admin_user';

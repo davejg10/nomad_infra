@@ -77,17 +77,11 @@ resource "terraform_data" "initialize_db" {
 
   provisioner "local-exec" {
     command = <<EOT
-      chmod +x $SCRIPT_PATH
       export PGPASSWORD=$(az account get-access-token --resource-type oss-rdbms --query "[accessToken]" -o tsv)
-      psql -h "${azurerm_postgresql_flexible_server.nomad.fqdn}" -p 5432 -U "${local.mi_deployer_principal_name}" -d postgres -f $SCRIPT_PATH
+      psql -h "${azurerm_postgresql_flexible_server.nomad.fqdn}" -p 5432 -U "${local.mi_deployer_principal_name}" -d postgres -f ${local.postgres_setup_db_script_path} -v NOMAD_ADMIN_USER="'${azurerm_user_assigned_identity.github.name}'" -v NOMAD_BACKEND_USER="'${azurerm_user_assigned_identity.asp.name}'"
       EOT
-
-      environment = {
-        SCRIPT_PATH = local.postgres_setup_db_script_path
-        NOMAD_ADMIN_USER = azurerm_user_assigned_identity.github.name
-        NOMAD_BACKEND_USER = azurerm_user_assigned_identity.asp.name
-      }
   }
+  
   depends_on = [
     terraform_data.postgres_dns_resolver,
     azurerm_postgresql_flexible_server_active_directory_administrator.nomad

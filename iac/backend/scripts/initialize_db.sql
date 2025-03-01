@@ -5,6 +5,7 @@
 CREATE DATABASE nomad;
 
 -- These are the managed identity we have created
+-- These statements actually create the roles in PostgreSQL 
 -- Notice the difference in quotes when referencing the variable here and when GRANTING the roles below. This is intentional.
 select * from pgaadauth_create_principal(:'NOMAD_ADMIN_USER', false, false);
 select * from pgaadauth_create_principal(:'NOMAD_BACKEND_USER', false, false);

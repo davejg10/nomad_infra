@@ -2,20 +2,24 @@
 -- It creates Postgres users out of them and then assigns them to roles. 
 -- The remaining sql scripts are later executed in the nomad_backend repo using the github managed identity.
 
-CREATE DATABASE nomad;
+-- CREATE DATABASE nomad;
 
--- These are the managed identity we have created
--- These statements actually create the roles in PostgreSQL 
--- Notice the difference in quotes when referencing the variable here and when GRANTING the roles below. This is intentional.
-select * from pgaadauth_create_principal(:'NOMAD_ADMIN_USER', true, false);
-select * from pgaadauth_create_principal(:'NOMAD_BACKEND_USER', false, false);
+-- -- These are the managed identity we have created
+-- -- These statements actually create the roles in PostgreSQL 
+-- -- Notice the difference in quotes when referencing the variable here and when GRANTING the roles below. This is intentional.
+-- select * from pgaadauth_create_principal(:'NOMAD_ADMIN_USER', true, false);
+-- select * from pgaadauth_create_principal(:'NOMAD_BACKEND_USER', false, false);
 
-CREATE ROLE nomad_backend;
-CREATE ROLE nomad_function_app; -- We will assign the function app identity to this later when its created
+select * from pg_catalog.pgaadauth_list_principals(true)
 
-GRANT nomad_backend TO :"NOMAD_BACKEND_USER";
+select * from pg_catalog.pgaadauth_list_principals(false)
 
-GRANT ALL PRIVILEGES ON DATABASE nomad TO :"NOMAD_ADMIN_USER";
+-- CREATE ROLE nomad_backend;
+-- CREATE ROLE nomad_function_app; -- We will assign the function app identity to this later when its created
 
-ALTER DATABASE nomad OWNER TO :"NOMAD_ADMIN_USER";
+-- GRANT nomad_backend TO :"NOMAD_BACKEND_USER";
+
+-- GRANT ALL PRIVILEGES ON DATABASE nomad TO :"NOMAD_ADMIN_USER";
+
+-- ALTER DATABASE nomad OWNER TO :"NOMAD_ADMIN_USER";
 

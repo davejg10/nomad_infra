@@ -51,9 +51,26 @@ variable "job_orchestrator_instance_memory" {
 }
 
 // Admin api Function App config
+variable "admin_api_sku_name" {
+  type        = string
+  description = "The SKU used for the App Service Plan hosting the Function Apps"
+}
+
 variable "admin_api_blob_container_name" {
   type = string
   description = "name of the container created in the Storage Account used by the admin-api Function App. It stores the deployment package."
+}
+
+variable "admin_api_max_instance_count" {
+  default     = 40
+  type        = number
+  description = "Max number of instances of this Function. Min is 40"
+}
+
+variable "admin_api_instance_memory" {
+  default     = 2048
+  type        = number
+  description = "Memory in MB for each instance."
 }
 
 // Container App Jobs

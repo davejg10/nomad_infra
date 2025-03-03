@@ -23,3 +23,6 @@ GRANT SELECT, INSERT, UPDATE ON public.city TO nomad_function_app;
 GRANT SELECT, INSERT, UPDATE ON public.route_definition TO nomad_function_app;
 GRANT SELECT, INSERT, UPDATE ON public.route_operator TO nomad_function_app;
 GRANT SELECT, INSERT, UPDATE ON public.route_instance TO nomad_function_app;
+
+GRANT SELECT ON ALL TABLES IN SCHEMA public TO neo4j_user;
+

@@ -8,17 +8,9 @@ CREATE DATABASE nomad;
 -- -- These statements actually create the roles in PostgreSQL 
 -- -- Notice the difference in quotes when referencing the variable here and when GRANTING the roles below. This is intentional.
 
-select * from pgaadauth_create_principal(:'PSQL_ADMIN', true, false); --second 'true' param gives it CREATEDB & CREATEROLE privalidges
 select * from pgaadauth_create_principal(:'NOMAD_BACKEND_USER', false, false);
 
 CREATE ROLE nomad_backend;
 CREATE ROLE nomad_function_app; -- We will assign the function app identity to this later when its created
 
 GRANT nomad_backend TO :"NOMAD_BACKEND_USER";
-
-GRANT :"PSQL_ADMIN" TO current_user WITH ADMIN OPTION;
-
-GRANT ALL PRIVILEGES ON DATABASE nomad TO :"PSQL_ADMIN";
-
-ALTER DATABASE nomad OWNER TO :"PSQL_ADMIN";
-

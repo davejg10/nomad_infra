@@ -2,14 +2,7 @@
 -- This is the second script to run once you have execute 01_setup_db.sql
 -- You should run this script against the database created in 01_setup_db with the user also creates in that script
 
-
-GRANT USAGE ON SCHEMA public TO nomad_admin;
-
--- Permission to create objects in schema
-GRANT CREATE ON SCHEMA public TO nomad_admin;
-
--- For future tables
-ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO nomad_admin;
+CREATE DATABASE nomad; -- this will be run seperately 
 
 
 CREATE TABLE country (

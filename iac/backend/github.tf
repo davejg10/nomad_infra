@@ -1,3 +1,4 @@
+// Make federated credentials for the identity in the `nomad-backend` repository. NOT THIS ONE!
 resource "azurerm_federated_identity_credential" "github" {
   name = "${var.github_repository_name}-${var.environment_settings.environment}"
 

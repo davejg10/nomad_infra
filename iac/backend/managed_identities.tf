@@ -25,7 +25,7 @@ resource "azurerm_role_assignment" "webapp_pull_acr" {
   principal_id         = azurerm_user_assigned_identity.asp.principal_id
 }
 
-// Managed identity for Database Admin
+// Managed identity for PostgreSQL Database Admin - will be made OWNER of `nomad` database
 resource "azurerm_user_assigned_identity" "psql_admin" {
   name = "id-${var.environment_settings.environment}-${var.environment_settings.region_code}-${var.environment_settings.app_name}-${var.environment_settings.identifier}-psql"
 

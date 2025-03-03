@@ -40,7 +40,9 @@ jobs:
 
       - name: Run cost savings script
         run: |
-          PRINCIPAL_NAME=$(az ad sp show --id $(az account get-access-token --query principalId -o tsv) --query displayName -o tsv)
+          PRINCIPAL_ID=$(az account get-access-token --query principalId -o tsv)
+          echo $PRINCIPAL_ID
+          PRINCIPAL_NAME=$(az ad sp show --id $PRINCIPAL_ID --query displayName -o tsv)
           export PGPASSWORD=$(az account get-access-token --resource-type oss-rdbms --query "[accessToken]" -o tsv)
           psql -h "${{ env.PSQL_FQDN }}" -p 5432 -U "$PRINCIPAL_NAME" -d nomad -f "$SQL_SCRIPT_PATH/01_setup_db.sql"
           

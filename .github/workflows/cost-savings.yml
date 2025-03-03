@@ -41,7 +41,8 @@ jobs:
       - name: Run cost savings script
         run: |
           PRINCIPAL_NAME=$(az account show --query user.name)
+          echo $PRINCIPAL_NAME
           export PGPASSWORD=$(az account get-access-token --resource-type oss-rdbms --query "[accessToken]" -o tsv)
-          psql -h "${{ env.PSQL_FQDN }}" -p 5432 -U "$PRINCIPAL_NAME" -d nomad -f "$SQL_SCRIPT_PATH/01_setup_db.sql"
+          psql --set=sslmode=require -h "${{ env.PSQL_FQDN }}" -p 5432 -U "$PRINCIPAL_NAME" -d nomad -f "$SQL_SCRIPT_PATH/01_setup_db.sql"
           
 

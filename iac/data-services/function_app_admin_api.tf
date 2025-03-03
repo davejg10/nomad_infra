@@ -38,7 +38,7 @@ resource "azapi_resource" "function_app_admin_api" {
 
   identity {
     type = "UserAssigned"
-    identity_ids = [azurerm_user_assigned_identity.admin_api.id]
+    identity_ids = [azurerm_user_assigned_identity.fa_admin_api.id]
   }
 
   body = {

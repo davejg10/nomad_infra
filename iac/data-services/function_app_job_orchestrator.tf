@@ -75,6 +75,10 @@ resource "azapi_resource" "function_app_job_orchestrator" {
             name  = "APPLICATIONINSIGHTS_CONNECTION_STRING",
             value = data.terraform_remote_state.backend.outputs.app_insights_connection_string
           },
+          {
+            name  = "azure_client_id",
+            value = azurerm_user_assigned_identity.fa_job_orchestrator.client_id
+          },
           # flexconsumption Function Apps cant use Key Vault reference so secrets must be fetched in code
           {
             name  = "key_vault_uri",

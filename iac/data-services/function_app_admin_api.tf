@@ -33,7 +33,7 @@ resource "azapi_resource" "function_app_admin_api" {
   type                      = "Microsoft.Web/sites@2023-12-01"
   schema_validation_enabled = false
   location                  = var.environment_settings.region
-  name                      = "fa-${var.environment_settings.environment}-${var.environment_settings.region_code}-${var.environment_settings.app_name}-${var.environment_settings.identifier}-admin-apo"
+  name                      = "fa-${var.environment_settings.environment}-${var.environment_settings.region_code}-${var.environment_settings.app_name}-${var.environment_settings.identifier}-admin-api"
   parent_id                 = data.azurerm_resource_group.rg.id
 
   identity {
@@ -74,6 +74,10 @@ resource "azapi_resource" "function_app_admin_api" {
           {
             name  = "APPLICATIONINSIGHTS_CONNECTION_STRING",
             value = data.terraform_remote_state.backend.outputs.app_insights_connection_string
+          },
+          {
+            name  = "azure_client_id",
+            value = azurerm_user_assigned_identity.fa_admin_api.client_id
           },
           # flexconsumption Function Apps cant use Key Vault reference so secrets must be fetched in code
           {

@@ -18,7 +18,7 @@ on:
         options:
           - 01_setup_db
           - 02_assign_app_roles
-          - 03_custom.sql
+          - 03_custom
 
 permissions:
   id-token: write

@@ -35,7 +35,7 @@ variable "job_orchestrator_sku_name" {
 
 variable "job_orchestrator_blob_container_name" {
   type        = string
-  description = "Name of the container created in the shared Storage Account that stores the deployment package"
+  description = "Name of the container created in the Storage Account used by the job-orchestrator Function App. It stores the deployment package"
 }
 
 variable "job_orchestrator_max_instance_count" {
@@ -48,6 +48,12 @@ variable "job_orchestrator_instance_memory" {
   default     = 2048
   type        = number
   description = "Memory in MB for each instance."
+}
+
+// Admin api Function App config
+variable "admin_api_blob_container_name" {
+  type = string
+  description = "name of the container created in the Storage Account used by the admin-api Function App. It stores the deployment package."
 }
 
 // Container App Jobs

@@ -1,5 +1,5 @@
 resource "azurerm_container_app_environment" "scrapers" {
-  name = "acae-t-${var.environment_settings.environment}-${var.environment_settings.region_code}-${var.environment_settings.app_name}-${var.environment_settings.identifier}-scrapers"
+  name = "acae-${var.environment_settings.environment}-${var.environment_settings.region_code}-${var.environment_settings.app_name}-${var.environment_settings.identifier}-scrapers"
 
   resource_group_name        = data.azurerm_resource_group.rg.name
   location                   = var.environment_settings.region

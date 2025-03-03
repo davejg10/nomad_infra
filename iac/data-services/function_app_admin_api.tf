@@ -1,13 +1,13 @@
-resource "azurerm_service_plan" "job_orchestrator" {
-  name                = "asp-${var.environment_settings.environment}-${var.environment_settings.region_code}-${var.environment_settings.app_name}-${var.environment_settings.identifier}-job-orchestrator"
+resource "azurerm_service_plan" "admin_api" {
+  name                = "asp-${var.environment_settings.environment}-${var.environment_settings.region_code}-${var.environment_settings.app_name}-${var.environment_settings.identifier}-admin-api"
   resource_group_name = data.azurerm_resource_group.rg.name
   location            = var.environment_settings.region
   os_type             = "Linux"
-  sku_name            = var.job_orchestrator_sku_name
+  sku_name            = var.admin_api_sku_name
 }
 
-resource "azurerm_storage_account" "job_orchestrator" {
-  name                     = "st${var.environment_settings.environment}${var.environment_settings.region_code}joborchestrator"
+resource "azurerm_storage_account" "admin_api" {
+  name                     = "st${var.environment_settings.environment}${var.environment_settings.region_code}adminapi"
   resource_group_name      = data.azurerm_resource_group.rg.name
   location                 = var.environment_settings.region
   account_tier             = "Standard"
@@ -19,46 +19,46 @@ resource "azurerm_storage_account" "job_orchestrator" {
   }
 }
 
-resource "azurerm_storage_container" "job_orchestrator_container" {
+resource "azurerm_storage_container" "admin_api_container" {
   name                  = var.job_orchestrator_blob_container_name
   storage_account_id    = azurerm_storage_account.job_orchestrator.id
   container_access_type = "private"
 }
 
 locals {
-  job_orchestrator_blob_storage_container = "${azurerm_storage_account.job_orchestrator.primary_blob_endpoint}${var.job_orchestrator_blob_container_name}"
+  admin_api_blob_storage_container = "${azurerm_storage_account.admin_api.primary_blob_endpoint}${var.admin_api_blob_container_name}"
 }
 
 resource "azapi_resource" "job_orchestrator" {
   type                      = "Microsoft.Web/sites@2023-12-01"
   schema_validation_enabled = false
   location                  = var.environment_settings.region
-  name                      = "fa-${var.environment_settings.environment}-${var.environment_settings.region_code}-${var.environment_settings.app_name}-${var.environment_settings.identifier}-job-orchestrator"
+  name                      = "fa-${var.environment_settings.environment}-${var.environment_settings.region_code}-${var.environment_settings.app_name}-${var.environment_settings.identifier}-admin-apo"
   parent_id                 = data.azurerm_resource_group.rg.id
 
   identity {
     type = "UserAssigned"
-    identity_ids = [azurerm_user_assigned_identity.fa_job_orchestrator.id]
+    identity_ids = [azurerm_user_assigned_identity.admin_api.id]
   }
 
   body = {
     kind = "functionapp,linux",
     properties = {
-      serverFarmId = azurerm_service_plan.job_orchestrator.id,
+      serverFarmId = azurerm_service_plan.admin_api.id,
       functionAppConfig = {
         deployment = {
           storage = {
             type  = "blobContainer",
-            value = local.job_orchestrator_blob_storage_container,
+            value = local.admin_api_blob_storage_container,
             authentication = {
               type = "UserAssignedIdentity",
-              userAssignedIdentityResourceId = azurerm_user_assigned_identity.fa_job_orchestrator.id
+              userAssignedIdentityResourceId = azurerm_user_assigned_identity.fa_admin_api.id
             }
           }
         },
         scaleAndConcurrency = {
-          maximumInstanceCount = var.job_orchestrator_max_instance_count,
-          instanceMemoryMB     = var.job_orchestrator_instance_memory
+          maximumInstanceCount = var.admin_api_max_instance_count,
+          instanceMemoryMB     = var.admin_api_instance_memory
         },
         runtime = {
           name    = "java",
@@ -69,7 +69,7 @@ resource "azapi_resource" "job_orchestrator" {
         appSettings = [
           {
             name  = "AzureWebJobsStorage__accountName",
-            value = azurerm_storage_account.job_orchestrator.name
+            value = azurerm_storage_account.admin_api.name
           },
           {
             name  = "APPLICATIONINSIGHTS_CONNECTION_STRING",
@@ -91,19 +91,6 @@ resource "azapi_resource" "job_orchestrator" {
           {
             name  = "neo4j_password_key",
             value = data.terraform_remote_state.backend.outputs.neo4j_password_secret_key
-          },
-          # Service Bus config
-          {
-            name  = "nomadservicebus__fullyQualifiedNamespace",
-            value = "${azurerm_servicebus_namespace.nomad.name}.servicebus.windows.net"
-          },
-          {
-            name  = "sb_pre_processed_queue_name",
-            value = azurerm_servicebus_queue.pre_processed.name
-          },
-          {
-            name  = "sb_processed_queue_name",
-            value = azurerm_servicebus_queue.processed.name
           }
         ]
       }
@@ -117,16 +104,16 @@ resource "azapi_resource" "job_orchestrator" {
     ]
   }
 
-  depends_on = [azurerm_service_plan.job_orchestrator, azurerm_storage_account.job_orchestrator]
+  depends_on = [azurerm_service_plan.admin_api, azurerm_storage_account.admin_api]
 }
 
-data "azurerm_linux_function_app" "job_orchestrator" {
-  name                = azapi_resource.job_orchestrator.name
+data "azurerm_linux_function_app" "admin_api" {
+  name                = azapi_resource.admin_api.name
   resource_group_name = data.azurerm_resource_group.rg.name
 }
 
 # The subnet is created in ../backend Terraform config directory
-resource "azurerm_app_service_virtual_network_swift_connection" "job_orchestrator_vnet_integration" {
-  app_service_id = data.azurerm_linux_function_app.job_orchestrator.id
+resource "azurerm_app_service_virtual_network_swift_connection" "admin_api_vnet_integration" {
+  app_service_id = data.azurerm_linux_function_app.admin_api.id
   subnet_id      = data.terraform_remote_state.backend.outputs.data_services_subnet_id
 }

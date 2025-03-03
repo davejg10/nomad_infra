@@ -6,9 +6,13 @@ environment_settings = {
   identifier  = "02"
 }
 
-// App Service Plan
+// job-orchestrator Function App
 job_orchestrator_sku_name            = "FC1"
 job_orchestrator_blob_container_name = "job-orchestrator-deployment-package"
+
+// admin-api Function App
+admin_api_sku_name            = "FC1"
+admin_api_blob_container_name = "admin-api-deployment-package"
 
 // Container app jobs
 acr_namespace_name = "nomad-data"

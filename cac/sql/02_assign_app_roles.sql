@@ -15,7 +15,7 @@ ALTER DEFAULT PRIVILEGES IN SCHEMA public
 
 -- ======================= NOMAD FUNCTION APP USER========================
 
--- Grant read access to specific tables
+-- Grant read/write access to specific tables
 GRANT CONNECT ON DATABASE nomad TO nomad_function_app;
 GRANT USAGE ON SCHEMA public TO nomad_function_app;
 GRANT SELECT, INSERT, UPDATE ON public.country TO nomad_function_app;

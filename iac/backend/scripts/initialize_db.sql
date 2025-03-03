@@ -18,13 +18,9 @@ select * from pgaadauth_create_principal(:'NOMAD_BACKEND_USER', false, false);
 
 SELECT rolname, rolsuper, rolcreaterole FROM pg_roles WHERE rolname = current_user;
 
-GRANT :"PSQL_ADMIN" TO current_user;
-
-SET ROLE :"PSQL_ADMIN";
+GRANT :"PSQL_ADMIN" TO current_user WITH ADMIN OPTION;
 
 ALTER ROLE :"PSQL_ADMIN" WITH CREATEROLE;
-
-SET ROLE :"PSQL_ADMIN";
 
 GRANT ALL PRIVILEGES ON DATABASE nomad TO :"PSQL_ADMIN";
 

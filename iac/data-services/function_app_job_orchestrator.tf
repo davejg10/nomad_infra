@@ -29,7 +29,7 @@ locals {
   job_orchestrator_blob_storage_container = "${azurerm_storage_account.job_orchestrator.primary_blob_endpoint}${var.job_orchestrator_blob_container_name}"
 }
 
-resource "azapi_resource" "job_orchestrator" {
+resource "azapi_resource" "function_app_job_orchestrator" {
   type                      = "Microsoft.Web/sites@2023-12-01"
   schema_validation_enabled = false
   location                  = var.environment_settings.region
@@ -121,7 +121,7 @@ resource "azapi_resource" "job_orchestrator" {
 }
 
 data "azurerm_linux_function_app" "job_orchestrator" {
-  name                = azapi_resource.job_orchestrator.name
+  name                = azapi_resource.function_app_job_orchestrator.name
   resource_group_name = data.azurerm_resource_group.rg.name
 }
 

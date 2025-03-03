@@ -29,7 +29,7 @@ locals {
   admin_api_blob_storage_container = "${azurerm_storage_account.admin_api.primary_blob_endpoint}${var.admin_api_blob_container_name}"
 }
 
-resource "azapi_resource" "admin_api" {
+resource "azapi_resource" "function_app_admin_api" {
   type                      = "Microsoft.Web/sites@2023-12-01"
   schema_validation_enabled = false
   location                  = var.environment_settings.region
@@ -108,7 +108,7 @@ resource "azapi_resource" "admin_api" {
 }
 
 data "azurerm_linux_function_app" "admin_api" {
-  name                = azapi_resource.admin_api.name
+  name                = azapi_resource.function_app_admin_api.name
   resource_group_name = data.azurerm_resource_group.rg.name
 }
 

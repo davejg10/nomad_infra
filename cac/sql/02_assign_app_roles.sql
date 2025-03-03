@@ -25,5 +25,3 @@ GRANT SELECT, INSERT, UPDATE ON public.route_operator TO nomad_function_app;
 GRANT SELECT, INSERT, UPDATE ON public.route_instance TO nomad_function_app;
 
 GRANT SELECT ON ALL TABLES IN SCHEMA public TO neo4j_user;
-
-ALTER TABLE country ADD CONSTRAINT country_name_unique UNIQUE (name);

@@ -6,48 +6,6 @@ resource "azurerm_service_plan" "job_orchestrator" {
   sku_name            = var.job_orchestrator_sku_name
 }
 
-resource "azurerm_storage_account" "job_orchestrator" {
-  name                     = "st${var.environment_settings.environment}${var.environment_settings.region_code}joborchestrator"
-  resource_group_name      = data.azurerm_resource_group.rg.name
-  location                 = var.environment_settings.region
-  account_tier             = "Standard"
-  account_replication_type = "LRS"
-
-  network_rules {
-    default_action             = "Deny"
-    virtual_network_subnet_ids = [data.terraform_remote_state.backend.outputs.data_services_subnet_id]
-  }
-}
-
-resource "azurerm_user_assigned_identity" "function_app" {
-  name = "id-${var.environment_settings.environment}-${var.environment_settings.region_code}-${var.environment_settings.app_name}-${var.environment_settings.identifier}-function-app"
-
-  resource_group_name = data.azurerm_resource_group.rg.name
-  location            = var.environment_settings.region
-}
-
-resource "azurerm_role_assignment" "job_orchestratorr_to_package_storage" {
-  scope                = azurerm_storage_account.job_orchestrator.id
-  role_definition_name = "Storage Blob Data Owner"
-  principal_id         = azurerm_user_assigned_identity.function_app.principal_id
-}
-
-resource "azurerm_role_assignment" "job_orchestrator_to_app_key_vault" {
-  scope                = data.terraform_remote_state.backend.outputs.key_vault_id
-  role_definition_name = "Key Vault Secrets User"
-  principal_id         = azurerm_user_assigned_identity.function_app.principal_id
-}
-
-resource "azurerm_storage_container" "job_orchestrator_container" {
-  name                  = var.job_orchestrator_blob_container_name
-  storage_account_id    = azurerm_storage_account.job_orchestrator.id
-  container_access_type = "private"
-}
-
-locals {
-  job_orchestrator_blob_storage_container = "${azurerm_storage_account.job_orchestrator.primary_blob_endpoint}${var.job_orchestrator_blob_container_name}"
-}
-
 resource "azapi_resource" "job_orchestrator" {
   type                      = "Microsoft.Web/sites@2023-12-01"
   schema_validation_enabled = false
@@ -148,15 +106,4 @@ resource "azurerm_app_service_virtual_network_swift_connection" "job_orchestrato
 data "azurerm_linux_function_app" "job_orchestrator" {
   name                = azapi_resource.job_orchestrator.name
   resource_group_name = data.azurerm_resource_group.rg.name
-}
-
-resource "azurerm_role_assignment" "job_orchestrator_servicebus_sender" {
-  scope                = azurerm_servicebus_namespace.nomad.id
-  role_definition_name = "Azure Service Bus Data Sender"
-  principal_id         = azurerm_user_assigned_identity.function_app.principal_id
-}
-resource "azurerm_role_assignment" "job_orchestrator_servicebus_receiver" {
-  scope                = azurerm_servicebus_namespace.nomad.id
-  role_definition_name = "Azure Service Bus Data Receiver"
-  principal_id         = azurerm_user_assigned_identity.function_app.principal_id
 }

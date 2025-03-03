@@ -11,7 +11,8 @@ CREATE TABLE city (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name VARCHAR(100) NOT NULL,
     description TEXT,
-    country_id UUID REFERENCES country(id)
+    country_id UUID REFERENCES country(id),
+    CONSTRAINT unique_city_per_country UNIQUE (name, country_id)
 );
 
 CREATE TYPE transport_type AS ENUM ('TAXI', 'VAN', 'FLIGHT', 'BUS');

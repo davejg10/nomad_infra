@@ -6,16 +6,16 @@ CREATE TABLE country (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name VARCHAR(100) NOT NULL,
     description TEXT
-)
+);
 
 CREATE TABLE city (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name VARCHAR(100) NOT NULL,
     description TEXT,
     country_id UUID REFERENCES country(id)
-)
+);
 
-CREATE TYPE transport_type AS ENUM ('TAXI', 'VAN', 'FLIGHT', 'BUS')
+CREATE TYPE transport_type AS ENUM ('TAXI', 'VAN', 'FLIGHT', 'BUS');
 
 CREATE TABLE route_definition (
     id uuid PRIMARY KEY,
@@ -23,13 +23,13 @@ CREATE TABLE route_definition (
     source_city_id UUID REFERENCES city(id),
     target_city_id UUID REFERENCES city(id),
     CONSTRAINT chk_different_cities CHECK (source_city_id <> target_city_id)
-)
+);
 
 CREATE TABLE route_operator (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name VARCHAR(100) NOT NULL,
     logo_url VARCHAR(200) NOT NULL
-)
+);
 
 CREATE TABLE route_instance (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -43,4 +43,4 @@ CREATE TABLE route_instance (
     route_operator_id UUID  REFERENCES route_operator(id),
     CONSTRAINT chk_positive_amount CHECK (cost >= 0),
     CONSTRAINT chk_valid_travel_time CHECK (arrival > departure)
-)
+);

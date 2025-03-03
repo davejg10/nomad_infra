@@ -20,8 +20,8 @@ resource "azurerm_storage_account" "admin_api" {
 }
 
 resource "azurerm_storage_container" "admin_api_container" {
-  name                  = var.job_orchestrator_blob_container_name
-  storage_account_id    = azurerm_storage_account.job_orchestrator.id
+  name                  = var.admin_api_blob_container_name
+  storage_account_id    = azurerm_storage_account.admin_api.id
   container_access_type = "private"
 }
 

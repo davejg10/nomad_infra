@@ -2,9 +2,6 @@
 -- This is the second script to run once you have execute 01_setup_db.sql
 -- You should run this script against the database created in 01_setup_db with the user also creates in that script
 
-CREATE DATABASE nomad; -- this will be run seperately 
-
-
 CREATE TABLE country (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name VARCHAR(100) NOT NULL,

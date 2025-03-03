@@ -78,7 +78,7 @@ resource "terraform_data" "initialize_db" {
   provisioner "local-exec" {
     command = <<EOT
       export PGPASSWORD=$(az account get-access-token --resource-type oss-rdbms --query "[accessToken]" -o tsv)
-      psql -h "${azurerm_postgresql_flexible_server.nomad.fqdn}" -p 5432 -U "${local.mi_deployer_principal_name}" -d postgres -f ${local.postgres_setup_db_script_path} -v NOMAD_ADMIN_USER="${azurerm_user_assigned_identity.github.name}" -v NOMAD_BACKEND_USER="${azurerm_user_assigned_identity.asp.name}"
+      psql -h "${azurerm_postgresql_flexible_server.nomad.fqdn}" -p 5432 -U "${local.mi_deployer_principal_name}" -d postgres -f ${local.postgres_setup_db_script_path} -v PSQL_ADMIN="${azurerm_user_assigned_identity.psql_admin.name}" -v NOMAD_BACKEND_USER="${azurerm_user_assigned_identity.asp.name}"
       EOT
   }
 

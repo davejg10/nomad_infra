@@ -25,3 +25,10 @@ resource "azurerm_role_assignment" "webapp_pull_acr" {
   principal_id         = azurerm_user_assigned_identity.asp.principal_id
 }
 
+// Managed identity for Database Admin
+resource "azurerm_user_assigned_identity" "psql_admin" {
+  name = "id-${var.environment_settings.environment}-${var.environment_settings.region_code}-${var.environment_settings.app_name}-${var.environment_settings.identifier}-psql"
+
+  resource_group_name = data.azurerm_resource_group.rg.name
+  location            = var.environment_settings.region
+}

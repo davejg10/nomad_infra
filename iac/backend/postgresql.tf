@@ -14,7 +14,7 @@ resource "azurerm_postgresql_flexible_server" "nomad" {
   version                       = "16"
   delegated_subnet_id           = azurerm_subnet.postgresql.id
   private_dns_zone_id           = azurerm_private_dns_zone.postgresql.id
-  public_network_access_enabled = true
+  public_network_access_enabled = false
   zone                          = "1"
 
   authentication {

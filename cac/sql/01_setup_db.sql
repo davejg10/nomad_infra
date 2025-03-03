@@ -1,6 +1,5 @@
 -- Active: 1740660744988@@127.0.0.1@5432@nomad
--- This is the second script to run once you have execute 01_setup_db.sql
--- You should run this script against the database created in 01_setup_db with the user also creates in that script
+-- This script should be executed against the `nomad` database
 
 CREATE TABLE country (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),

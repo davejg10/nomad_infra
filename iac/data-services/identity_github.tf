@@ -1,6 +1,6 @@
 // Managed Identity used in nomad_data_services repo to deploy, insert secret, push to acr..
 resource "azurerm_user_assigned_identity" "github" {
-  name = "id-${var.environment_settings.environment}-${var.environment_settings.region_code}-${var.environment_settings.app_name}-github-${var.environment_settings.identifier}"
+  name = "id-${var.environment_settings.environment}-${var.environment_settings.region_code}-${var.environment_settings.app_name}-${var.environment_settings.identifier}-github"
 
   resource_group_name = data.azurerm_resource_group.rg.name
   location            = var.environment_settings.region

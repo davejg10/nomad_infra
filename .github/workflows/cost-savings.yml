@@ -22,7 +22,7 @@ env:
   SQL_SCRIPT_PATH: sql
 
 jobs:
-  test:
+  execute_sql:
     runs-on: self-hosted
     environment: ${{ github.event.inputs.environment }}
     defaults:
@@ -40,6 +40,7 @@ jobs:
 
       - name: Run cost savings script
         run: |
+          az account show
           PRINCIPAL_ID=$(az account get-access-token --query principalId -o tsv)
           echo $PRINCIPAL_ID
           PRINCIPAL_NAME=$(az ad sp show --id $PRINCIPAL_ID --query displayName -o tsv)

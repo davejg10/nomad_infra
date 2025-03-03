@@ -18,7 +18,7 @@ select * from pgaadauth_create_principal(:'NOMAD_BACKEND_USER', false, false);
 
 SELECT rolname, rolsuper, rolcreaterole FROM pg_roles WHERE rolname = current_user;
 
-GRANT :'PSQL_ADMIN' TO current_user;
+GRANT :"PSQL_ADMIN" TO current_user;
 
 SET ROLE :"PSQL_ADMIN";
 

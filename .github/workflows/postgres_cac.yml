@@ -1,31 +1,17 @@
-name: PostgreSQL-flexible Config-as-Code
-run-name: PostgreSQL-flexible Config-as-Code in ${{ github.event.inputs.environment }}
+name: Save hosting costs
 
 on:
+  schedule:
+    - cron: "0 2 * * *"  # Runs every day at 11 PM UTC
   workflow_dispatch:
-    inputs:
-      environment:
-        type: choice
-        description: Environment
-        options: 
-          - dev
-          - test
-          # - prod
 
 permissions:
   id-token: write
 
-env:
-  WORK_DIR: ./cac
-  PSQL_FQDN: psql-${{ github.event.inputs.environment }}-uks-nomad-01.postgres.database.azure.com
-
 jobs:
   test:
     runs-on: self-hosted
-    environment: ${{ github.event.inputs.environment }}
-    defaults:
-      run:
-        working-directory: ${{ env.WORK_DIR }}
+    environment: dev
     steps:
       - uses: actions/checkout@v4
 
@@ -37,7 +23,4 @@ jobs:
           subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
 
       - name: Run cost savings script
-        run: |
-          export PGPASSWORD=$(az account get-access-token --resource-type oss-rdbms --query "[accessToken]" -o tsv)
-          psql -h "${{ env.PSQL_FQDN }}" -p 5432 -U "${local.mi_deployer_principal_name}" -d nomad -f ${local.postgres_setup_db_script_path}
-          
+        run: bash ./.github/scripts/save_cost.sh dev

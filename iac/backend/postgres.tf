@@ -32,6 +32,9 @@ resource "azurerm_postgresql_flexible_server" "nomad" {
 output "postgres_uri" {
   value = "jdbc:postgresql://${azurerm_postgresql_flexible_server.nomad.fqdn}:5432"
 }
+output "postgres_fqdn" {
+  value = azurerm_postgresql_flexible_server.nomad.fqdn
+}
 
 resource "azurerm_postgresql_flexible_server_configuration" "pgcrypto" {
   name      = "azure.extensions"

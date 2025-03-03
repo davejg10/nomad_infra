@@ -11,8 +11,8 @@ select * from pgaadauth_create_principal(:'PSQL_ADMIN', true, false);
 select * from pgaadauth_create_principal(:'NOMAD_BACKEND_USER', false, false);
 
 
-CREATE ROE nomad_backend;
-CREATE ROLLE nomad_function_app; -- We will assign the function app identity to this later when its created
+CREATE ROLE nomad_backend;
+CREATE ROLE nomad_function_app; -- We will assign the function app identity to this later when its created
 
 GRANT nomad_backend TO :"NOMAD_BACKEND_USER";
 

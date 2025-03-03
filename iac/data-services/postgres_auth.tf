@@ -5,6 +5,8 @@ locals {
 
 
 resource "terraform_data" "assign_fa_identity_role" {
+  triggers_replace = timestamp()
+
   provisioner "local-exec" {
     command = <<EOT
       export PGPASSWORD=$(az account get-access-token --resource-type oss-rdbms --query "[accessToken]" -o tsv)

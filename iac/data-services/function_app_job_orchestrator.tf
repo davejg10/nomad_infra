@@ -92,6 +92,15 @@ resource "azapi_resource" "function_app_job_orchestrator" {
             name  = "neo4j_password_key",
             value = data.terraform_remote_state.backend.outputs.neo4j_password_secret_key
           },
+          # Used to connect to PostgreSQl Flexible server using Managed Identity
+          {
+            name = "postgres_uri"
+            value = data.terraform_remote_state.backend.outputs.postgres_uri
+          },
+          {
+            name = "function_app_managed_identity_principal_name"
+            value = azurerm_user_assigned_identity.fa_admin_api.name
+          },
           # Service Bus config
           {
             name  = "nomadservicebus__fullyQualifiedNamespace",

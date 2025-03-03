@@ -12,9 +12,9 @@ resource "azurerm_postgresql_flexible_server" "nomad" {
   resource_group_name           = data.azurerm_resource_group.rg.name
   location                      = var.environment_settings.region
   version                       = "16"
-  delegated_subnet_id           = azurerm_subnet.postgresql.id
-  private_dns_zone_id           = azurerm_private_dns_zone.postgresql.id
-  public_network_access_enabled = false
+  # delegated_subnet_id           = azurerm_subnet.postgresql.id
+  # private_dns_zone_id           = azurerm_private_dns_zone.postgresql.id
+  public_network_access_enabled = true
   zone                          = "1"
 
   authentication {
@@ -57,34 +57,34 @@ locals {
   postgres_setup_db_script_path = "${path.module}/scripts/initialize_db.sql"
 }
 
-// Ensure we have network access before trying to execute sql script
-resource "terraform_data" "postgres_dns_resolver" {
-  triggers_replace = [
-    azurerm_postgresql_flexible_server.nomad.id
-  ]
+# // Ensure we have network access before trying to execute sql script
+# resource "terraform_data" "postgres_dns_resolver" {
+#   triggers_replace = [
+#     azurerm_postgresql_flexible_server.nomad.id
+#   ]
 
-  provisioner "local-exec" {
-    command = "chmod +x ${local.postgres_dns_resolver_script_path} && ./${local.postgres_dns_resolver_script_path}"
+#   provisioner "local-exec" {
+#     command = "chmod +x ${local.postgres_dns_resolver_script_path} && ./${local.postgres_dns_resolver_script_path}"
 
-    environment = {
-      POSTGRES_FQDN = azurerm_postgresql_flexible_server.nomad.fqdn
-    }
-  }
-}
+#     environment = {
+#       POSTGRES_FQDN = azurerm_postgresql_flexible_server.nomad.fqdn
+#     }
+#   }
+# }
 
-resource "terraform_data" "initialize_db" {
-  triggers_replace = timestamp()
+# resource "terraform_data" "initialize_db" {
+#   triggers_replace = timestamp()
 
-  provisioner "local-exec" {
-    command = <<EOT
-      export PGPASSWORD=$(az account get-access-token --resource-type oss-rdbms --query "[accessToken]" -o tsv)
-      psql -h "${azurerm_postgresql_flexible_server.nomad.fqdn}" -p 5432 -U "${local.mi_deployer_principal_name}" -d postgres -f ${local.postgres_setup_db_script_path} -v PSQL_ADMIN="${azurerm_user_assigned_identity.psql_admin.name}" -v NOMAD_BACKEND_USER="${azurerm_user_assigned_identity.asp.name}"
-      EOT
-  }
+#   provisioner "local-exec" {
+#     command = <<EOT
+#       export PGPASSWORD=$(az account get-access-token --resource-type oss-rdbms --query "[accessToken]" -o tsv)
+#       psql -h "${azurerm_postgresql_flexible_server.nomad.fqdn}" -p 5432 -U "${local.mi_deployer_principal_name}" -d postgres -f ${local.postgres_setup_db_script_path} -v PSQL_ADMIN="${azurerm_user_assigned_identity.psql_admin.name}" -v NOMAD_BACKEND_USER="${azurerm_user_assigned_identity.asp.name}"
+#       EOT
+#   }
 
-  depends_on = [
-    terraform_data.postgres_dns_resolver,
-    azurerm_postgresql_flexible_server_active_directory_administrator.nomad
-  ]
-}
+#   depends_on = [
+#     terraform_data.postgres_dns_resolver,
+#     azurerm_postgresql_flexible_server_active_directory_administrator.nomad
+#   ]
+# }
 

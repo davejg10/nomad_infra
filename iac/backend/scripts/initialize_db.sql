@@ -8,9 +8,7 @@
 -- -- These statements actually create the roles in PostgreSQL 
 -- -- Notice the difference in quotes when referencing the variable here and when GRANTING the roles below. This is intentional.
 
-ALTER ROLE current_user WITH SUPERUSER;
-
-select * from pgaadauth_create_principal(:'PSQL_ADMIN', false, false);
+select * from pgaadauth_create_principal(:'PSQL_ADMIN', true, false);
 select * from pgaadauth_create_principal(:'NOMAD_BACKEND_USER', false, false);
 
 
@@ -21,6 +19,7 @@ select * from pgaadauth_create_principal(:'NOMAD_BACKEND_USER', false, false);
 
 SELECT rolname, rolsuper, rolcreaterole FROM pg_roles WHERE rolname = current_user;
 
+GRANT :"PSQL_ADMIN" TO current_user WITH ADMIN OPTION;
 
 ALTER ROLE :"PSQL_ADMIN" WITH CREATEROLE;
 

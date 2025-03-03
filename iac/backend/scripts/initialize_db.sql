@@ -2,7 +2,7 @@
 -- It creates Postgres users out of them and then assigns them to roles. 
 -- The remaining sql scripts are later executed in the nomad_backend repo using the github managed identity.
 
-CREATE DATABASE nomad;
+-- CREATE DATABASE nomad;
 
 -- -- These are the managed identity we have created
 -- -- These statements actually create the roles in PostgreSQL 
@@ -11,10 +11,16 @@ select * from pgaadauth_create_principal(:'PSQL_ADMIN', true, false);
 select * from pgaadauth_create_principal(:'NOMAD_BACKEND_USER', false, false);
 
 
-CREATE ROLE nomad_backend;
-CREATE ROLE nomad_function_app; -- We will assign the function app identity to this later when its created
+-- CREATE ROLE nomad_backend;
+-- CREATE ROLE nomad_function_app; -- We will assign the function app identity to this later when its created
 
-GRANT nomad_backend TO :"NOMAD_BACKEND_USER";
+-- GRANT nomad_backend TO :"NOMAD_BACKEND_USER";
+
+SET ROLE :"PSQL_ADMIN";
+
+ALTER ROLE :"PSQL_ADMIN" WITH CREATEROLE;
+
+SET ROLE :"PSQL_ADMIN";
 
 GRANT ALL PRIVILEGES ON DATABASE nomad TO :"PSQL_ADMIN";
 

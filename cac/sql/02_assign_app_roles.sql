@@ -18,11 +18,11 @@ ALTER DEFAULT PRIVILEGES IN SCHEMA public
 -- Grant read/write access to specific tables
 GRANT CONNECT ON DATABASE nomad TO nomad_function_app;
 GRANT USAGE ON SCHEMA public TO nomad_function_app;
-GRANT SELECT, INSERT, UPDATE ON public.country TO nomad_function_app;
-GRANT SELECT, INSERT, UPDATE ON public.city TO nomad_function_app;
-GRANT SELECT, INSERT, UPDATE ON public.route_definition TO nomad_function_app;
-GRANT SELECT, INSERT, UPDATE ON public.route_operator TO nomad_function_app;
-GRANT SELECT, INSERT, UPDATE ON public.route_instance TO nomad_function_app;
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.country TO nomad_function_app;
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.city TO nomad_function_app;
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.route_definition TO nomad_function_app;
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.route_operator TO nomad_function_app;
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.route_instance TO nomad_function_app;
 
 -- ======================= NOMAD Neo4j user (used for debug) ========================
 GRANT SELECT ON ALL TABLES IN SCHEMA public TO neo4j_user;

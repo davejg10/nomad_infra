@@ -79,6 +79,10 @@ resource "azapi_resource" "function_app_job_orchestrator" {
             name  = "azure_client_id",
             value = azurerm_user_assigned_identity.fa_job_orchestrator.client_id
           },
+          {
+            name = "SPRING_PROFILE"
+            value = var.environment_settings.environment
+          },
           # flexconsumption Function Apps cant use Key Vault reference so secrets must be fetched in code
           {
             name  = "key_vault_uri",

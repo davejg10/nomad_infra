@@ -15,7 +15,7 @@ CREATE TABLE city (
     CONSTRAINT unique_city_per_country UNIQUE (name, country_id)
 );
 
-CREATE TYPE transport_type AS ENUM ('TAXI', 'VAN', 'FLIGHT', 'BUS');
+CREATE TYPE transport_type AS ENUM ('TAXI', 'VAN', 'FLIGHT', 'BUS', 'TRAIN');
 
 CREATE TABLE route_definition (
     id uuid PRIMARY KEY,

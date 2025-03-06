@@ -24,6 +24,10 @@ resource "azurerm_container_app_job" "one2goasia" {
       memory = var.one_2_go_asia_job_memory
 
       env {
+        name = "SPRING_PROFILE"
+        value = var.environment_settings.environment
+      }
+      env {
         name  = "sb_namespace_fqdn"
         value = "${azurerm_servicebus_namespace.nomad.name}.servicebus.windows.net"
       }

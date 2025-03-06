@@ -1,6 +1,6 @@
 
-name: PostgreSQL-flexible Config-as-Code
-run-name: PostgreSQL-flexible Config-as-Code in ${{ github.event.inputs.environment }}
+name: PostgreSQL execute script
+run-name: PostgreSQL execute script in ${{ github.event.inputs.environment }}
 
 on:
   workflow_dispatch:
@@ -24,9 +24,8 @@ permissions:
   id-token: write
 
 env:
-  WORK_DIR: ./cac
-  PSQL_FQDN: psql-${{ github.event.inputs.environment }}-uks-nomad-01.postgres.database.azure.com
-  SQL_SCRIPT_PATH: sql
+  WORK_DIR: ./cac/sql
+  PSQL_FQDN: psql-${{ github.event.inputs.environment }}-uks-nomad-01.postgres.database.azure.com 
 
 jobs:
   execute_sql:
@@ -45,10 +44,10 @@ jobs:
           tenant-id: ${{ vars.AZURE_TENANT_ID }}
           subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
 
-      - name: Run cost savings script
+      - name: Execute script ${{ github.enent.inputs.script }}
         run: |
           PRINCIPAL_NAME="id-dev-uks-nomad-tf"
           export PGPASSWORD=$(az account get-access-token --resource-type oss-rdbms --query "[accessToken]" -o tsv)
-          psql -h "${{ env.PSQL_FQDN }}" -p 5432 -U "$PRINCIPAL_NAME" -d nomad -f "$SQL_SCRIPT_PATH/${{ github.event.inputs.script }}.sql"
+          psql -h "${{ env.PSQL_FQDN }}" -p 5432 -U "$PRINCIPAL_NAME" -d nomad -f "${{ github.event.inputs.script }}.sql"
           
 

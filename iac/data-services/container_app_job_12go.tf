@@ -28,6 +28,10 @@ resource "azurerm_container_app_job" "one2goasia" {
         value = var.environment_settings.environment
       }
       env {
+        name = "APPLICATIONINSIGHTS_CONNECTION_STRING"
+        value = data.terraform_remote_state.backend.outputs.app_insights_connection_string
+      }
+      env {
         name  = "sb_namespace_fqdn"
         value = "${azurerm_servicebus_namespace.nomad.name}.servicebus.windows.net"
       }

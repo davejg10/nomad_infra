@@ -30,7 +30,7 @@ postgres_backup_retention_days = 7
 postgres_storage_mb = 32768
 postgres_storage_tier = "P10"
 // App service
-asp_sku_name           = "B2"
+asp_sku_name           = "B1"
 exposed_container_port = 8080 //Tomcat webserver runs on port 8080
 
 // Key Vault

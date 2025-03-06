@@ -1,5 +1,5 @@
 resource "azurerm_user_assigned_identity" "fa_job_orchestrator" {
-  name = "id-${var.environment_settings.environment}-${var.environment_settings.region_code}-${var.environment_settings.app_name}-${var.environment_settings.identifier}-function-app"
+  name = "id-${var.environment_settings.environment}-${var.environment_settings.region_code}-${var.environment_settings.app_name}-${var.environment_settings.identifier}-job-orchestrator"
 
   resource_group_name = data.azurerm_resource_group.rg.name
   location            = var.environment_settings.region

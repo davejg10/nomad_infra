@@ -76,7 +76,7 @@ resource "azapi_resource" "function_app_admin_api" {
             value = data.terraform_remote_state.backend.outputs.app_insights_connection_string
           },
           {
-            name  = "azure_client_id",
+            name  = "AZURE_CLIENT_ID",
             value = azurerm_user_assigned_identity.fa_admin_api.client_id
           },
           {

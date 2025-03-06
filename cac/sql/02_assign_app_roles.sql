@@ -25,4 +25,4 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON public.route_operator TO nomad_function_
 GRANT SELECT, INSERT, UPDATE, DELETE ON public.route_instance TO nomad_function_app;
 
 -- ======================= NOMAD Neo4j user (used for debug) ========================
-GRANT SELECT ON ALL TABLES IN SCHEMA public TO neo4j_user;
+GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO neo4j_user;

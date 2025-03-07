@@ -5,6 +5,8 @@ environment_settings = {
   app_name    = "nomad"
   identifier  = "02"
 }
+// service bus
+service_bus_local_auth = true
 
 // job-orchestrator Function App
 job_orchestrator_sku_name            = "FC1"

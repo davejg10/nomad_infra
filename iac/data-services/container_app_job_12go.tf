@@ -25,7 +25,7 @@ resource "azurerm_container_app_job" "one2goasia" {
 
       env {
         name = "SPRING_PROFILE"
-        value = var.environment_settings.environment
+        value = "cloud"
       }
       env {
         name = "APPLICATIONINSIGHTS_CONNECTION_STRING"

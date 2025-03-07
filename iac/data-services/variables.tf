@@ -9,6 +9,7 @@ variable "environment_settings" {
   })
 }
 
+
 // Hub config
 variable "hub_rg_name" {
   type    = string
@@ -25,6 +26,12 @@ variable "hub_acr_name" {
 variable "hub_law_name" {
   type    = string
   default = "law-glb-uks-devopsutils"
+}
+
+// Service Bus
+variable "service_bus_local_auth" {
+  type = string
+  description = "Whether local auth (i.e SAS tokens) can be used to authenticate with the Service Bus. Needed for local development of Azure Functions"
 }
 
 // Job Orchestrator Function App config

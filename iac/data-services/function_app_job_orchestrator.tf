@@ -27,13 +27,14 @@ resource "azurerm_storage_container" "job_orchestrator_container" {
 
 locals {
   job_orchestrator_blob_storage_container = "${azurerm_storage_account.job_orchestrator.primary_blob_endpoint}${var.job_orchestrator_blob_container_name}"
+  fa_job_orchestrator_name = "fa-${var.environment_settings.environment}-${var.environment_settings.region_code}-${var.environment_settings.app_name}-${var.environment_settings.identifier}-job-orchestrator"
 }
 
 resource "azapi_resource" "function_app_job_orchestrator" {
   type                      = "Microsoft.Web/sites@2023-12-01"
   schema_validation_enabled = false
   location                  = var.environment_settings.region
-  name                      = "fa-${var.environment_settings.environment}-${var.environment_settings.region_code}-${var.environment_settings.app_name}-${var.environment_settings.identifier}-job-orchestrator"
+  name                      = local.fa_job_orchestrator_name
   parent_id                 = data.azurerm_resource_group.rg.id
 
   identity {
@@ -68,6 +69,14 @@ resource "azapi_resource" "function_app_job_orchestrator" {
       siteConfig = {
         appSettings = [
           {
+            name = "FUNCTION_APP_NAME",
+            value = local.fa_job_orchestrator_name
+          },
+          {
+            name = "FUNCTION_APP_RG_NAME",
+            value = data.azurerm_resource_group.rg.name
+          },
+          {
             name  = "AzureWebJobsStorage__accountName",
             value = azurerm_storage_account.job_orchestrator.name
           },
@@ -81,7 +90,7 @@ resource "azapi_resource" "function_app_job_orchestrator" {
           },
           {
             name = "SPRING_PROFILE"
-            value = var.environment_settings.environment
+            value = "cloud"
           },
           # flexconsumption Function Apps cant use Key Vault reference so secrets must be fetched in code
           {
@@ -113,6 +122,14 @@ resource "azapi_resource" "function_app_job_orchestrator" {
           {
             name  = "nomadservicebus__fullyQualifiedNamespace",
             value = "${azurerm_servicebus_namespace.nomad.name}.servicebus.windows.net"
+          },
+          {
+            name  = "nomadservicebus__credential", // required for service bus binding due to User managed identity
+            value = "managedidentity"
+          },
+          {
+            name  = "nomadservicebus__clientId", // required for service bus binding due to User managed identity
+            value = azurerm_user_assigned_identity.fa_job_orchestrator.client_id
           },
           {
             name  = "sb_pre_processed_queue_name",

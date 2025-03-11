@@ -23,9 +23,10 @@ resource "azurerm_role_assignment" "github_to_function_apps" {
   }
   
   scope              = each.key
-  role_definition_id = "Website Contributor"
+  role_definition_name = "Website Contributor"
   principal_id       = azurerm_user_assigned_identity.github.principal_id
 }
+
 
 // This role definition is created in 'devops' repo under 'management' config
 resource "azurerm_role_assignment" "github_to_acr" {

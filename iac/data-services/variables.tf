@@ -9,7 +9,6 @@ variable "environment_settings" {
   })
 }
 
-
 // Hub config
 variable "hub_rg_name" {
   type    = string

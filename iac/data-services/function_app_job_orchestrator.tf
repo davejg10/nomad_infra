@@ -69,14 +69,6 @@ resource "azapi_resource" "function_app_job_orchestrator" {
       siteConfig = {
         appSettings = [
           {
-            name = "FUNCTION_APP_NAME",
-            value = local.fa_job_orchestrator_name
-          },
-          {
-            name = "FUNCTION_APP_RG_NAME",
-            value = data.azurerm_resource_group.rg.name
-          },
-          {
             name  = "AzureWebJobsStorage__accountName",
             value = azurerm_storage_account.job_orchestrator.name
           },

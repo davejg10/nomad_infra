@@ -6,7 +6,7 @@ environment_settings = {
   identifier  = "02"
 }
 // service bus
-service_bus_local_auth = true
+service_bus_local_auth = false
 
 // job-orchestrator Function App
 job_orchestrator_sku_name            = "FC1"

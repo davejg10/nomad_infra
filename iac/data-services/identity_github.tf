@@ -10,23 +10,17 @@ output "github_client_id" {
   value = azurerm_user_assigned_identity.github.client_id
 }
 
-locals {
-  function_app_ids = [
-    data.azurerm_linux_function_app.admin_api.id,
-    data.azurerm_linux_function_app.job_orchestrator.id
-  ]
-}
-
-resource "azurerm_role_assignment" "github_to_function_apps" {
-  for_each = {
-    for id in local.function_app_ids : id => id
-  }
-  
-  scope              = each.key
+resource "azurerm_role_assignment" "github_to_admin_api_fa" {
+  scope              = data.azurerm_linux_function_app.admin_api.id
   role_definition_name = "Website Contributor"
   principal_id       = azurerm_user_assigned_identity.github.principal_id
 }
 
+resource "azurerm_role_assignment" "github_to_job_orchestrator_fa" {
+  scope              = data.azurerm_linux_function_app.job_orchestrator.id
+  role_definition_name = "Website Contributor"
+  principal_id       = azurerm_user_assigned_identity.github.principal_id
+}
 
 // This role definition is created in 'devops' repo under 'management' config
 resource "azurerm_role_assignment" "github_to_acr" {

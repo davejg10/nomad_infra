@@ -148,7 +148,7 @@ data "azurerm_linux_function_app" "job_orchestrator" {
 }
 
 # The subnet is created in ../backend Terraform config directory
-resource "azurerm_app_service_virtual_network_swift_connection" "job_orchestrator_vnet_integration" {
-  app_service_id = data.azurerm_linux_function_app.job_orchestrator.id
-  subnet_id      = data.terraform_remote_state.backend.outputs.data_services_subnet_id
-}
+# resource "azurerm_app_service_virtual_network_swift_connection" "job_orchestrator_vnet_integration" {
+#   app_service_id = data.azurerm_linux_function_app.job_orchestrator.id
+#   subnet_id      = data.terraform_remote_state.backend.outputs.data_services_subnet_id
+# }

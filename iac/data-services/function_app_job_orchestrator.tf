@@ -73,10 +73,6 @@ resource "azapi_resource" "function_app_job_orchestrator" {
             value = azurerm_storage_account.job_orchestrator.name
           },
           {
-            name  = "APPLICATIONINSIGHTS_CONNECTION_STRING",
-            value = data.terraform_remote_state.backend.outputs.app_insights_connection_string
-          },
-          {
             name  = "AZURE_CLIENT_ID",
             value = azurerm_user_assigned_identity.fa_job_orchestrator.client_id
           },

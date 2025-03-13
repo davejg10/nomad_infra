@@ -73,6 +73,10 @@ resource "azapi_resource" "function_app_job_orchestrator" {
             value = azurerm_storage_account.job_orchestrator.name
           },
           {
+            name  = "APPLICATIONINSIGHTS_CONNECTION_STRING",
+            value = data.terraform_remote_state.backend.outputs.app_insights_connection_string
+          },
+          {
             name  = "AZURE_CLIENT_ID",
             value = azurerm_user_assigned_identity.fa_job_orchestrator.client_id
           },
@@ -148,7 +152,7 @@ data "azurerm_linux_function_app" "job_orchestrator" {
 }
 
 # The subnet is created in ../backend Terraform config directory
-# resource "azurerm_app_service_virtual_network_swift_connection" "job_orchestrator_vnet_integration" {
-#   app_service_id = data.azurerm_linux_function_app.job_orchestrator.id
-#   subnet_id      = data.terraform_remote_state.backend.outputs.data_services_subnet_id
-# }
+resource "azurerm_app_service_virtual_network_swift_connection" "job_orchestrator_vnet_integration" {
+  app_service_id = data.azurerm_linux_function_app.job_orchestrator.id
+  subnet_id      = data.terraform_remote_state.backend.outputs.data_services_subnet_id
+}

@@ -4,7 +4,7 @@ resource "azurerm_servicebus_namespace" "nomad" {
   location            = var.environment_settings.region
   sku                 = "Standard"
 
-  local_auth_enabled = false
+  local_auth_enabled = var.service_bus_local_auth
   // Service bus is public as Service Endpoints/Private Endpoints is a premium feature
   // Premium costs 70p per hour!
   public_network_access_enabled = true

@@ -1,0 +1,3 @@
+DROP TABLE city CASCADE;
+
+DROP TABLE country CASCADE;

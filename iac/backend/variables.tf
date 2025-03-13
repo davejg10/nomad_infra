@@ -9,6 +9,7 @@ variable "environment_settings" {
   })
 }
 
+
 // Hub config
 variable "hub_rg_name" {
   type    = string
@@ -39,6 +40,11 @@ variable "vnet_address_space" {
 variable "asp_subnet_address_prefixes" {
   type        = string
   description = "Address space for the subnet containing the Azure App Service."
+}
+
+variable "postgresql_subnet_address_prefixes" {
+  type        = string
+  description = "Address space for the subnet containing the PostgreSQL flexible server."
 }
 
 variable "neo4j_subnet_address_prefixes" {
@@ -73,7 +79,7 @@ variable "neo4j_user" {
 
 variable "neo4j_password_secret_key" {
   type        = string
-  description = "The key for the Key Vault secret storing the Neo4j password"
+  description = "The key for a secret in the Key Vault secret storing the Neo4j password"
 }
 
 variable "neo4j_data_disk_size_gb" {
@@ -86,6 +92,26 @@ variable "backup_vault_rg_name" {
   description = "Name of the Resource Group containing the backup vault in this environment"
 }
 
+// Postgres
+variable "postges_sku_name" {
+  type = string
+  description = "Name of the SKU to use for the PostgreSQL flexible server."
+}
+
+variable "postgres_backup_retention_days" {
+  type = number
+  description = "Number of days to keep backups for"
+}
+
+variable "postgres_storage_mb" {
+  type = number
+  description = "Size in MB of the Postgres disk"
+}
+
+variable "postgres_storage_tier" {
+  type = string
+  description = "Storage tier for the disk. Controls IOPS"
+}
 // App Service
 variable "asp_sku_name" {
   type = string

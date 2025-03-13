@@ -41,6 +41,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # need to be logged in for postgressql auth setup
+      - name: Azure CLI Login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+
       - name: Terraform plan
         if: ${{ github.event.inputs.redeploy_vm_extension == 'true' }}
         uses: davejg10/pipeline_templates/.github/actions/terraform_plan@v1
@@ -71,6 +79,14 @@ jobs:
         working-directory: ${{ env.WORK_DIR }}
     steps:
       - uses: actions/checkout@v4
+
+      # need to be logged in for postgressql auth setup
+      - name: Azure CLI Login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
 
       - name: Terraform apply
         uses: davejg10/pipeline_templates/.github/actions/terraform_apply@v1

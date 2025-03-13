@@ -27,6 +27,12 @@ variable "hub_law_name" {
   default = "law-glb-uks-devopsutils"
 }
 
+// Service Bus
+variable "service_bus_local_auth" {
+  type = string
+  description = "Whether local auth (i.e SAS tokens) can be used to authenticate with the Service Bus. Needed for local development of Azure Functions"
+}
+
 // Job Orchestrator Function App config
 variable "job_orchestrator_sku_name" {
   type        = string
@@ -35,7 +41,7 @@ variable "job_orchestrator_sku_name" {
 
 variable "job_orchestrator_blob_container_name" {
   type        = string
-  description = "Name of the container created in the shared Storage Account that stores the deployment package"
+  description = "Name of the container created in the Storage Account used by the job-orchestrator Function App. It stores the deployment package"
 }
 
 variable "job_orchestrator_max_instance_count" {
@@ -45,6 +51,29 @@ variable "job_orchestrator_max_instance_count" {
 }
 
 variable "job_orchestrator_instance_memory" {
+  default     = 2048
+  type        = number
+  description = "Memory in MB for each instance."
+}
+
+// Admin api Function App config
+variable "admin_api_sku_name" {
+  type        = string
+  description = "The SKU used for the App Service Plan hosting the Function Apps"
+}
+
+variable "admin_api_blob_container_name" {
+  type = string
+  description = "name of the container created in the Storage Account used by the admin-api Function App. It stores the deployment package."
+}
+
+variable "admin_api_max_instance_count" {
+  default     = 40
+  type        = number
+  description = "Max number of instances of this Function. Min is 40"
+}
+
+variable "admin_api_instance_memory" {
   default     = 2048
   type        = number
   description = "Memory in MB for each instance."

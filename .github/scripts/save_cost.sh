@@ -5,7 +5,7 @@ ENV=$1
 NOMAD_RG_NAME="rg-$ENV-uks-nomad-01"
 WEBAPP_NAME="web-t-$ENV-uks-nomad-01"
 APP_PLAN_NAME="asp-$ENV-uks-nomad-01"
-VM_NAME="vm-$ENV-uks-nomad-neo4j-01"
+VM_NAME="vm-$ENV-uks-nomad-01-neo4j"
 
 # Function to check if a web app exists
 check_webapp_exists() {

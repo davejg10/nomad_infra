@@ -19,7 +19,7 @@ resource "azurerm_role_assignment" "github_to_key_vault" {
 // This role definition is created in 'devops' repo under 'management' config
 resource "azurerm_role_assignment" "github_to_acr" {
   scope                = data.azurerm_container_registry.devopsutils.id
-  role_definition_name = "acr-task-run"
+  role_definition_name = "AcrPush"
   principal_id         = azurerm_user_assigned_identity.github.principal_id
 }
 

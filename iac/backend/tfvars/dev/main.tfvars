@@ -28,7 +28,7 @@ backup_vault_rg_name = "rg-dev-uks-backup"
 postges_sku_name = "B_Standard_B1ms"
 postgres_backup_retention_days = 7
 postgres_storage_mb = 32768
-postgres_storage_tier = "P10"
+postgres_storage_tier = "P4"
 // App service
 asp_sku_name           = "B1"
 exposed_container_port = 8080 //Tomcat webserver runs on port 8080

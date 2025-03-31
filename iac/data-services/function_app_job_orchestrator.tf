@@ -108,7 +108,7 @@ resource "azapi_resource" "function_app_job_orchestrator" {
           },
           {
             name = "function_app_managed_identity_principal_name"
-            value = azurerm_user_assigned_identity.fa_admin_api.name
+            value = azurerm_user_assigned_identity.fa_job_orchestrator.name
           },
           # Service Bus config
           {

@@ -25,8 +25,11 @@ resource "azurerm_linux_web_app" "web_app" {
     "NEO4J_URI"                             = "bolt://${var.neo4j_static_private_ip}:7687"
     "NEO4J_USER"                            = var.neo4j_user
     "NEO4J_PASSWORD"                        = "@Microsoft.KeyVault(SecretUri=${azurerm_key_vault_secret.neo4j_pwd.id})"
-    "APPLICATIONINSIGHTS_CONNECTION_STRING" = azurerm_application_insights.web_insights.connection_string,
-    "SPRING_PROFILE"                        = var.environment_settings.environment
+    "APPLICATIONINSIGHTS_CONNECTION_STRING" = azurerm_application_insights.web_insights.connection_string
+    "SPRING_PROFILE"                        = "CLOUD"
+    "AZURE_CLIENT_ID"                       = azurerm_user_assigned_identity.asp.client_id
+    "postgres_uri"                          = local.postgres_uri
+    "web_app_managed_identity_principal_name" = azurerm_user_assigned_identity.asp.name
   }
 
   site_config {

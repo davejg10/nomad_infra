@@ -16,9 +16,6 @@ CREATE TABLE city (
     CONSTRAINT unique_city_per_country UNIQUE (name, country_id)
 );
 
--- CREATE TYPE transport_type AS ENUM ('TAXI', 'VAN', 'FLIGHT', 'BUS', 'TRAIN');
--- CREATE CAST (varchar AS transport_type) WITH INOUT AS IMPLICIT; -- required to cast from java enum to psql enum
-
 CREATE TABLE route_definition (
     id uuid PRIMARY KEY,
     popularity REAL NOT NULL,
@@ -41,6 +38,9 @@ CREATE TABLE route_instance (
     url TEXT NOT NULL,
     departure TIMESTAMPTZ NOT NULL,
     arrival  TIMESTAMPTZ NOT NULL,
+    operator VARCHAR(50) NOT NULL,
+    departure_location VARCHAR(100) NOT NULL,
+    arrival_location VARCHAR(100) NOT NULL,
     last_check TIMESTAMPTZ NOT NULL,
     travel_time INTERVAL NOT NULL,
     route_definition_id UUID REFERENCES route_definition(id),

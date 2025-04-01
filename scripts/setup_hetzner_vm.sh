@@ -17,24 +17,20 @@ CONTAINER_LOG_DIR="/app/logs"
 echo "Creating host log directory to store logs"
 mkdir -p $HOST_LOG_DIR
 
-echo $AZURE_CLIENT_ID
-echo $AZURE_CLIENT_SECRET
-
 az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET --tenant $AZURE_TENANT_ID
 
-sleep 2000
 az acr login --name acrglbuksdevopsutils.azurecr.io
-sleep 2000
 
 docker pull acrglbuksdevopsutils.azurecr.io/nomad-data/one2goasia:latest
+
+echo "Running ONE2GOASIA scraper"
 docker run -d -e AZURE_CLIENT_ID="$AZURE_CLIENT_ID" \
               -e AZURE_TENANT_ID="$AZURE_TENANT_ID" \
               -e AZURE_CLIENT_SECRET="$AZURE_CLIENT_SECRET" \
-              -e SPRING_PROFILE="hetzner" \ 
+              -e SPRING_PROFILE="hetzner" \
               -e SB_NAMESPACE_FQDN="sbns-$ENV-uks-nomad-02.servicebus.windows.net" \
-              -v $HOST_LOG_DIRs:$CONTAINER_LOG_DIR \
-              --label com.centurylinklabs.watchtower.enable=true \
-              acrglbuksdevopsutils.azurecr.io/nomad-data/one2goasia:latest
+              -v $HOST_LOG_DIR:$CONTAINER_LOG_DIR \
+              --label com.centurylinklabs.watchtower.enable=true acrglbuksdevopsutils.azurecr.io/nomad-data/one2goasia:latest
 
 # We use watchtower to poll our ACR and pull any pushes. GitOps is therefore used to pull updates rather than us pushing them.
 # We mount the .docker/config.json to give Watchtower authorisation to our ACR.

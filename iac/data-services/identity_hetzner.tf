@@ -20,5 +20,5 @@ resource "azurerm_role_assignment" "hetzner_pull_acr" {
   scope                = data.azurerm_container_registry.devopsutils.id
   role_definition_name = "AcrPull"
   principal_id         = data.azuread_service_principal.hetzner.object_id
-  principal_type     = "ServicePrincipal"
+  principal_type       = "ServicePrincipal"
 }

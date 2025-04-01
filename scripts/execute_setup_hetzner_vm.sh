@@ -5,7 +5,7 @@ HETZNER_SP_CLIENT_SECRET=$1
 ENV=$2
 
 HETZNER_USER="root"
-HETZNER_IP="91.99.2.104"
+HETZNER_IP="95.217.9.73"
 
 HETZNER_SP_CLIENT_ID=$(az ad sp list --display-name "sp-$ENV-hetzner-scraper" --query "[0].appId" -o tsv)
 

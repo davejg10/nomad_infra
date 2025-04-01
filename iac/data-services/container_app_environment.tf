@@ -13,7 +13,7 @@ resource "azurerm_container_app_environment" "scrapers" {
     workload_profile_type = "Consumption"
   }
 
-  internal_load_balancer_enabled = true
+  # internal_load_balancer_enabled = true
 }
 
 data "azurerm_log_analytics_workspace" "central" {

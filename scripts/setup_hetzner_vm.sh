@@ -37,7 +37,8 @@ docker run -d -e AZURE_CLIENT_ID="$AZURE_CLIENT_ID" \
 docker run -d \
             --name watchtower   \
             --restart=always \
-            -v $HOME/.docker/config.json:/config.json  \
+            -e REPO_USER="$AZURE_CLIENT_ID" \
+            -e REPO_PASS="$AZURE_CLIENT_SECRET" \
             -v /var/run/docker.sock:/var/run/docker.sock   \
             containrrr/watchtower \
             --cleanup \

@@ -28,6 +28,10 @@ resource "azurerm_container_app_job" "one2goasia" {
         value = "cloud"
       }
       env {
+        name = "ENVIRONMENT"
+        value = var.environment_settings.environment
+      }
+      env {
         name  = "SB_NAMESPACE_FQDN"
         value = "${azurerm_servicebus_namespace.nomad.name}.servicebus.windows.net"
       }

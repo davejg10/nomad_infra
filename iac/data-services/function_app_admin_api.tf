@@ -83,10 +83,6 @@ resource "azapi_resource" "function_app_admin_api" {
             name = "SPRING_PROFILE"
             value = "cloud"
           },
-          {
-            name = "ENVIRONMENT"
-            value = var.environment_settings.environment
-          },
           # flexconsumption Function Apps cant use Key Vault reference so secrets must be fetched in code
           {
             name  = "KEY_VAULT_URI",

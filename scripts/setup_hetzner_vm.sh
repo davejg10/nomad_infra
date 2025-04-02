@@ -28,7 +28,7 @@ docker run -d -e AZURE_CLIENT_ID="$AZURE_CLIENT_ID" \
               -e AZURE_TENANT_ID="$AZURE_TENANT_ID" \
               -e AZURE_CLIENT_SECRET="$AZURE_CLIENT_SECRET" \
               -e SPRING_PROFILE="hetzner" \
-              -e SB_NAMESPACE_FQDN="sbns-$ENV-uks-nomad-02.servicebus.windows.net" \
+              -e ENVIRONMENT="$ENV" \
               -v $HOST_LOG_DIR:$CONTAINER_LOG_DIR \
               --label com.centurylinklabs.watchtower.enable=true acrglbuksdevopsutils.azurecr.io/nomad-data/one2goasia:latest
 

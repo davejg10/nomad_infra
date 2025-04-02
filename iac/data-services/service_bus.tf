@@ -13,9 +13,11 @@ resource "azurerm_servicebus_namespace" "nomad" {
 resource "azurerm_servicebus_queue" "pre_processed" {
   name         = "nomad_pre_processed"
   namespace_id = azurerm_servicebus_namespace.nomad.id
+  max_delivery_count = 3
 }
 
 resource "azurerm_servicebus_queue" "processed" {
   name         = "nomad_processed"
   namespace_id = azurerm_servicebus_namespace.nomad.id
+  max_delivery_count = 3
 }

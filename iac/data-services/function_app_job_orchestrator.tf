@@ -86,28 +86,28 @@ resource "azapi_resource" "function_app_job_orchestrator" {
           },
           # flexconsumption Function Apps cant use Key Vault reference so secrets must be fetched in code
           {
-            name  = "key_vault_uri",
+            name  = "KEY_VAULT_URI",
             value = data.terraform_remote_state.backend.outputs.key_vault_uri
           },
           {
-            name  = "neo4j_uri",
+            name  = "NEO4J_URI",
             value = data.terraform_remote_state.backend.outputs.neo4j_uri
           },
           {
-            name  = "neo4j_user",
+            name  = "NEO4J_USER",
             value = data.terraform_remote_state.backend.outputs.neo4j_user
           },
           {
-            name  = "neo4j_password_key",
+            name  = "NEO4J_PASSWORD_KEY",
             value = data.terraform_remote_state.backend.outputs.neo4j_password_secret_key
           },
           # Used to connect to PostgreSQl Flexible server using Managed Identity
           {
-            name = "postgres_uri"
+            name = "POSTGRES_URI"
             value = data.terraform_remote_state.backend.outputs.postgres_uri
           },
           {
-            name = "function_app_managed_identity_principal_name"
+            name = "FUNCTION_APP_MANAGED_IDENTITY_PRINCIPAL_NAME"
             value = azurerm_user_assigned_identity.fa_job_orchestrator.name
           },
           # Service Bus config
@@ -124,11 +124,11 @@ resource "azapi_resource" "function_app_job_orchestrator" {
             value = azurerm_user_assigned_identity.fa_job_orchestrator.client_id
           },
           {
-            name  = "sb_pre_processed_queue_name",
+            name  = "SB_PRE_PROCESSED_QUEUE_NAME",
             value = azurerm_servicebus_queue.pre_processed.name
           },
           {
-            name  = "sb_processed_queue_name",
+            name  = "SB_PROCESSED_QUEUE_NAME",
             value = azurerm_servicebus_queue.processed.name
           }
         ]

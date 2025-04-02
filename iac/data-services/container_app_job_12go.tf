@@ -28,15 +28,15 @@ resource "azurerm_container_app_job" "one2goasia" {
         value = "cloud"
       }
       env {
-        name  = "sb_namespace_fqdn"
+        name  = "SB_NAMESPACE_FQDN"
         value = "${azurerm_servicebus_namespace.nomad.name}.servicebus.windows.net"
       }
       env {
-        name  = "sb_pre_processed_queue_name"
+        name  = "SB_PRE_PROCESSED_QUEUE_NAME"
         value = azurerm_servicebus_queue.pre_processed.name
       }
       env {
-        name  = "sb_processed_queue_name"
+        name  = "SB_PROCESSED_QUEUE_NAME"
         value = azurerm_servicebus_queue.processed.name
       }
       env {

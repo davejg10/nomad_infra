@@ -48,7 +48,7 @@ resource "azurerm_container_app_job" "one2goasia" {
 
   event_trigger_config {
     scale {
-      max_executions = "3"
+      max_executions = "5"
       rules {
         name             = "azure-servicebus"
         custom_rule_type = "azure-servicebus"

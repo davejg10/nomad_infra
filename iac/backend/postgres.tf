@@ -28,9 +28,12 @@ resource "azurerm_postgresql_flexible_server" "nomad" {
 
 }
 
+locals {
+  postgres_uri = "jdbc:postgresql://${azurerm_postgresql_flexible_server.nomad.fqdn}:5432/nomad?sslmode=require"
+}
 // These are each used in the Function Apps to connect to the Database
 output "postgres_uri" {
-  value = "jdbc:postgresql://${azurerm_postgresql_flexible_server.nomad.fqdn}:5432/nomad?sslmode=require"
+  value = local.postgres_uri
 }
 output "postgres_fqdn" {
   value = azurerm_postgresql_flexible_server.nomad.fqdn

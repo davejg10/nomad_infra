@@ -1,4 +1,6 @@
 #!/bin/bash
+# Run this script locally. The Hetzner Service principal exists in Azure with the name sp-<env>-hetzner-scraper
+
 SETUP_HETZNER_VM_SCRIPT="setup_hetzner_vm.sh"
 
 HETZNER_SP_CLIENT_SECRET=$1

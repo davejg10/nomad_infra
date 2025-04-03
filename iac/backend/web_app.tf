@@ -28,8 +28,8 @@ resource "azurerm_linux_web_app" "web_app" {
     "APPLICATIONINSIGHTS_CONNECTION_STRING" = azurerm_application_insights.web_insights.connection_string
     "SPRING_PROFILE"                        = "cloud"
     "AZURE_CLIENT_ID"                       = azurerm_user_assigned_identity.asp.client_id
-    "postgres_uri"                          = local.postgres_uri
-    "web_app_managed_identity_principal_name" = azurerm_user_assigned_identity.asp.name
+    "POSTGRES_URI"                          = local.postgres_uri
+    "WEB_APP_MANAGED_IDENTITY_PRINCIPAL_NAME" = azurerm_user_assigned_identity.asp.name
   }
 
   site_config {

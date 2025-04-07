@@ -16,12 +16,22 @@ CREATE TABLE city (
     CONSTRAINT unique_city_per_country UNIQUE (name, country_id)
 );
 
+CREATE TABLE IF NOT EXISTS route_popularity (
+    -- Composite primary key
+    CONSTRAINT route_popularity_pk PRIMARY KEY (source_city_id, target_city_id),
+    source_city_id UUID,
+    target_city_id UUID,
+    popularity DOUBLE PRECISION NOT NULL DEFAULT 0.0,
+    CONSTRAINT fk_route_popularity_source_city FOREIGN KEY (source_city_id) REFERENCES city(id),
+    CONSTRAINT fk_route_popularity_target_city FOREIGN KEY (target_city_id) REFERENCES city(id)
+);
+
 CREATE TABLE route_definition (
     id uuid PRIMARY KEY,
-    popularity REAL NOT NULL,
     transport_type VARCHAR(50) NOT NULL,
     source_city_id UUID REFERENCES city(id),
     target_city_id UUID REFERENCES city(id),
+    CONSTRAINT fk_route_popularity FOREIGN KEY (source_city_id, target_city_id) REFERENCES route_popularity(source_city_id, target_city_id),
     CONSTRAINT chk_different_cities CHECK (source_city_id <> target_city_id)
 );
 

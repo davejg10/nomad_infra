@@ -30,6 +30,7 @@ resource "azurerm_linux_web_app" "web_app" {
     "AZURE_CLIENT_ID"                       = azurerm_user_assigned_identity.asp.client_id
     "POSTGRES_URI"                          = local.postgres_uri
     "WEB_APP_MANAGED_IDENTITY_PRINCIPAL_NAME" = azurerm_user_assigned_identity.asp.name
+    "ENVIRONMENT"                           = var.environment_settings.environment
   }
 
   site_config {
